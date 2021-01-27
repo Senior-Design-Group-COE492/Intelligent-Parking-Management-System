@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parking_app/Navigation.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 
 void main() => runApp(
       GetMaterialApp(
-        home: Home(),
+        home: Navigation(),
         theme: ThemeData(
             primaryColor: Color(0xFFFF8E71), accentColor: Color(0x007ACAFF)),
         debugShowCheckedModeBanner: false,
@@ -12,6 +13,7 @@ void main() => runApp(
     );
 
 class Home extends StatelessWidget {
+  // TODO: move this into another file
   final _formKey = GlobalKey<FormState>();
   RxBool _isShowingPassword = true.obs;
   RxString _errorMessage = ''.obs;

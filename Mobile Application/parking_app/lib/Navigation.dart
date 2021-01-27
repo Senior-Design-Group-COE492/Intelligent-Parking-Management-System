@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:parking_app/MapsWidget.dart';
+
+class Navigation extends StatelessWidget {
+  RxBool isHidden = true.obs;
+
+  @override
+  Widget build(BuildContext context) {
+    final double navigationBarHeight = 66;
+
+    final Widget mapIcon = Container(
+      child: Icon(Icons.map_outlined),
+      width: Get.width * 0.30,
+    );
+    final Widget favoriteIcon = Container(
+      child: Icon(Icons.star_border, size: 24),
+      width: Get.width * 0.30,
+    );
+    final childrenList = [
+      // TODO: add Map and Favorites Screens in this list
+      GestureDetector(
+        child: Maps(),
+        onDoubleTap: isHidden.toggle
+      ),
+      Text('hello3'),
+    ];
+
+    final tabsWidget = DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: Stack(children: [
+          // Stack will be needed to put the Map widget "behind" everything else
+          Container(
+            // main container
+            alignment: Alignment.center,
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: childrenList,
+            ),
+          ),
+          Obx(() => 
+            AnimatedContainer(
+                // TabBar container
+                curve: Curves.linearToEaseOut,
+                duration: Duration(milliseconds: 500),
+                height: isHidden.value ? navigationBarHeight : 0,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0.8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 24,
+                      offset: Offset(-12, 0),
+                    ),
+                  ],
+                ),
+                // margin offsets the tab bar to the bottom of the screen
+                margin: EdgeInsets.only(top: Get.height - (isHidden.value ? navigationBarHeight : 0)),
+                alignment: Alignment.bottomCenter,
+                child: SingleChildScrollView(
+                  child: TabBar(
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.black54,
+                    indicator: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: context.theme.primaryColor,
+                          width: 3,
+                        ),
+                      ),
+                    ),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    tabs: [
+                      Tab(
+                        icon: mapIcon,
+                        text: 'Map',
+                      ),
+                      Tab(
+                        icon: favoriteIcon,
+                        text: 'Favorites',
+                      ),
+                    ]),
+                ),
+            ),
+          
+          ),
+        ]),
+      ),
+    );
+    return tabsWidget;
+  }
+}
