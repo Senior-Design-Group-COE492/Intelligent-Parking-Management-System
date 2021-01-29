@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/globals/MapsGlobals.dart';
 
 class MarkerHandler {
   static Map parkingLots;
@@ -14,6 +17,21 @@ class MarkerHandler {
     final parkingLotsString = await rootBundle
         .loadString("assets/carpark_info/mock/hdb-carpark-information.json");
     parkingLots = jsonDecode(parkingLotsString);
+  }
+
+  static Future<Marker> _makeMarker(double width, double height,
+      int nAvailableParkingSpaces, LatLng latLng, String markerIdString) async {
+    DrawableRoot svgDrawableRoot = await svg.fromSvgString(
+        MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), null);
+    ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
+    ui.Image image = await picture.toImage(width.toInt(), height.toInt());
+    ByteData bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    final newMarkerBitmap =
+        BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
+    return Marker(
+        markerId: MarkerId(markerIdString),
+        icon: newMarkerBitmap,
+        position: latLng);
   }
 
   static void addMarkersFromJson(BuildContext context) async {
@@ -28,8 +46,9 @@ class MarkerHandler {
       final double latitude = parkingLots[iString]['lat'];
       final double longitude = parkingLots[iString]['lng'];
       final LatLng latLng = LatLng(latitude, longitude);
-      MapsController.to
-          .addMarkerToMap(width, height, nAvailableParkingSpaces, latLng, iString);
+      final newMarker =
+          await _makeMarker(width, height, nAvailableParkingSpaces, latLng, iString);
+      MapsController.to.addMarkerToMap(newMarker);
     }
   }
 }

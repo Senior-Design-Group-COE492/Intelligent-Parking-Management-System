@@ -22,6 +22,7 @@ class MapsController extends GetxController {
     update();
   }
 
+<<<<<<< HEAD
   void addMarkerToMap(double width, double height, int nAvailableParkingSpaces,
       LatLng latLng, String markerIdString) async {
     DrawableRoot svgDrawableRoot = await svg.fromSvgString(
@@ -36,6 +37,10 @@ class MapsController extends GetxController {
         icon: newMarkerBitmap,
         position: latLng);
     markerSet.add(newMarker);
+=======
+  void addMarkerToMap(Marker marker) async {
+    markerSet.add(marker);
+>>>>>>> c72b00f995de72b8438411296e45a35df30ca68f
     update();
   }
 }

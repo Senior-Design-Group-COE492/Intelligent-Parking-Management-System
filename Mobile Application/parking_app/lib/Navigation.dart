@@ -8,17 +8,18 @@ class Navigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double navigationBarHeight = 66;
+    final double navigationBarHeight = 70;
 
     final Widget mapIcon = Container(
-      child: Icon(Icons.map_outlined),
+      child: Icon(Icons.map_outlined, size: 30),
       width: Get.width * 0.30,
     );
     final Widget favoriteIcon = Container(
-      child: Icon(Icons.star_border, size: 24),
+      child: Icon(Icons.star_border, size: 30),
       width: Get.width * 0.30,
     );
-    final childrenList = [
+
+    final tabsChildrenList = [
       // TODO: add Map and Favorites Screens in this list
       GestureDetector(child: Maps(), onDoubleTap: isHidden.toggle),
       CustomTextField(),
@@ -35,7 +36,7 @@ class Navigation extends StatelessWidget {
             child: TabBarView(
               // physics needed since tabbarview prevents users from moving map
               physics: NeverScrollableScrollPhysics(),
-              children: childrenList,
+              children: tabsChildrenList,
             ),
           ),
           Obx(
