@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/CustomField.dart';
 import 'package:parking_app/MapsWidget.dart';
+import 'package:parking_app/ParkingInfoWidget.dart';
 
 class Navigation extends StatelessWidget {
   RxBool isHidden = true.obs;
@@ -22,7 +23,14 @@ class Navigation extends StatelessWidget {
     final tabsChildrenList = [
       // TODO: add Map and Favorites Screens in this list
       GestureDetector(child: Maps(), onDoubleTap: isHidden.toggle),
-      CustomTextField(),
+      ParkingInfo(
+        currentAvailable: 245,
+        distanceFromCurrent: '1.1 km',
+        routeTimeFromCurrent: '22 minutes',
+        predictions: [179],
+        parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
+        parkingType: 'Basement Car Park',
+      ),
     ];
 
     final tabsWidget = DefaultTabController(
