@@ -22,7 +22,8 @@ class MapsController extends GetxController {
     update();
   }
 
-  void addMarkerToMap(double width, double height, int nAvailableParkingSpaces, LatLng latLng, String markerIdString) async {
+  void addMarkerToMap(double width, double height, int nAvailableParkingSpaces,
+      LatLng latLng, String markerIdString) async {
     DrawableRoot svgDrawableRoot = await svg.fromSvgString(
         MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), null);
     ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
@@ -33,8 +34,7 @@ class MapsController extends GetxController {
     final newMarker = Marker(
         markerId: MarkerId(markerIdString),
         icon: newMarkerBitmap,
-        position: latLng
-      );
+        position: latLng);
     markerSet.add(newMarker);
     update();
   }

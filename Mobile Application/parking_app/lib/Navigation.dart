@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parking_app/CustomField.dart';
 import 'package:parking_app/MapsWidget.dart';
-import 'package:parking_app/controller/MapsController.dart';
 
 class Navigation extends StatelessWidget {
   RxBool isHidden = true.obs;
@@ -20,11 +20,8 @@ class Navigation extends StatelessWidget {
     );
     final childrenList = [
       // TODO: add Map and Favorites Screens in this list
-      GestureDetector(
-        child: Maps(),
-        onDoubleTap: isHidden.toggle
-      ),
-      Text('hello3'),
+      GestureDetector(child: Maps(), onDoubleTap: isHidden.toggle),
+      CustomTextField(),
     ];
 
     final tabsWidget = DefaultTabController(
@@ -41,28 +38,29 @@ class Navigation extends StatelessWidget {
               children: childrenList,
             ),
           ),
-          Obx(() => 
-            AnimatedContainer(
-                // TabBar container
-                curve: Curves.linearToEaseOut,
-                duration: Duration(milliseconds: 500),
-                height: isHidden.value ? navigationBarHeight : 0,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 24,
-                      offset: Offset(-12, 0),
-                    ),
-                  ],
-                ),
-                // margin offsets the tab bar to the bottom of the screen
-                margin: EdgeInsets.only(top: Get.height - (isHidden.value ? navigationBarHeight : 0)),
-                alignment: Alignment.bottomCenter,
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: TabBar(
+          Obx(
+            () => AnimatedContainer(
+              // TabBar container
+              curve: Curves.linearToEaseOut,
+              duration: Duration(milliseconds: 500),
+              height: isHidden.value ? navigationBarHeight : 0,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 0.8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 24,
+                    offset: Offset(-12, 0),
+                  ),
+                ],
+              ),
+              // margin offsets the tab bar to the bottom of the screen
+              margin: EdgeInsets.only(
+                  top: Get.height - (isHidden.value ? navigationBarHeight : 0)),
+              alignment: Alignment.bottomCenter,
+              child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: TabBar(
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.black54,
                     indicator: BoxDecoration(
@@ -84,9 +82,8 @@ class Navigation extends StatelessWidget {
                         text: 'Favorites',
                       ),
                     ]),
-                ),
+              ),
             ),
-          
           ),
         ]),
       ),
