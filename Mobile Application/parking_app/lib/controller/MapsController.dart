@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:parking_app/globals/MapsGlobals.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 class MapsController extends GetxController {
   // below link to docs explains how to make and use controllers
