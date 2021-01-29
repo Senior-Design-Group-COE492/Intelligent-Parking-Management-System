@@ -24,10 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^3.24.0
+  
   shared_preferences: '>=0.5.12+4 <2.0.0'
   dio: ^3.0.10
   google_maps_flutter: ^1.1.1
   flutter_svg: ^0.19.1
+  expandable: ^4.1.4
   geolocator: ^6.1.14
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -54,6 +56,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/carpark_info/mock/hdb-carpark-information.json
+    - assets/icons/filtersIcon.svg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
