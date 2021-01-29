@@ -22,20 +22,8 @@ class MapsController extends GetxController {
     update();
   }
 
-  void addMarkerToMap(double width, double height, int nAvailableParkingSpaces, LatLng latLng, String markerIdString) async {
-    DrawableRoot svgDrawableRoot = await svg.fromSvgString(
-        MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), null);
-    ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
-    ui.Image image = await picture.toImage(width.toInt(), height.toInt());
-    ByteData bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    final newMarkerBitmap =
-        BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
-    final newMarker = Marker(
-        markerId: MarkerId(markerIdString),
-        icon: newMarkerBitmap,
-        position: latLng
-      );
-    markerSet.add(newMarker);
+  void addMarkerToMap(Marker marker) async {
+    markerSet.add(marker);
     update();
   }
 }
