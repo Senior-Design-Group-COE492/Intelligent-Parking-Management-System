@@ -7,3 +7,4 @@ class Globals {
   static const AssetImage FORTRESS_ASSET_IMAGE =
       AssetImage('assets/icons/code.png');
 }
+

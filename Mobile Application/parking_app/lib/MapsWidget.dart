@@ -1,9 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/globals/MapsGlobals.dart';
+import 'package:parking_app/handlers/markerHandler.dart';
 
 class Maps extends StatefulWidget {
   @override
@@ -17,37 +20,46 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   Completer<GoogleMapController> _controller = Completer();
   bool serviceEnabled;
   LocationPermission permission;
-  final MapsController mapsController =  Get.put(MapsController());
+  final MapsController mapsController = Get.put(MapsController());
+  BitmapDescriptor markerSvg;
 
   _MapsState() {
+    _initializeMarkers();
     _initializeGeolocator();
   }
 
   @override
   bool get wantKeepAlive => true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
+        body: GetBuilder<MapsController>(
+      init: MapsController(),
+      builder: (state) => GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
           target: LatLng(1.308566, 103.857196),
-          zoom: 13,
+          zoom: 15,
         ), // Initially at
         onMapCreated: (GoogleMapController controller) {
-          if (!_controller.isCompleted) _controller.complete(controller);
+          if (!_controller.isCompleted) {
+            _controller.complete(controller);
+            controller.setMapStyle(MapsGlobals.style);
+          }
         },
+        markers: state.markerSet,
         myLocationEnabled: true,
+        myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
         compassEnabled: false,
+      ),
     ));
   }
 
   Future<void> _initializeGeolocator() async {
     bool serviceEnabled;
     LocationPermission permission;
-
+    // TODO: handle permission errors
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
@@ -69,11 +81,17 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
     }
 
     final currentLocation = await Geolocator.getCurrentPosition();
-    mapsController.setCurrentLocation(currentLocation);
+    MapsController.to.setCurrentLocation(currentLocation);
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(currentLocation.latitude, currentLocation.longitude),
       zoom: 16,
     )));
+  }
+
+  void _initializeMarkers() async {
+    await MarkerHandler.getJsonFromFile();
+    // need to below to get access to the context
+    Future.delayed(Duration.zero, () =>  MarkerHandler.addMarkersFromJson(context));
   }
 }

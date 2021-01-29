@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/MapsWidget.dart';
+import 'package:parking_app/controller/MapsController.dart';
 
 class Navigation extends StatelessWidget {
   RxBool isHidden = true.obs;
@@ -35,6 +36,7 @@ class Navigation extends StatelessWidget {
             // main container
             alignment: Alignment.center,
             child: TabBarView(
+              // physics needed since tabbarview prevents users from moving map
               physics: NeverScrollableScrollPhysics(),
               children: childrenList,
             ),
@@ -59,6 +61,7 @@ class Navigation extends StatelessWidget {
                 margin: EdgeInsets.only(top: Get.height - (isHidden.value ? navigationBarHeight : 0)),
                 alignment: Alignment.bottomCenter,
                 child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
                   child: TabBar(
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.black54,
