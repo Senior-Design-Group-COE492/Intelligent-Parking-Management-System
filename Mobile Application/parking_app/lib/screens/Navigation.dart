@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:parking_app/CustomField.dart';
-import 'package:parking_app/MapsWidget.dart';
-import 'package:parking_app/ParkingInfoWidget.dart';
+import 'package:parking_app/widgets/CustomField.dart';
+import 'package:parking_app/widgets/MapsWidget.dart';
+import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class Navigation extends StatelessWidget {
   RxBool isHidden = true.obs;

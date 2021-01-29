@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:parking_app/Navigation.dart';
+import 'package:parking_app/screens/Navigation.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 
 void main() => runApp(
