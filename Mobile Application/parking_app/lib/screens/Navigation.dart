@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/screens/MapsPage.dart';
+import 'package:parking_app/widgets/CustomField.dart';
 import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class Navigation extends StatelessWidget {
@@ -25,14 +26,15 @@ class Navigation extends StatelessWidget {
         init: MapsController(),
         builder: (state) => MapsPage(isHidden: state.isHidden),
       ),
-      ParkingInfo(
-        currentAvailable: 245,
-        distanceFromCurrent: '1.1 km',
-        routeTimeFromCurrent: '22 minutes',
-        predictions: [179],
-        parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-        parkingType: 'Basement Car Park',
-      ),
+      // ParkingInfo(
+      //   currentAvailable: 245,
+      //   distanceFromCurrent: '1.1 km',
+      //   routeTimeFromCurrent: '22 minutes',
+      //   predictions: [179],
+      //   parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
+      //   parkingType: 'Basement Car Park',
+      // ),
+      CustomTextField(),
     ];
 
     final tabsWidget = DefaultTabController(
