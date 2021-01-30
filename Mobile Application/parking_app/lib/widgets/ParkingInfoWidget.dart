@@ -67,7 +67,6 @@ class ParkingInfo extends StatelessWidget {
                 Icons.close,
                 size: 35,
               ),
-              // TODO: make the onPressed close the ParkingInfo
               onPressed: () => MapsController.to.hideInfoWindow(),
             ),
           ),
@@ -145,7 +144,7 @@ class ParkingInfo extends StatelessWidget {
                       style: smallFontLight),
                   predictedAvailableWidget,
                   Padding(padding: EdgeInsets.only(top: 20)),
-                  // TODO: replace empty container with the expanded column
+                  // TODO: replace Text with a column for expansion
                   (isExpanded.value ? Text('text') : footerWidget),
                 ],
               ),

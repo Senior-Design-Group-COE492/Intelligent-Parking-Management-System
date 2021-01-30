@@ -13,7 +13,8 @@ class CustomTextField extends StatelessWidget {
       semanticsLabel: 'filters Icon',
     );
 
-    // TODO: add the top padding and width padding on the sides
+    // TODO: add the top padding and width padding on the sides and fix some
+    // styling when the text field is added to the Maps Screen
     return Container(
       height: 80,
       color: Colors.white,
