@@ -1,18 +1,19 @@
 import 'dart:ui';
 
-import 'package:expandable/expandable.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/globals/Globals.dart';
 
 class ParkingInfo extends StatelessWidget {
+  // TODO: add constructor with parking ID
   final String distanceFromCurrent;
   final String routeTimeFromCurrent;
   final int currentAvailable;
   final String parkingName;
   final String parkingType;
   final List<int> predictions;
-  RxBool isExpanded = false.obs;
+  final RxBool isExpanded = false.obs;
 
   ParkingInfo(
       {Key key,
@@ -26,7 +27,6 @@ class ParkingInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Add opaqueness, note: shadow shows behind opaque
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
     final double unexpandedHeight = 290;
@@ -68,7 +68,7 @@ class ParkingInfo extends StatelessWidget {
                 size: 35,
               ),
               // TODO: make the onPressed close the ParkingInfo
-              onPressed: () => {},
+              onPressed: () => MapsController.to.hideInfoWindow(),
             ),
           ),
         ],
@@ -101,13 +101,13 @@ class ParkingInfo extends StatelessWidget {
       ),
     );
 
-    return GestureDetector(
-      onTap: () => isExpanded.toggle(),
+    return Listener(
+      onPointerUp: (event) => isExpanded.toggle(),
       child: Align(
         alignment: Alignment.topCenter,
         child: Obx(
           () => AnimatedContainer(
-            duration: Duration(milliseconds: 150),
+            duration: Globals.EXPAND_ANIMATION_DURATION,
             padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
             width: widgetWidth,
             height: isExpanded.value ? expandedHeight : unexpandedHeight,

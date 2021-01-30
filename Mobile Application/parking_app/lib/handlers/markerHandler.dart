@@ -19,8 +19,13 @@ class MarkerHandler {
     parkingLots = jsonDecode(parkingLotsString);
   }
 
-  static Future<Marker> _makeMarker(double width, double height,
-      int nAvailableParkingSpaces, LatLng latLng, String markerIdString) async {
+  static Future<Marker> _makeMarker(
+      double width,
+      double height,
+      int nAvailableParkingSpaces,
+      LatLng latLng,
+      String markerIdString,
+      Function() handleMarkerTap) async {
     DrawableRoot svgDrawableRoot = await svg.fromSvgString(
         MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), null);
     ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
@@ -29,9 +34,11 @@ class MarkerHandler {
     final newMarkerBitmap =
         BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
     return Marker(
-        markerId: MarkerId(markerIdString),
-        icon: newMarkerBitmap,
-        position: latLng);
+      markerId: MarkerId(markerIdString),
+      icon: newMarkerBitmap,
+      position: latLng,
+      onTap: handleMarkerTap,
+    );
   }
 
   static void addMarkersFromJson(BuildContext context) async {
@@ -39,6 +46,9 @@ class MarkerHandler {
     double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
     double height = 47 * devicePixelRatio;
+    // TODO: move the handleMarkerTap inside the loop
+    // and add the parking ID to it
+    final handleMarkerTap = () => MapsController.to.showInfoWindow('HE45');
     for (var i = 0; i < parkingLots.length; i++) {
       final String iString = i.toString();
       final int nAvailableParkingSpaces =
@@ -46,8 +56,8 @@ class MarkerHandler {
       final double latitude = parkingLots[iString]['lat'];
       final double longitude = parkingLots[iString]['lng'];
       final LatLng latLng = LatLng(latitude, longitude);
-      final newMarker =
-          await _makeMarker(width, height, nAvailableParkingSpaces, latLng, iString);
+      final newMarker = await _makeMarker(width, height,
+          nAvailableParkingSpaces, latLng, iString, handleMarkerTap);
       MapsController.to.addMarkerToMap(newMarker);
     }
   }

@@ -32,6 +32,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         body: GetBuilder<MapsController>(
       init: MapsController(),
@@ -92,6 +93,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   void _initializeMarkers() async {
     await MarkerHandler.getJsonFromFile();
     // need to below to get access to the context
-    Future.delayed(Duration.zero, () =>  MarkerHandler.addMarkersFromJson(context));
+    Future.delayed(
+        Duration.zero, () => MarkerHandler.addMarkersFromJson(context));
   }
 }

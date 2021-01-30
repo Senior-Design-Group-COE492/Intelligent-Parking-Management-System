@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:parking_app/widgets/CustomField.dart';
-import 'package:parking_app/widgets/MapsWidget.dart';
+import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/screens/MapsPage.dart';
 import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class Navigation extends StatelessWidget {
-  RxBool isHidden = true.obs;
-
   @override
   Widget build(BuildContext context) {
     final double navigationBarHeight = 70;
@@ -22,7 +21,10 @@ class Navigation extends StatelessWidget {
 
     final tabsChildrenList = [
       // TODO: add Map and Favorites Screens in this list
-      GestureDetector(child: Maps(), onDoubleTap: isHidden.toggle),
+      GetBuilder<MapsController>(
+        init: MapsController(),
+        builder: (state) => MapsPage(isHidden: state.isHidden),
+      ),
       ParkingInfo(
         currentAvailable: 245,
         distanceFromCurrent: '1.1 km',
@@ -47,12 +49,13 @@ class Navigation extends StatelessWidget {
               children: tabsChildrenList,
             ),
           ),
-          Obx(
-            () => AnimatedContainer(
+          GetBuilder<MapsController>(
+            init: MapsController(),
+            builder: (state) => AnimatedContainer(
               // TabBar container
               curve: Curves.linearToEaseOut,
-              duration: Duration(milliseconds: 500),
-              height: isHidden.value ? navigationBarHeight : 0,
+              duration: Globals.MAPS_ANIMATION_DURATION,
+              height: state.isHidden ? 0 : navigationBarHeight,
               decoration: BoxDecoration(
                 color: Color.fromRGBO(255, 255, 255, 0.8),
                 boxShadow: [
@@ -65,7 +68,7 @@ class Navigation extends StatelessWidget {
               ),
               // margin offsets the tab bar to the bottom of the screen
               margin: EdgeInsets.only(
-                  top: Get.height - (isHidden.value ? navigationBarHeight : 0)),
+                  top: Get.height - (state.isHidden ? 0 : navigationBarHeight)),
               alignment: Alignment.bottomCenter,
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),

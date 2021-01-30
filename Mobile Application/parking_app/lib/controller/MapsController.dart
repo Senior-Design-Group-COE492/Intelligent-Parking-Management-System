@@ -9,7 +9,10 @@ class MapsController extends GetxController {
   // use MapsController.to.func() for functions
   Position currentLocation;
   Set markerSet = Set<Marker>();
-
+  bool isHidden = false;
+  bool isParkingInfo =
+      false; // info window shown when true, textfield shown when false
+  String parkingId = '';
   static MapsController get to => Get.find();
 
   void setCurrentLocation(newCurrentLocation) {
@@ -19,6 +22,24 @@ class MapsController extends GetxController {
 
   void addMarkerToMap(Marker marker) async {
     markerSet.add(marker);
+    update();
+  }
+
+  void toggleIsHidden() {
+    isHidden = !isHidden;
+    update();
+  }
+
+  void hideInfoWindow() {
+    parkingId = '';
+    isParkingInfo = false;
+    update();
+  }
+
+  void showInfoWindow(String parkingId) {
+    // updates parking id to show the appropriate information in the info window
+    this.parkingId = parkingId;
+    isParkingInfo = true;
     update();
   }
 }
