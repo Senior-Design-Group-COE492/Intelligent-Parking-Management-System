@@ -19,7 +19,7 @@ class CustomTextField extends StatelessWidget {
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 36;
-    final double originalHeight = 3;
+    final double originalHeight = 52;
     final double expandedHeight = Get.height - marginWithStatusBar - 70 - 36;
     final TextEditingController _controller = new TextEditingController();
     final String assetName = 'assets/icons/filtersIcon.svg';
@@ -30,43 +30,55 @@ class CustomTextField extends StatelessWidget {
 
     // TODO: add the top padding and width padding on the sides and fix some
     // styling when the text field is added to the Maps Screen
-    final Widget header = Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Icon(
-            Icons.search,
-            color: Colors.grey,
+    final Widget header = Container(
+      color: Colors.white,
+      height: originalHeight,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Icon(
+              Icons.search,
+              color: Colors.grey,
+            ),
           ),
-        ),
-        Flexible(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter Destination',
-              hintStyle: TextStyle(
-                color: Colors.grey,
+          Flexible(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Enter Destination',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20.0,
+                ),
+                border: InputBorder.none,
+              ),
+              style: TextStyle(
                 fontSize: 20.0,
               ),
-              border: InputBorder.none,
-            ),
-            style: TextStyle(
-              fontSize: 20.0,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: filtersIcon,
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: FloatingActionButton(
+              // Can't use IconButton since ripple effect is messed up for it
+              // so using FAB with no elevation instead
+              hoverElevation: 0,
+              disabledElevation: 0,
+              highlightElevation: 0,
+              focusElevation: 0,
+              mini: true,
+              elevation: 0,
+              child: filtersIcon,
+              // TODO: implement onPressed
+              onPressed: () => isExpanded.toggle(),
+            ),
+          ),
+        ],
+      ),
     );
 
-    // TODO: implement build
-    return GestureDetector(
-      onTap: () => {
-        isExpanded.toggle(),
-        print(isExpanded.value),
-      },
+    return Align(
+      alignment: Alignment.topCenter,
       child: Obx(
         () => AnimatedContainer(
           padding: EdgeInsets.only(left: widthPadding, right: widthPadding),

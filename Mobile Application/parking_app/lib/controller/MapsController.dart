@@ -38,6 +38,7 @@ class MapsController extends GetxController {
 
   void showInfoWindow(String parkingId) {
     // updates parking id to show the appropriate information in the info window
+    // also enables the infoWindow
     this.parkingId = parkingId;
     isParkingInfo = true;
     update();

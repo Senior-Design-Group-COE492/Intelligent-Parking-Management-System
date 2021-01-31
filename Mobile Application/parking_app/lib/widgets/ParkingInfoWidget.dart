@@ -61,9 +61,17 @@ class ParkingInfo extends StatelessWidget {
             width: headerTextWidth,
           ),
           Expanded(
-            // needed to prevent button from overflowing due to padding
-            child: IconButton(
-              icon: Icon(
+            // EXpanded needed to prevent button from overflowing due to padding
+            child: FloatingActionButton(
+              // Can't use IconButton since ripple effect is messed up for it
+              // so using FAB with no elevation instead
+              hoverElevation: 0,
+              disabledElevation: 0,
+              highlightElevation: 0,
+              focusElevation: 0,
+              mini: true,
+              elevation: 0,
+              child: Icon(
                 Icons.close,
                 size: 35,
               ),
