@@ -3,17 +3,45 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-// class SliderController extends GetxController {
-//   var sliderValue = 20.0.obs;
-//   change(RxDouble value) => sliderValue = value;
-// }
+class SliderController extends GetxController {
+  RxDouble sliderValue = 20.0.obs;
+  changeSlider(double value) => {
+        sliderValue.update((value) {
+          sliderValue.value = value;
+        }),
+      };
+}
+
+class RadioController extends GetxController {
+  var groupValue = [0, 1].obs;
+  RxInt radioValue = 0.obs;
+  changeRadio(dynamic value) {
+    radioValue.update((newValue) {
+      switch (newValue) {
+        case 1:
+          radioValue.value = 1;
+          break;
+        default:
+          radioValue.value = 0;
+      }
+      print(radioValue.value);
+    });
+  }
+}
 
 class CustomTextField extends StatelessWidget {
   RxBool isExpanded = false.obs;
+  RxBool isSurface = false.obs;
+  RxBool isMechanised = false.obs;
+  RxBool isCovered = false.obs;
+  RxBool isBasement = false.obs;
+  RxBool isMultiStorey = false.obs;
+  RxBool isFree = false.obs;
 
   @override
   Widget build(BuildContext context) {
-    // final SliderController c = Get.put(SliderController());
+    final SliderController sliderController = Get.put(SliderController());
+    final RadioController radioController = Get.put(RadioController());
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
@@ -44,6 +72,7 @@ class CustomTextField extends StatelessWidget {
           ),
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Enter Destination',
                 hintStyle: TextStyle(
@@ -91,40 +120,103 @@ class CustomTextField extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
                 Text('Distance (max.)'),
-                // Slider(
-                //   value: c.sliderValue as double,
-                //   min: 0,
-                //   max: 100,
-                //   divisions: 10,
-                //   label: c.sliderValue.round().toString(),
-                //   onChanged: c.change,
-                // )
+                Slider(
+                  value: sliderController.sliderValue.value,
+                  min: 0,
+                  max: 100,
+                  divisions: 5,
+                  label: sliderController.sliderValue.value.round().toString(),
+                  onChanged: sliderController.changeSlider,
+                  activeColor: context.theme.primaryColor,
+                  inactiveColor: Colors.grey,
+                ),
                 Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
-                Text('Parking Type'),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isSurface.value,
+                      checkColor: context.theme.primaryColor,
+                      onChanged: (bool value) {
+                        isSurface.toggle();
+                      },
+                    ),
+                    Text('Surface'),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                    ),
+                    Checkbox(
+                      value: isMechanised.value,
+                      checkColor: context.theme.primaryColor,
+                      onChanged: (bool value) {
+                        isMechanised.toggle();
+                      },
+                    ),
+                    Text('Mechanised'),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                    ),
+                    Checkbox(
+                      value: isCovered.value,
+                      activeColor: context.theme.primaryColor,
+                      onChanged: (bool value) {
+                        isCovered.toggle();
+                      },
+                    ),
+                    Text('Covered'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isBasement.value,
+                      checkColor: context.theme.primaryColor,
+                      onChanged: (bool value) {
+                        isBasement.toggle();
+                      },
+                    ),
+                    Text('Basement'),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                    ),
+                    Checkbox(
+                      value: isMultiStorey.value,
+                      checkColor: context.theme.primaryColor,
+                      onChanged: (bool value) {
+                        isMultiStorey.toggle();
+                      },
+                    ),
+                    Text('Multi-Storey'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: ListTile(
+                        title: Text('Yes'),
+                        leading: Radio(
+                          value: 1,
+                          groupValue: radioController.groupValue,
+                          onChanged: radioController.changeRadio,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 150,
+                      child: ListTile(
+                        title: Text('No'),
+                        leading: Radio(
+                            value: 0,
+                            groupValue: radioController.groupValue,
+                            onChanged: radioController.changeRadio),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
