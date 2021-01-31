@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SliderController extends GetxController {
@@ -98,6 +97,7 @@ class CustomTextField extends StatelessWidget {
               mini: true,
               elevation: 0,
               child: filtersIcon,
+              backgroundColor: Colors.transparent,
               // TODO: implement onPressed
               onPressed: () => isExpanded.toggle(),
             ),

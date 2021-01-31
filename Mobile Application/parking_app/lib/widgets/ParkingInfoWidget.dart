@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
   // TODO: add constructor with parking ID
@@ -69,6 +70,7 @@ class ParkingInfo extends StatelessWidget {
               disabledElevation: 0,
               highlightElevation: 0,
               focusElevation: 0,
+              backgroundColor: Colors.transparent,
               mini: true,
               elevation: 0,
               child: Icon(
@@ -108,8 +110,14 @@ class ParkingInfo extends StatelessWidget {
       ),
     );
 
-    return Listener(
-      onPointerUp: (event) => isExpanded.toggle(),
+    final expandedWidget = Column(
+      children: [
+        PredictionsBarChart(),
+      ],
+    );
+
+    return GestureDetector(
+      onTap: () => isExpanded.toggle(),
       child: Align(
         alignment: Alignment.topCenter,
         child: Obx(
@@ -153,7 +161,7 @@ class ParkingInfo extends StatelessWidget {
                   predictedAvailableWidget,
                   Padding(padding: EdgeInsets.only(top: 20)),
                   // TODO: replace Text with a column for expansion
-                  (isExpanded.value ? Text('text') : footerWidget),
+                  (isExpanded.value ? expandedWidget : footerWidget),
                 ],
               ),
             ),
