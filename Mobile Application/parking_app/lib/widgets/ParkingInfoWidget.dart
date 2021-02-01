@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class ParkingInfo extends StatelessWidget {
   final String parkingType;
   final List<int> predictions;
   final RxBool isExpanded = false.obs;
+  final RxBool isFavorited = false.obs;
 
   ParkingInfo(
       {Key key,
@@ -30,7 +32,8 @@ class ParkingInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double unexpandedHeight = 290;
+    final double unexpandedHeight = 292;
+    final double buttonHeight = 52;
     final double headerTextWidth =
         Get.width * 0.717; // 269/375 = 0.915 (from design)
     final double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -38,8 +41,16 @@ class ParkingInfo extends StatelessWidget {
     final double marginWithStatusBar = statusBarHeight + 36;
     // subtracts the top margin and navigation bar height and a bit extra so
     // that the expanded widget doesn't go below the navigation bar
-    final double expandedHeight = Get.height - marginWithStatusBar - 70 - 36;
+    final double maxExpandedHeight = Get.height - marginWithStatusBar - 70 - 36;
+    final double minimumHeightRequired =
+        unexpandedHeight + 150 + buttonHeight + 50;
+    // sets the height of the widget to what is required if the screen
+    // is big enough, else it'll set it to the maximum possible height and make
+    // the widget scrollable
+    final double expandedHeight = min(minimumHeightRequired, maxExpandedHeight);
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
+    final double navigationButtonWidth = Get.width * 0.66; // 247/375 = 0.66
+
     final TextStyle smallFontLight =
         TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
     final TextStyle smallFontWithColor = TextStyle(
@@ -51,7 +62,7 @@ class ParkingInfo extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 12),
+            padding: EdgeInsets.only(top: 20),
             child: Text(
               parkingName.toUpperCase(),
               style: TextStyle(
@@ -71,7 +82,6 @@ class ParkingInfo extends StatelessWidget {
               highlightElevation: 0,
               focusElevation: 0,
               backgroundColor: Colors.transparent,
-              mini: true,
               elevation: 0,
               child: Icon(
                 Icons.close,
@@ -110,9 +120,63 @@ class ParkingInfo extends StatelessWidget {
       ),
     );
 
+    final navigationButton = Container(
+      height: buttonHeight,
+      width: navigationButtonWidth,
+      child: TextButton(
+        child: Text(
+          'START NAVIGATION',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).primaryColor),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+            overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
+        // TODO: Implement the starting the navigation in Google Maps
+        onPressed: () {},
+      ),
+    );
+
+    final favoritesButton = Obx(() => Expanded(
+          child: FloatingActionButton(
+            elevation: 0,
+            hoverElevation: 0,
+            disabledElevation: 0,
+            highlightElevation: 0,
+            focusElevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              isFavorited.value ? Icons.star : Icons.star_outline,
+              size: 30,
+              color: Colors.grey[850],
+            ),
+            // TODO: Implement favoriting here once it's done in backend
+            onPressed: () {
+              isFavorited.toggle();
+            },
+          ),
+        ));
+
+    final buttonsRow = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [navigationButton, favoritesButton],
+    );
+
     final expandedWidget = Column(
       children: [
+        Text('Predicted availability (may not be accurate)',
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+        Padding(padding: EdgeInsets.only(top: 12)),
         PredictionsBarChart(),
+        Padding(padding: EdgeInsets.only(top: 25)),
+        buttonsRow,
+        Padding(padding: EdgeInsets.only(top: 16)),
       ],
     );
 
@@ -159,7 +223,7 @@ class ParkingInfo extends StatelessWidget {
                   Text('Predicted available parking spaces in 30 minutes',
                       style: smallFontLight),
                   predictedAvailableWidget,
-                  Padding(padding: EdgeInsets.only(top: 20)),
+                  Padding(padding: EdgeInsets.only(top: 16)),
                   // TODO: replace Text with a column for expansion
                   (isExpanded.value ? expandedWidget : footerWidget),
                 ],

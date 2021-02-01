@@ -47,9 +47,7 @@ class MarkerHandler {
     double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
     double height = 47 * devicePixelRatio;
-    // TODO: move the handleMarkerTap inside the loop
-    // and add the parking ID to it
-    final handleMarkerTap = () => MapsController.to.showInfoWindow('HE45');
+
     for (var i = 0; i < parkingLots.length; i++) {
       final String iString = i.toString();
       final int nAvailableParkingSpaces =
@@ -57,6 +55,17 @@ class MarkerHandler {
       final double latitude = parkingLots[iString]['lat'];
       final double longitude = parkingLots[iString]['lng'];
       final LatLng latLng = LatLng(latitude, longitude);
+      final handleMarkerTap = () async {
+        // TODO: pass the actual parking ID from the json
+        // instead of a specific ID
+        MapsController.to.showInfoWindow('HE45');
+        final GoogleMapController controller =
+            await MapsController.to.controller.future;
+        controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: latLng,
+          zoom: 18,
+        )));
+      };
       final newMarker = await _makeMarker(width, height,
           nAvailableParkingSpaces, latLng, iString, handleMarkerTap);
       MapsController.to.addMarkerToMap(newMarker);

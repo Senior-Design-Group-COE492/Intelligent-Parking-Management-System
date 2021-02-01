@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,10 +15,16 @@ class MapsController extends GetxController {
   bool isParkingInfo =
       false; // info window shown when true, textfield shown when false
   String parkingId = '';
+  Completer<GoogleMapController> controller = Completer();
   static MapsController get to => Get.find();
 
   void setCurrentLocation(newCurrentLocation) {
     currentLocation = newCurrentLocation;
+    update();
+  }
+
+  void setGoogleMapController(GoogleMapController newController) {
+    controller.complete(newController);
     update();
   }
 

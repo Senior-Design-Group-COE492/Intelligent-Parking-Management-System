@@ -33,7 +33,8 @@ class MapsPage extends StatelessWidget {
                 parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
                 parkingType: 'Basement Car Park',
               )
-            : Container(child: CustomTextField(), height: 100, width: 100),
+            : Container(
+                child: CustomTextField(), height: 100, width: Get.width),
       ),
     );
 

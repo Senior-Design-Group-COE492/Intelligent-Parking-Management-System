@@ -17,7 +17,6 @@ class Maps extends StatefulWidget {
 // switches to another tab and then comes back to it
 // the widget also needs to be stateful to use the mixin
 class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
-  Completer<GoogleMapController> _controller = Completer();
   bool serviceEnabled;
   LocationPermission permission;
   final MapsController mapsController = Get.put(MapsController());
@@ -43,10 +42,8 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
           zoom: 15,
         ), // Initially at
         onMapCreated: (GoogleMapController controller) {
-          if (!_controller.isCompleted) {
-            _controller.complete(controller);
-            controller.setMapStyle(MapsGlobals.style);
-          }
+          MapsController.to.setGoogleMapController(controller);
+          controller.setMapStyle(MapsGlobals.style);
         },
         markers: state.markerSet,
         myLocationEnabled: true,
@@ -83,7 +80,8 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
 
     final currentLocation = await Geolocator.getCurrentPosition();
     MapsController.to.setCurrentLocation(currentLocation);
-    final GoogleMapController controller = await _controller.future;
+    final GoogleMapController controller =
+        await mapsController.controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(currentLocation.latitude, currentLocation.longitude),
       zoom: 16,
@@ -92,7 +90,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
 
   void _initializeMarkers() async {
     await MarkerHandler.getJsonFromFile();
-    // need to below to get access to the context
+    // need to use delayed future to get access to the context
     Future.delayed(
         Duration.zero, () => MarkerHandler.addMarkersFromJson(context));
   }

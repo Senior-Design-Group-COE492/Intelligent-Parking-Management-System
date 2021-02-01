@@ -7,7 +7,9 @@ void main() => runApp(
       GetMaterialApp(
         home: Navigation(),
         theme: ThemeData(
-            primaryColor: Color(0xFFFF8E71), accentColor: Color(0xFF7ACAFF)),
+          primaryColor: Color(0xFFFF8E71),
+          accentColor: Color(0xFF7ACAFF),
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );

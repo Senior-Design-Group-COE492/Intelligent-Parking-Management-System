@@ -27,15 +27,15 @@ class Navigation extends StatelessWidget {
         init: MapsController(),
         builder: (state) => MapsPage(isHidden: state.isHidden),
       ),
-      // ParkingInfo(
-      //   currentAvailable: 245,
-      //   distanceFromCurrent: '1.1 km',
-      //   routeTimeFromCurrent: '22 minutes',
-      //   predictions: [179],
-      //   parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-      //   parkingType: 'Basement Car Park',
-      // ),
-      CustomTextField(),
+      ParkingInfo(
+        currentAvailable: 245,
+        distanceFromCurrent: '1.1 km',
+        routeTimeFromCurrent: '22 minutes',
+        predictions: [179],
+        parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
+        parkingType: 'Basement Car Park',
+      ),
+      // CustomTextField(),
     ];
 
     final tabsWidget = DefaultTabController(
