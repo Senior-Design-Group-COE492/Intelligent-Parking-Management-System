@@ -5,26 +5,20 @@ import 'package:get/get.dart';
 class SliderController extends GetxController {
   RxDouble sliderValue = 20.0.obs;
   changeSlider(double value) => {
-        sliderValue.update((value) {
-          sliderValue.value = value;
-        }),
+        sliderValue.value = value,
+        update(),
+        print(sliderValue.value),
       };
 }
 
 class RadioController extends GetxController {
-  var groupValue = [0, 1].obs;
+  int groupValue = 1;
   RxInt radioValue = 0.obs;
-  changeRadio(dynamic value) {
-    radioValue.update((newValue) {
-      switch (newValue) {
-        case 1:
-          radioValue.value = 1;
-          break;
-        default:
-          radioValue.value = 0;
-      }
-      print(radioValue.value);
-    });
+  changeRadio(dynamic newValue) {
+    radioValue.value = newValue;
+    groupValue = newValue;
+    update();
+    print(radioValue.value);
   }
 }
 
@@ -47,7 +41,7 @@ class CustomTextField extends StatelessWidget {
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 36;
     final double originalHeight = 52;
-    final double expandedHeight = Get.height - marginWithStatusBar - 70 - 36;
+    final double expandedHeight = Get.height - marginWithStatusBar - 20 - 10;
     final TextEditingController _controller = new TextEditingController();
     final String assetName = 'assets/icons/filtersIcon.svg';
     final Widget filtersIcon = SvgPicture.asset(
@@ -69,6 +63,17 @@ class CustomTextField extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
+          Container(
+            height: 30,
+            child: VerticalDivider(
+              color: Colors.grey,
+              width: 6,
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 5),
+          ),
           Flexible(
             child: TextField(
               controller: _controller,
@@ -83,6 +88,14 @@ class CustomTextField extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20.0,
               ),
+            ),
+          ),
+          Container(
+            height: 30,
+            child: VerticalDivider(
+              color: Colors.grey,
+              width: 6,
+              thickness: 2,
             ),
           ),
           Padding(
@@ -110,6 +123,14 @@ class CustomTextField extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: Obx(
         () => AnimatedContainer(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10)),
+          ),
           padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
           width: widgetWidth,
           margin: EdgeInsets.only(top: marginWithStatusBar),
@@ -128,7 +149,7 @@ class CustomTextField extends StatelessWidget {
                   value: sliderController.sliderValue.value,
                   min: 0,
                   max: 100,
-                  divisions: 5,
+                  divisions: 100,
                   label: sliderController.sliderValue.value.round().toString(),
                   onChanged: sliderController.changeSlider,
                   activeColor: context.theme.primaryColor,
@@ -139,29 +160,29 @@ class CustomTextField extends StatelessWidget {
                   children: [
                     Checkbox(
                       value: isSurface.value,
-                      checkColor: context.theme.primaryColor,
+                      checkColor: Colors.white,
+                      activeColor: context.theme.primaryColor,
                       onChanged: (bool value) {
                         isSurface.toggle();
                       },
                     ),
                     Text('Surface'),
                     Padding(
-                      padding: EdgeInsets.only(left: 10),
+                      padding: EdgeInsets.only(left: 15),
                     ),
                     Checkbox(
                       value: isMechanised.value,
-                      checkColor: context.theme.primaryColor,
+                      checkColor: Colors.white,
+                      activeColor: context.theme.primaryColor,
                       onChanged: (bool value) {
                         isMechanised.toggle();
                       },
                     ),
                     Text('Mechanised'),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                    ),
                     Checkbox(
                       value: isCovered.value,
                       activeColor: context.theme.primaryColor,
+                      checkColor: Colors.white,
                       onChanged: (bool value) {
                         isCovered.toggle();
                       },
@@ -173,18 +194,17 @@ class CustomTextField extends StatelessWidget {
                   children: [
                     Checkbox(
                       value: isBasement.value,
-                      checkColor: context.theme.primaryColor,
+                      checkColor: Colors.white,
+                      activeColor: context.theme.primaryColor,
                       onChanged: (bool value) {
                         isBasement.toggle();
                       },
                     ),
                     Text('Basement'),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                    ),
                     Checkbox(
                       value: isMultiStorey.value,
-                      checkColor: context.theme.primaryColor,
+                      checkColor: Colors.white,
+                      activeColor: context.theme.primaryColor,
                       onChanged: (bool value) {
                         isMultiStorey.toggle();
                       },
@@ -192,27 +212,31 @@ class CustomTextField extends StatelessWidget {
                     Text('Multi-Storey'),
                   ],
                 ),
+                Text('Free only'),
                 Row(
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 125,
                       child: ListTile(
                         title: Text('Yes'),
                         leading: Radio(
                           value: 1,
                           groupValue: radioController.groupValue,
                           onChanged: radioController.changeRadio,
+                          activeColor: context.theme.primaryColor,
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: 150,
+                      width: 120,
                       child: ListTile(
                         title: Text('No'),
                         leading: Radio(
-                            value: 0,
-                            groupValue: radioController.groupValue,
-                            onChanged: radioController.changeRadio),
+                          activeColor: context.theme.primaryColor,
+                          value: 0,
+                          groupValue: radioController.groupValue,
+                          onChanged: radioController.changeRadio,
+                        ),
                       ),
                     ),
                   ],
