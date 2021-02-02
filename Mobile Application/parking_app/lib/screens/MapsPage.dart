@@ -32,6 +32,8 @@ class MapsPage extends StatelessWidget {
                 predictions: [179],
                 parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
                 parkingType: 'Basement Car Park',
+                lat: 1.01,
+                lng: 30,
               )
             : Container(
                 child: CustomTextField(), height: 100, width: Get.width),

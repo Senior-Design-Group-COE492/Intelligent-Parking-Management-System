@@ -221,33 +221,35 @@ class CustomTextField extends StatelessWidget {
                             ],
                           ),
                           Text('Free only'),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 125,
-                                child: ListTile(
-                                  title: Text('Yes'),
-                                  leading: Radio(
-                                    value: 1,
-                                    groupValue: radioController.groupValue,
-                                    onChanged: radioController.changeRadio,
-                                    activeColor: context.theme.primaryColor,
+                          GetBuilder<RadioController>(
+                            builder: (_) => Row(
+                              children: [
+                                SizedBox(
+                                  width: 125,
+                                  child: ListTile(
+                                    title: Text('Yes'),
+                                    leading: Radio(
+                                      value: 1,
+                                      groupValue: radioController.groupValue,
+                                      onChanged: radioController.changeRadio,
+                                      activeColor: context.theme.primaryColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 120,
-                                child: ListTile(
-                                  title: Text('No'),
-                                  leading: Radio(
-                                    activeColor: context.theme.primaryColor,
-                                    value: 0,
-                                    groupValue: radioController.groupValue,
-                                    onChanged: radioController.changeRadio,
+                                SizedBox(
+                                  width: 120,
+                                  child: ListTile(
+                                    title: Text('No'),
+                                    leading: Radio(
+                                      activeColor: context.theme.primaryColor,
+                                      value: 0,
+                                      groupValue: radioController.groupValue,
+                                      onChanged: radioController.changeRadio,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       )

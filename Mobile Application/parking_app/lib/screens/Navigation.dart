@@ -5,7 +5,6 @@ import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/screens/MapsPage.dart';
 import 'package:parking_app/widgets/CustomField.dart';
 import 'package:parking_app/widgets/ParkingInfoWidget.dart';
-import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class Navigation extends StatelessWidget {
   @override
@@ -34,6 +33,8 @@ class Navigation extends StatelessWidget {
         predictions: [179],
         parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
         parkingType: 'Basement Car Park',
+        lat: 1.01,
+        lng: 30,
       ),
       // CustomTextField(),
     ];

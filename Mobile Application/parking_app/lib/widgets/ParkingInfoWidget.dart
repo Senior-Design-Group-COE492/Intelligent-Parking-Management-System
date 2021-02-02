@@ -15,6 +15,8 @@ class ParkingInfo extends StatelessWidget {
   final String parkingName;
   final String parkingType;
   final List<int> predictions;
+  final double lat;
+  final double lng;
   final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
 
@@ -25,7 +27,9 @@ class ParkingInfo extends StatelessWidget {
       @required this.currentAvailable,
       @required this.predictions,
       @required this.parkingName,
-      @required this.parkingType})
+      @required this.parkingType,
+      @required this.lat,
+      @required this.lng})
       : super(key: key);
 
   @override
@@ -138,8 +142,10 @@ class ParkingInfo extends StatelessWidget {
             shape: MaterialStateProperty.all<OutlinedBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
             overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
-        // TODO: Implement the starting the navigation in Google Maps
-        onPressed: () {},
+        // TODO: Implement notifications to show the real-time availability
+        // after clicking the button
+        onPressed: () =>
+            MapsController.to.startNavigation(lat, lng, parkingName),
       ),
     );
 

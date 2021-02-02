@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PredictionsBarChart extends StatelessWidget {
   // TODO: finish styling of bar chart
   final List<double> predictions = [
-    for (var i = 0; i < 12; i++) Random().nextInt(3945).toDouble()
+    for (var i = 0; i < 12; i++) Random().nextInt(100).toDouble() + 100
   ];
   final List<DateTime> dateList = [
     DateTime(2020, 9, 7, 9, 0),
@@ -97,8 +97,14 @@ class PredictionsBarChart extends StatelessWidget {
           BarChartRodData rod,
           int rodIndex,
         ) {
+          final value = rod.y.round();
+          final selectedDate = dateList[groupIndex];
+          final hour = selectedDate.hour;
+          // adds a 0 to the left if it is a single digit number
+          final minute = selectedDate.minute.toString().padLeft(2, '0');
+          final barTouchString = '$hour:$minute - $value';
           return BarTooltipItem(
-            rod.y.round().toString(),
+            barTouchString,
             TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,
