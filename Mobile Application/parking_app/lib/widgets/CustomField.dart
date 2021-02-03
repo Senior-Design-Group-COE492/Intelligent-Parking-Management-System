@@ -3,36 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/globals/Globals.dart';
-
-class SliderController extends GetxController {
-  RxDouble sliderValue = 500.0.obs;
-  changeSlider(double value) => {
-        sliderValue.value = value,
-        update(),
-        print(sliderValue.value),
-      };
-}
-
-class RadioController extends GetxController {
-  int groupValue = 1;
-  RxInt radioValue = 0.obs;
-  changeRadio(dynamic newValue) {
-    radioValue.value = newValue;
-    groupValue = newValue;
-    update();
-    print(radioValue.value);
-  }
-}
+import 'package:parking_app/controller/TextFieldController.dart';
 
 class CustomTextField extends StatelessWidget {
   RxBool isExpanded = false.obs;
-  RxBool isSurface = false.obs;
-  RxBool isMechanised = false.obs;
-  RxBool isCovered = false.obs;
-  RxBool isBasement = false.obs;
-  RxBool isMultiStorey = false.obs;
-  RxBool isFree = false.obs;
-
   String sliderValueLabelMaker(double sliderValue) {
     if (sliderValue < 1000)
       return sliderValue.round().toString() + ' m';
@@ -42,11 +16,11 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SliderController sliderController = Get.put(SliderController());
-    final RadioController radioController = Get.put(RadioController());
+    final FieldController fieldController = Get.put(FieldController());
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
+    final double checkBoxPadding = Get.width * 0.0426;
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 36;
     final double originalHeight = 52;
@@ -119,6 +93,37 @@ class CustomTextField extends StatelessWidget {
       ),
     );
 
+    Widget _checkBox(myValue, toggleValue) {
+      return Container(
+        width: 50,
+        height: 50,
+        child: Checkbox(
+          value: myValue,
+          onChanged: (bool value) {
+            toggleValue.toggle();
+            print(toggleValue);
+          },
+          checkColor: Colors.white,
+          activeColor: context.theme.primaryColor,
+        ),
+      );
+    }
+
+    Widget _radioListTile(myWidth, grpValue, changeFun, val, text) {
+      return Container(
+        width: myWidth as double,
+        child: ListTile(
+          title: Text(text),
+          leading: Radio(
+            activeColor: context.theme.primaryColor,
+            value: val,
+            groupValue: grpValue,
+            onChanged: changeFun,
+          ),
+        ),
+      );
+    }
+
     return Align(
       alignment: Alignment.topCenter,
       child: Obx(
@@ -153,101 +158,56 @@ class CustomTextField extends StatelessWidget {
                           ),
                           Text('Distance (max.)'),
                           Slider(
-                            value: sliderController.sliderValue.value,
+                            value: fieldController.sliderValue.value,
                             min: 100,
                             max: 1500,
                             divisions: 14,
                             label: sliderValueLabelMaker(
-                                sliderController.sliderValue.value),
-                            onChanged: sliderController.changeSlider,
-                            inactiveColor: Color(0xFFFFBFA0),
+                                fieldController.sliderValue.value),
+                            onChanged: fieldController.changeSlider,
+                            inactiveColor: Colors.grey[300],
                             activeColor: context.theme.primaryColor,
                           ),
                           Text('Parking Type'),
                           Row(
                             children: [
-                              Checkbox(
-                                value: isSurface.value,
-                                checkColor: Colors.white,
-                                activeColor: context.theme.primaryColor,
-                                onChanged: (bool value) {
-                                  isSurface.toggle();
-                                },
-                              ),
+                              _checkBox(fieldController.isSurface.value,
+                                  fieldController.isSurface),
                               Text('Surface'),
-                              Padding(
-                                padding: EdgeInsets.only(left: 12),
-                              ),
-                              Checkbox(
-                                value: isMechanised.value,
-                                checkColor: Colors.white,
-                                activeColor: context.theme.primaryColor,
-                                onChanged: (bool value) {
-                                  isMechanised.toggle();
-                                },
-                              ),
+                              _checkBox(fieldController.isMechanised.value,
+                                  fieldController.isMechanised),
                               Text('Mechanised'),
-                              Checkbox(
-                                value: isCovered.value,
-                                activeColor: context.theme.primaryColor,
-                                checkColor: Colors.white,
-                                onChanged: (bool value) {
-                                  isCovered.toggle();
-                                },
-                              ),
+                              _checkBox(fieldController.isCovered.value,
+                                  fieldController.isCovered),
                               Text('Covered'),
                             ],
                           ),
                           Row(
                             children: [
-                              Checkbox(
-                                value: isBasement.value,
-                                checkColor: Colors.white,
-                                activeColor: context.theme.primaryColor,
-                                onChanged: (bool value) {
-                                  isBasement.toggle();
-                                },
-                              ),
+                              _checkBox(fieldController.isBasement.value,
+                                  fieldController.isBasement),
                               Text('Basement'),
-                              Checkbox(
-                                value: isMultiStorey.value,
-                                checkColor: Colors.white,
-                                activeColor: context.theme.primaryColor,
-                                onChanged: (bool value) {
-                                  isMultiStorey.toggle();
-                                },
-                              ),
+                              _checkBox(fieldController.isMultiStorey.value,
+                                  fieldController.isMultiStorey),
                               Text('Multi-Storey'),
                             ],
                           ),
                           Text('Free only'),
-                          GetBuilder<RadioController>(
+                          GetBuilder<FieldController>(
                             builder: (_) => Row(
                               children: [
-                                SizedBox(
-                                  width: 125,
-                                  child: ListTile(
-                                    title: Text('Yes'),
-                                    leading: Radio(
-                                      value: 1,
-                                      groupValue: radioController.groupValue,
-                                      onChanged: radioController.changeRadio,
-                                      activeColor: context.theme.primaryColor,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                  child: ListTile(
-                                    title: Text('No'),
-                                    leading: Radio(
-                                      activeColor: context.theme.primaryColor,
-                                      value: 0,
-                                      groupValue: radioController.groupValue,
-                                      onChanged: radioController.changeRadio,
-                                    ),
-                                  ),
-                                ),
+                                _radioListTile(
+                                    125.0,
+                                    fieldController.groupValue,
+                                    fieldController.changeRadio,
+                                    1,
+                                    'Yes'),
+                                _radioListTile(
+                                    120.0,
+                                    fieldController.groupValue,
+                                    fieldController.changeRadio,
+                                    0,
+                                    'No'),
                               ],
                             ),
                           ),
