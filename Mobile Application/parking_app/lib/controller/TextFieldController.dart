@@ -5,7 +5,6 @@ class FieldController extends GetxController {
   changeSlider(double value) => {
         sliderValue.value = value,
         update(),
-        print(sliderValue.value),
       };
 
   int groupValue = 1;
@@ -14,7 +13,6 @@ class FieldController extends GetxController {
     radioValue.value = newValue;
     groupValue = newValue;
     update();
-    print(radioValue.value);
   }
 
   RxBool isSurface = false.obs;

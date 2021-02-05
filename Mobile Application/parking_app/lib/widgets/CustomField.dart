@@ -21,7 +21,7 @@ class CustomTextField extends StatelessWidget {
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
     final double checkBoxRowWidth = Get.width * 0.274;
-    double checkBoxLabelFontSize = 12;
+    double checkBoxLabelFontSize = 14;
     if (Get.width < 330) {
       // prevent overflowing on smaller screen when phone width is too small
       checkBoxLabelFontSize = 10;
@@ -110,7 +110,6 @@ class CustomTextField extends StatelessWidget {
                 value: myValue,
                 onChanged: (bool value) {
                   toggleValue.toggle();
-                  print(toggleValue);
                 },
                 checkColor: Colors.white,
                 activeColor: context.theme.primaryColor,
@@ -123,18 +122,18 @@ class CustomTextField extends StatelessWidget {
     }
 
     Widget _radioListTile(myWidth, grpValue, changeFun, val, text) {
-      return Container(
-        width: myWidth as double,
-        child: ListTile(
-          title: Text(text),
-          leading: Radio(
-            activeColor: context.theme.primaryColor,
-            value: val,
-            groupValue: grpValue,
-            onChanged: changeFun,
-          ),
+      return Row(children: [
+        Radio(
+          activeColor: context.theme.primaryColor,
+          value: val,
+          groupValue: grpValue,
+          onChanged: changeFun,
         ),
-      );
+        Text(
+          text,
+          style: TextStyle(fontSize: 14),
+        ),
+      ]);
     }
 
     return Align(
@@ -182,6 +181,9 @@ class CustomTextField extends StatelessWidget {
                             activeColor: context.theme.primaryColor,
                           ),
                           Text('Parking Type'),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
+                          ),
                           Row(
                             children: [
                               _checkBox(fieldController.isSurface.value,
@@ -192,6 +194,9 @@ class CustomTextField extends StatelessWidget {
                                   fieldController.isCovered, 'Covered'),
                             ],
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
+                          ),
                           Row(
                             children: [
                               _checkBox(fieldController.isBasement.value,
@@ -201,6 +206,9 @@ class CustomTextField extends StatelessWidget {
                                   fieldController.isMultiStorey,
                                   'Multi-Storey'),
                             ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
                           ),
                           Text('Free only'),
                           GetBuilder<FieldController>(
