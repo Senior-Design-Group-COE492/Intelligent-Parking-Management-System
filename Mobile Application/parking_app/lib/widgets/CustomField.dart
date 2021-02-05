@@ -20,9 +20,14 @@ class CustomTextField extends StatelessWidget {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double checkBoxPadding = Get.width * 0.0426;
+    final double checkBoxRowWidth = Get.width * 0.274;
+    double checkBoxLabelFontSize = 12;
+    if (Get.width < 330) {
+      // prevent overflowing on smaller screen when phone width is too small
+      checkBoxLabelFontSize = 10;
+    }
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
-    final double marginWithStatusBar = statusBarHeight + 36;
+    final double marginWithStatusBar = statusBarHeight + 16;
     final double originalHeight = 52;
     final double expandedHeight = 320;
     final TextEditingController _controller = new TextEditingController();
@@ -93,18 +98,26 @@ class CustomTextField extends StatelessWidget {
       ),
     );
 
-    Widget _checkBox(myValue, toggleValue) {
+    Widget _checkBox(myValue, toggleValue, text) {
       return Container(
-        width: 50,
-        height: 50,
-        child: Checkbox(
-          value: myValue,
-          onChanged: (bool value) {
-            toggleValue.toggle();
-            print(toggleValue);
-          },
-          checkColor: Colors.white,
-          activeColor: context.theme.primaryColor,
+        width: checkBoxRowWidth,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 30,
+              height: 30,
+              child: Checkbox(
+                value: myValue,
+                onChanged: (bool value) {
+                  toggleValue.toggle();
+                  print(toggleValue);
+                },
+                checkColor: Colors.white,
+                activeColor: context.theme.primaryColor,
+              ),
+            ),
+            Text(text, style: TextStyle(fontSize: checkBoxLabelFontSize)),
+          ],
         ),
       );
     }
@@ -172,24 +185,21 @@ class CustomTextField extends StatelessWidget {
                           Row(
                             children: [
                               _checkBox(fieldController.isSurface.value,
-                                  fieldController.isSurface),
-                              Text('Surface'),
+                                  fieldController.isSurface, 'Surface'),
                               _checkBox(fieldController.isMechanised.value,
-                                  fieldController.isMechanised),
-                              Text('Mechanised'),
+                                  fieldController.isMechanised, 'Mechanised'),
                               _checkBox(fieldController.isCovered.value,
-                                  fieldController.isCovered),
-                              Text('Covered'),
+                                  fieldController.isCovered, 'Covered'),
                             ],
                           ),
                           Row(
                             children: [
                               _checkBox(fieldController.isBasement.value,
-                                  fieldController.isBasement),
-                              Text('Basement'),
-                              _checkBox(fieldController.isMultiStorey.value,
-                                  fieldController.isMultiStorey),
-                              Text('Multi-Storey'),
+                                  fieldController.isBasement, 'Basement'),
+                              _checkBox(
+                                  fieldController.isMultiStorey.value,
+                                  fieldController.isMultiStorey,
+                                  'Multi-Storey'),
                             ],
                           ),
                           Text('Free only'),

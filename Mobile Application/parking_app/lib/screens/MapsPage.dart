@@ -32,6 +32,12 @@ class MapsPage extends StatelessWidget {
                 predictions: [179],
                 parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
                 parkingType: 'Basement Car Park',
+                gantryHeight: 4.5,
+                freeParking:
+                    'All day on Sunday and public holidays, and Friday between 7AM - 10:30PM',
+                shortTermParking: 'Available for the whole day',
+                nightParking: 'Yes',
+                parkingSystem: 'Electronic',
                 lat: 1.01,
                 lng: 30,
               )

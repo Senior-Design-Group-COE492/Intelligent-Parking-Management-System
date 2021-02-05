@@ -14,6 +14,11 @@ class ParkingInfo extends StatelessWidget {
   final int currentAvailable;
   final String parkingName;
   final String parkingType;
+  final double gantryHeight;
+  final String freeParking;
+  final String shortTermParking;
+  final String nightParking;
+  final String parkingSystem;
   final List<int> predictions;
   final double lat;
   final double lng;
@@ -29,29 +34,33 @@ class ParkingInfo extends StatelessWidget {
       @required this.parkingName,
       @required this.parkingType,
       @required this.lat,
-      @required this.lng})
+      @required this.lng,
+      @required this.gantryHeight,
+      @required this.freeParking,
+      @required this.shortTermParking,
+      @required this.nightParking,
+      @required this.parkingSystem})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double unexpandedHeight = 292;
-    final double buttonHeight = 52;
+    final double buttonHeight = 45;
+    final double unexpandedHeight = 292 + buttonHeight + 12;
     final double headerTextWidth =
         Get.width * 0.717; // 269/375 = 0.915 (from design)
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     // calculates extra margin with status bar height
-    final double marginWithStatusBar = statusBarHeight + 36;
+    final double marginWithStatusBar = statusBarHeight + 16;
     // subtracts the top margin and navigation bar height and a bit extra so
     // that the expanded widget doesn't go below the navigation bar
-    final double maxExpandedHeight = Get.height - marginWithStatusBar - 70 - 36;
-    final double minimumHeightRequired =
-        unexpandedHeight + 150 + buttonHeight + 50;
+    final double maxExpandedHeight = Get.height - marginWithStatusBar - 70 - 16;
+    final double minimumHeightRequired = unexpandedHeight + 150 + 35;
     // sets the height of the widget to what is required if the screen
     // is big enough, else it'll set it to the maximum possible height and make
     // the widget scrollable
-    final double expandedHeight = min(minimumHeightRequired, maxExpandedHeight);
+    final double expandedHeight = maxExpandedHeight;
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double navigationButtonWidth = Get.width * 0.66; // 247/375 = 0.66
 
@@ -61,6 +70,8 @@ class ParkingInfo extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         fontSize: 12,
         fontWeight: FontWeight.bold);
+    final topPadding16 = Padding(padding: EdgeInsets.only(top: 16));
+    final topPadding12 = Padding(padding: EdgeInsets.only(top: 12));
 
     final Container header = Container(
       child: Row(
@@ -106,20 +117,28 @@ class ParkingInfo extends StatelessWidget {
     final currentRouteTimeWidget =
         Text(routeTimeFromCurrent, style: smallFontWithColor);
 
-    final currentAvailableWidget = Text(
-      currentAvailable.toString() + ' spaces',
-      style: smallFontWithColor,
-    );
+    final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
+        style: smallFontWithColor);
 
-    final predictedAvailableWidget = Text(
-      predictions[0].toString() + ' spaces',
-      style: smallFontWithColor,
-    );
+    final predictedAvailableWidget =
+        Text(predictions[0].toString() + ' spaces', style: smallFontWithColor);
+
+    final gantryHeightWidget =
+        Text(gantryHeight.toStringAsFixed(1) + ' m', style: smallFontWithColor);
+
+    final freeParkingWidget = Text(freeParking, style: smallFontWithColor);
+
+    final shortTermParkingWidget =
+        Text(shortTermParking, style: smallFontWithColor);
+
+    final nightParkingWidget = Text(nightParking, style: smallFontWithColor);
+
+    final parkingSystemWidget = Text(parkingSystem, style: smallFontWithColor);
 
     final footerWidget = Container(
       alignment: Alignment.center,
       child: Text(
-        'Click for more detailed information and for route',
+        'Click anywhere for more detailed information',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
       ),
     );
@@ -175,14 +194,33 @@ class ParkingInfo extends StatelessWidget {
     );
 
     final expandedWidget = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Predicted availability (may not be accurate)',
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
-        Padding(padding: EdgeInsets.only(top: 12)),
+        Container(
+          alignment: Alignment.center,
+          child: Text('Predicted availability (may not be accurate)',
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
+        ),
+        topPadding12,
         PredictionsBarChart(),
-        Padding(padding: EdgeInsets.only(top: 25)),
+        Padding(padding: EdgeInsets.only(top: 8)),
+        Text('Gantry height', style: smallFontLight),
+        gantryHeightWidget,
+        topPadding16,
+        Text('Free parking', style: smallFontLight),
+        freeParkingWidget,
+        topPadding16,
+        Text('Short term parking', style: smallFontLight),
+        shortTermParkingWidget,
+        topPadding16,
+        Text('Night parking', style: smallFontLight),
+        nightParkingWidget,
+        topPadding16,
+        Text('Parking system type', style: smallFontLight),
+        parkingSystemWidget,
+        topPadding16,
         buttonsRow,
-        Padding(padding: EdgeInsets.only(top: 16)),
+        topPadding16,
       ],
     );
 
@@ -214,23 +252,24 @@ class ParkingInfo extends StatelessWidget {
                 children: [
                   header,
                   parkingTypeWidget,
-                  Padding(padding: EdgeInsets.only(top: 16)),
+                  topPadding16,
                   Text('Distance from current location', style: smallFontLight),
                   distanceFromCurrentWidget,
-                  Padding(padding: EdgeInsets.only(top: 16)),
+                  topPadding16,
                   Text('Route time from current location',
                       style: smallFontLight),
                   currentRouteTimeWidget,
-                  Padding(padding: EdgeInsets.only(top: 16)),
+                  topPadding16,
                   Text('Currently available parking spaces',
                       style: smallFontLight),
                   currentAvailableWidget,
-                  Padding(padding: EdgeInsets.only(top: 16)),
+                  topPadding16,
                   Text('Predicted available parking spaces in 30 minutes',
                       style: smallFontLight),
                   predictedAvailableWidget,
-                  Padding(padding: EdgeInsets.only(top: 16)),
-                  // TODO: replace Text with a column for expansion
+                  topPadding12,
+                  (isExpanded.value ? Container() : buttonsRow),
+                  Padding(padding: EdgeInsets.only(top: 4)),
                   (isExpanded.value ? expandedWidget : footerWidget),
                 ],
               ),

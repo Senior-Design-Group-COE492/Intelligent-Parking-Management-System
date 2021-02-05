@@ -77,7 +77,7 @@ class PredictionsBarChart extends StatelessWidget {
               // adds a 0 to the left if it is a single digit number
               final minute = date.minute.toString().padLeft(2, '0');
               // only every 4th title is shown in the bottom title
-              final barBottomTitle = (index % 5 == 1) ? '$hour:$minute' : '';
+              final barBottomTitle = (index % 3 == 1) ? '$hour:$minute' : '';
               return barBottomTitle;
             }));
 
