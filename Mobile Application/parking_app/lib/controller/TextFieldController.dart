@@ -1,9 +1,15 @@
 import 'package:get/get.dart';
 
 class FieldController extends GetxController {
-  RxDouble sliderValue = 500.0.obs;
-  changeSlider(double value) => {
-        sliderValue.value = value,
+  RxDouble distanceSliderValue = 500.0.obs;
+  distanceChangeSlider(double value) => {
+        distanceSliderValue.value = value,
+        update(),
+      };
+
+  RxDouble timeSliderValue = 15.0.obs;
+  timeChangeSlider(double value) => {
+        timeSliderValue.value = value,
         update(),
       };
 

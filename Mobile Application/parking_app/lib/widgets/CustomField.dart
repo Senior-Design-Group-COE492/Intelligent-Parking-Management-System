@@ -7,11 +7,21 @@ import 'package:parking_app/controller/TextFieldController.dart';
 
 class CustomTextField extends StatelessWidget {
   RxBool isExpanded = false.obs;
-  String sliderValueLabelMaker(double sliderValue) {
+  String distanceSliderValueLabelMaker(double sliderValue) {
     if (sliderValue < 1000)
       return sliderValue.round().toString() + ' m';
     else
       return (sliderValue / 1000).toStringAsFixed(1) + ' km';
+  }
+
+  String timeSliderValueLabelMaker(double sliderValue) {
+    if (sliderValue < 60)
+      return sliderValue.toStringAsFixed(0).toString() + ' min';
+    else if (sliderValue >= 60 && sliderValue < 120) {
+      return '1:' + (sliderValue % 60).toStringAsFixed(0).toString() + ' hrs';
+    } else {
+      return '2:00 hrs';
+    }
   }
 
   @override
@@ -168,15 +178,27 @@ class CustomTextField extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(top: 16),
                           ),
+                          Text('Time Till Arrival'),
+                          Slider(
+                            value: fieldController.timeSliderValue.value,
+                            min: 15.0,
+                            max: 120.0,
+                            divisions: 7,
+                            label: timeSliderValueLabelMaker(
+                                fieldController.timeSliderValue.value),
+                            onChanged: fieldController.timeChangeSlider,
+                            inactiveColor: Colors.grey[300],
+                            activeColor: context.theme.primaryColor,
+                          ),
                           Text('Distance (max.)'),
                           Slider(
-                            value: fieldController.sliderValue.value,
+                            value: fieldController.distanceSliderValue.value,
                             min: 100,
                             max: 1500,
                             divisions: 14,
-                            label: sliderValueLabelMaker(
-                                fieldController.sliderValue.value),
-                            onChanged: fieldController.changeSlider,
+                            label: distanceSliderValueLabelMaker(
+                                fieldController.distanceSliderValue.value),
+                            onChanged: fieldController.distanceChangeSlider,
                             inactiveColor: Colors.grey[300],
                             activeColor: context.theme.primaryColor,
                           ),
