@@ -39,7 +39,7 @@ class CustomTextField extends StatelessWidget {
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 16;
     final double originalHeight = 52;
-    final double expandedHeight = 320;
+    final double expandedHeight = 385;
     final TextEditingController _controller = new TextEditingController();
     final String assetName = 'assets/icons/filtersIcon.svg';
 

@@ -55,12 +55,7 @@ class ParkingInfo extends StatelessWidget {
     final double marginWithStatusBar = statusBarHeight + 16;
     // subtracts the top margin and navigation bar height and a bit extra so
     // that the expanded widget doesn't go below the navigation bar
-    final double maxExpandedHeight = Get.height - marginWithStatusBar - 70 - 16;
-    final double minimumHeightRequired = unexpandedHeight + 150 + 35;
-    // sets the height of the widget to what is required if the screen
-    // is big enough, else it'll set it to the maximum possible height and make
-    // the widget scrollable
-    final double expandedHeight = maxExpandedHeight;
+    final double expandedHeight = Get.height - marginWithStatusBar - 70 - 16;
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double navigationButtonWidth = Get.width * 0.66; // 247/375 = 0.66
 
