@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
-import 'package:parking_app/screens/Navigation.dart';
 
 class EmailLoginWidget extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -15,6 +14,7 @@ class EmailLoginWidget extends StatelessWidget {
   @override
   Widget build(context) {
     final _orangeColor = context.theme.primaryColor;
+    final _lightOrangeColor = Color(0xFFFFBFA0);
     final _lightBlueColor = context.theme.accentColor;
     final _fieldBorder = OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -109,15 +109,15 @@ class EmailLoginWidget extends StatelessWidget {
                   () => FlatButton(
                     onPressed: _isLoading.value
                         ? null
-                        : () {
+                        : () async {
                             // Validate will return true if the form is valid, or false if
                             // the form is invalid.
                             if (_formKey.currentState.validate()) {
                               _isLoading.toggle();
-                              if (LoginHandler.signIn(
+                              if (await LoginHandler.signIn(
                                       _email.value, _password.value) !=
                                   false) {
-                                Get.offAll(Navigation());
+                                Get.back();
                               } else {
                                 print('Error Loggin in.');
                                 _isLoading.toggle();
@@ -125,6 +125,7 @@ class EmailLoginWidget extends StatelessWidget {
                             }
                           },
                     color: _orangeColor,
+                    disabledColor: _lightOrangeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

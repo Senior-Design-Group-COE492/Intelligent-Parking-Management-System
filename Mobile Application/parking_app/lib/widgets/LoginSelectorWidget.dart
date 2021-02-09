@@ -42,7 +42,7 @@ class LoginSelectorWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
-              Padding(padding: EdgeInsets.only(bottom: 64)),
+              Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
               Container(
                 height: buttonHeight,
                 child: RaisedButton(
@@ -68,7 +68,7 @@ class LoginSelectorWidget extends StatelessWidget {
                   shape: buttonShape,
                 ),
               ),
-              Padding(padding: EdgeInsets.only(bottom: 48)),
+              Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
               TextButton(
                 onPressed: () {},
                 child: Text(
