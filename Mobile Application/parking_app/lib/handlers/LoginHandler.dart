@@ -1,25 +1,20 @@
-import 'package:dio/dio.dart';
-import 'package:parking_app/globals/Globals.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:parking_app/controller/LoginController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginHandler {
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  final String email, password;
-
-  LoginHandler(this.email, this.password);
-
+  static FirebaseAuth auth = FirebaseAuth.instance;
   static Future<void> logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
 
-  Future<bool> signIn() async {
+  static Future<bool> signIn(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: this.email, password: this.password);
+          .signInWithEmailAndPassword(email: email, password: password);
+      LoginController.to.setIsSignedIn(true);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -29,5 +24,39 @@ class LoginHandler {
       }
     }
     return false;
+  }
+
+  static Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    try {
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      // Once signed in, return the UserCredential
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      LoginController.to.setIsSignedIn(true);
+      return userCredential;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  static bool isSignedIn() {
+    return (auth.currentUser != null);
+  }
+
+  static Future<void> signOut() async {
+    await auth.signOut();
+    LoginController.to.setIsSignedIn(false);
   }
 }

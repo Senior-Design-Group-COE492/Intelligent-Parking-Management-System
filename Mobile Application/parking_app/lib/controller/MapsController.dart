@@ -25,8 +25,10 @@ class MapsController extends GetxController {
   }
 
   void setGoogleMapController(GoogleMapController newController) {
-    controller.complete(newController);
-    update();
+    if (!controller.isCompleted) {
+      controller.complete(newController);
+      update();
+    }
   }
 
   void addMarkerToMap(Marker marker) async {
