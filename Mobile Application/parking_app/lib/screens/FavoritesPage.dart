@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/LoginController.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
+import 'package:parking_app/widgets/FavoritedParkingInfoWidget.dart';
 import 'package:parking_app/widgets/LoginSelectorWidget.dart';
 
 class Favorites extends StatelessWidget {
@@ -22,7 +23,15 @@ class Favorites extends StatelessWidget {
                 onPressed: () {
                   LoginHandler.signOut();
                 })
-            : LoginSelectorWidget(),
+            : FavoritedParkingInfo(
+                parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
+                parkingType: 'Basement Car Park',
+                currentAvailable: '245',
+                carParkID: 'HE45',
+                lat: 1,
+                lng: 30,
+                predictions: [235],
+              ),
       ),
     );
   }

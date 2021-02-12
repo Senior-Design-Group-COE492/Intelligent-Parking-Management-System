@@ -6,7 +6,7 @@ import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
 
 class CustomTextField extends StatelessWidget {
-  RxBool isExpanded = false.obs;
+  final RxBool isExpanded = false.obs;
   String distanceSliderValueLabelMaker(double sliderValue) {
     if (sliderValue < 1000)
       return sliderValue.round().toString() + ' m';
@@ -18,7 +18,9 @@ class CustomTextField extends StatelessWidget {
     if (sliderValue < 60)
       return sliderValue.toStringAsFixed(0).toString() + ' min';
     else if (sliderValue >= 60 && sliderValue < 120) {
-      return '1:' + (sliderValue % 60).toStringAsFixed(0).toString() + ' hrs';
+      return '1:' +
+          (sliderValue % 60).toStringAsFixed(0).toString().padLeft(2, '0') +
+          ' hrs';
     } else {
       return '2:00 hrs';
     }
@@ -32,10 +34,9 @@ class CustomTextField extends StatelessWidget {
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
     final double checkBoxRowWidth = Get.width * 0.274;
     double checkBoxLabelFontSize = 14;
-    if (Get.width < 330) {
-      // prevent overflowing on smaller screen when phone width is too small
-      checkBoxLabelFontSize = 10;
-    }
+    if (Get.width < 375) checkBoxLabelFontSize = 13;
+    if (Get.width < 330) checkBoxLabelFontSize = 10;
+
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 16;
     final double originalHeight = 52;
@@ -43,6 +44,14 @@ class CustomTextField extends StatelessWidget {
     final TextEditingController _controller = new TextEditingController();
     final String assetName = 'assets/icons/filtersIcon.svg';
 
+    final sliderThemeData = SliderThemeData(
+      thumbColor: context.theme.primaryColor,
+      inactiveTrackColor: Colors.grey[300],
+      inactiveTickMarkColor: Colors.grey,
+      activeTrackColor: context.theme.primaryColor,
+      activeTickMarkColor: context.theme.primaryColor,
+      overlayColor: Colors.black12,
+    );
     final Widget filtersIcon = SvgPicture.asset(
       assetName,
       semanticsLabel: 'filters Icon',
@@ -179,28 +188,30 @@ class CustomTextField extends StatelessWidget {
                             padding: EdgeInsets.only(top: 16),
                           ),
                           Text('Time Till Arrival'),
-                          Slider(
-                            value: fieldController.timeSliderValue.value,
-                            min: 15.0,
-                            max: 120.0,
-                            divisions: 7,
-                            label: timeSliderValueLabelMaker(
-                                fieldController.timeSliderValue.value),
-                            onChanged: fieldController.timeChangeSlider,
-                            inactiveColor: Colors.grey[300],
-                            activeColor: context.theme.primaryColor,
+                          SliderTheme(
+                            data: sliderThemeData,
+                            child: Slider(
+                              value: fieldController.timeSliderValue.value,
+                              min: 15.0,
+                              max: 120.0,
+                              divisions: 7,
+                              label: timeSliderValueLabelMaker(
+                                  fieldController.timeSliderValue.value),
+                              onChanged: fieldController.timeChangeSlider,
+                            ),
                           ),
                           Text('Distance (max.)'),
-                          Slider(
-                            value: fieldController.distanceSliderValue.value,
-                            min: 100,
-                            max: 1500,
-                            divisions: 14,
-                            label: distanceSliderValueLabelMaker(
-                                fieldController.distanceSliderValue.value),
-                            onChanged: fieldController.distanceChangeSlider,
-                            inactiveColor: Colors.grey[300],
-                            activeColor: context.theme.primaryColor,
+                          SliderTheme(
+                            data: sliderThemeData,
+                            child: Slider(
+                              value: fieldController.distanceSliderValue.value,
+                              min: 100,
+                              max: 1500,
+                              divisions: 14,
+                              label: distanceSliderValueLabelMaker(
+                                  fieldController.distanceSliderValue.value),
+                              onChanged: fieldController.distanceChangeSlider,
+                            ),
                           ),
                           Text('Parking Type'),
                           Padding(
