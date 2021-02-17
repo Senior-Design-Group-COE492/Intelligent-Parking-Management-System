@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/screens/LoginPage.dart';
+import 'package:parking_app/screens/RegisterPage.dart';
 
 class LoginSelectorWidget extends StatelessWidget {
   @override
@@ -70,7 +71,7 @@ class LoginSelectorWidget extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
               TextButton(
-                onPressed: () {},
+                onPressed: () => {Get.to(RegisterPage())},
                 child: Text(
                   "Don't have an account? Click here to sign up!",
                   style: TextStyle(
