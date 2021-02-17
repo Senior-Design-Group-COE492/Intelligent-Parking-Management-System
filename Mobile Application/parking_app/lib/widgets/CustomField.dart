@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
     final double checkBoxRowWidth = Get.width * 0.274;
     double checkBoxLabelFontSize = 14;
-    if (Get.width < 375) checkBoxLabelFontSize = 13;
+    if (Get.width < 385) checkBoxLabelFontSize = 13;
     if (Get.width < 330) checkBoxLabelFontSize = 10;
 
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043

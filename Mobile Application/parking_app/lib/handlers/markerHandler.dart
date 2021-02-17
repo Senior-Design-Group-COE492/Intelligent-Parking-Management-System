@@ -47,6 +47,7 @@ class MarkerHandler {
     double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
     double height = 47 * devicePixelRatio;
+    final Set markerSet = Set<Marker>();
 
     for (var i = 0; i < parkingLots.length; i++) {
       final String iString = i.toString();
@@ -68,7 +69,10 @@ class MarkerHandler {
       };
       final newMarker = await _makeMarker(width, height,
           nAvailableParkingSpaces, latLng, iString, handleMarkerTap);
-      MapsController.to.addMarkerToMap(newMarker);
+      markerSet.add(newMarker);
+      // for performance, state is only updated after all the markers are added
+      if (i == parkingLots.length - 1)
+        MapsController.to.setMarkerSet(markerSet);
     }
   }
 }

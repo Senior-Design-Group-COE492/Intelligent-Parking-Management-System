@@ -31,8 +31,13 @@ class MapsController extends GetxController {
     }
   }
 
-  void addMarkerToMap(Marker marker) async {
+  void addMarkerToMap(Marker marker) {
     markerSet.add(marker);
+    update();
+  }
+
+  void setMarkerSet(Set<Marker> newMarkerSet) {
+    markerSet = newMarkerSet;
     update();
   }
 
