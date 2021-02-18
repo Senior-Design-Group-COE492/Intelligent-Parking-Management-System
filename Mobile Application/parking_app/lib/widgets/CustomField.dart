@@ -4,38 +4,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
+import 'package:parking_app/widgets/FiltersWidget.dart';
 
 class CustomTextField extends StatelessWidget {
   final RxBool isExpanded = false.obs;
-  String distanceSliderValueLabelMaker(double sliderValue) {
-    if (sliderValue < 1000)
-      return sliderValue.round().toString() + ' m';
-    else
-      return (sliderValue / 1000).toStringAsFixed(1) + ' km';
-  }
-
-  String timeSliderValueLabelMaker(double sliderValue) {
-    if (sliderValue < 60)
-      return sliderValue.toStringAsFixed(0).toString() + ' min';
-    else if (sliderValue >= 60 && sliderValue < 120) {
-      return '1:' +
-          (sliderValue % 60).toStringAsFixed(0).toString().padLeft(2, '0') +
-          ' hrs';
-    } else {
-      return '2:00 hrs';
-    }
-  }
+  final FieldController fieldController = Get.put(FieldController());
 
   @override
   Widget build(BuildContext context) {
-    final FieldController fieldController = Get.put(FieldController());
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double checkBoxRowWidth = Get.width * 0.274;
-    double checkBoxLabelFontSize = 14;
-    if (Get.width < 385) checkBoxLabelFontSize = 13;
-    if (Get.width < 330) checkBoxLabelFontSize = 10;
 
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double marginWithStatusBar = statusBarHeight + 16;
@@ -44,14 +23,6 @@ class CustomTextField extends StatelessWidget {
     final TextEditingController _controller = new TextEditingController();
     final String assetName = 'assets/icons/filtersIcon.svg';
 
-    final sliderThemeData = SliderThemeData(
-      thumbColor: context.theme.primaryColor,
-      inactiveTrackColor: Colors.grey[300],
-      inactiveTickMarkColor: Colors.grey,
-      activeTrackColor: context.theme.primaryColor,
-      activeTickMarkColor: context.theme.primaryColor,
-      overlayColor: Colors.black12,
-    );
     final Widget filtersIcon = SvgPicture.asset(
       assetName,
       semanticsLabel: 'filters Icon',
@@ -117,44 +88,6 @@ class CustomTextField extends StatelessWidget {
       ),
     );
 
-    Widget _checkBox(myValue, toggleValue, text) {
-      return Container(
-        width: checkBoxRowWidth,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 30,
-              height: 30,
-              child: Checkbox(
-                value: myValue,
-                onChanged: (bool value) {
-                  toggleValue.toggle();
-                },
-                checkColor: Colors.white,
-                activeColor: context.theme.primaryColor,
-              ),
-            ),
-            Text(text, style: TextStyle(fontSize: checkBoxLabelFontSize)),
-          ],
-        ),
-      );
-    }
-
-    Widget _radioListTile(myWidth, grpValue, changeFun, val, text) {
-      return Row(children: [
-        Radio(
-          activeColor: context.theme.primaryColor,
-          value: val,
-          groupValue: grpValue,
-          onChanged: changeFun,
-        ),
-        Text(
-          text,
-          style: TextStyle(fontSize: 14),
-        ),
-      ]);
-    }
-
     return Align(
       alignment: Alignment.topCenter,
       child: Obx(
@@ -180,91 +113,7 @@ class CustomTextField extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
-                isExpanded.value
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                          ),
-                          Text('Time Till Arrival'),
-                          SliderTheme(
-                            data: sliderThemeData,
-                            child: Slider(
-                              value: fieldController.timeSliderValue.value,
-                              min: 15.0,
-                              max: 120.0,
-                              divisions: 7,
-                              label: timeSliderValueLabelMaker(
-                                  fieldController.timeSliderValue.value),
-                              onChanged: fieldController.timeChangeSlider,
-                            ),
-                          ),
-                          Text('Distance (max.)'),
-                          SliderTheme(
-                            data: sliderThemeData,
-                            child: Slider(
-                              value: fieldController.distanceSliderValue.value,
-                              min: 100,
-                              max: 1500,
-                              divisions: 14,
-                              label: distanceSliderValueLabelMaker(
-                                  fieldController.distanceSliderValue.value),
-                              onChanged: fieldController.distanceChangeSlider,
-                            ),
-                          ),
-                          Text('Parking Type'),
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                          ),
-                          Row(
-                            children: [
-                              _checkBox(fieldController.isSurface.value,
-                                  fieldController.isSurface, 'Surface'),
-                              _checkBox(fieldController.isMechanised.value,
-                                  fieldController.isMechanised, 'Mechanised'),
-                              _checkBox(fieldController.isCovered.value,
-                                  fieldController.isCovered, 'Covered'),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                          ),
-                          Row(
-                            children: [
-                              _checkBox(fieldController.isBasement.value,
-                                  fieldController.isBasement, 'Basement'),
-                              _checkBox(
-                                  fieldController.isMultiStorey.value,
-                                  fieldController.isMultiStorey,
-                                  'Multi-Storey'),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                          ),
-                          Text('Free only'),
-                          GetBuilder<FieldController>(
-                            builder: (_) => Row(
-                              children: [
-                                _radioListTile(
-                                    125.0,
-                                    fieldController.groupValue,
-                                    fieldController.changeRadio,
-                                    1,
-                                    'Yes'),
-                                _radioListTile(
-                                    120.0,
-                                    fieldController.groupValue,
-                                    fieldController.changeRadio,
-                                    0,
-                                    'No'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container()
+                isExpanded.value ? FiltersWidget() : Container()
               ],
             ),
           ),

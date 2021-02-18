@@ -6,7 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
-import 'package:parking_app/handlers/markerHandler.dart';
+import 'package:parking_app/handlers/MarkerHandler.dart';
+import 'package:parking_app/handlers/SearchHandler.dart';
 
 class Maps extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   _MapsState() {
     _initializeMarkers();
     _initializeGeolocator();
+    SearchHandler.searchPlace('market');
   }
 
   @override
