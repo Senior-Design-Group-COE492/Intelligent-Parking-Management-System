@@ -26,7 +26,6 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   _MapsState() {
     _initializeMarkers();
     _initializeGeolocator();
-    SearchHandler.searchPlace('market');
   }
 
   @override

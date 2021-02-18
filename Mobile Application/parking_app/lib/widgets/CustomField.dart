@@ -4,11 +4,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
+import 'package:parking_app/handlers/SearchHandler.dart';
 import 'package:parking_app/widgets/FiltersWidget.dart';
+import 'package:parking_app/widgets/SearchResultsWidget.dart';
 
 class CustomTextField extends StatelessWidget {
   final RxBool isExpanded = false.obs;
   final FieldController fieldController = Get.put(FieldController());
+  final RxString destination = ''.obs;
+  final RxBool isSearching = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,11 @@ class CustomTextField extends StatelessWidget {
       thickness: 1,
     );
 
+    final expandedWidget = Obx(() => isSearching.value
+        ? SearchWidget(
+            placesFuture: SearchHandler.searchPlace(destination.value, 'SG'))
+        : FiltersWidget());
+
     final Widget header = Container(
       height: originalHeight,
       child: Row(
@@ -52,6 +61,11 @@ class CustomTextField extends StatelessWidget {
           Flexible(
             child: TextField(
               controller: _controller,
+              onSubmitted: (newDestination) {
+                destination.value = newDestination;
+                isSearching.value = true;
+                if (!isExpanded.value) isExpanded.toggle();
+              },
               decoration: InputDecoration(
                 hintText: 'Enter Destination',
                 hintStyle: TextStyle(
@@ -81,7 +95,13 @@ class CustomTextField extends StatelessWidget {
               child: filtersIcon,
               backgroundColor: Colors.transparent,
               // TODO: implement onPressed
-              onPressed: () => isExpanded.toggle(),
+              onPressed: () {
+                // only re-rending widget once instead of twice
+                if (isSearching.value)
+                  isSearching.value = false;
+                else
+                  isExpanded.toggle();
+              },
             ),
           ),
         ],
@@ -109,11 +129,12 @@ class CustomTextField extends StatelessWidget {
           height: isExpanded.value ? expandedHeight : originalHeight,
           duration: Globals.EXPAND_ANIMATION_DURATION,
           child: SingleChildScrollView(
+            physics: ScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
-                isExpanded.value ? FiltersWidget() : Container()
+                isExpanded.value ? (expandedWidget) : Container()
               ],
             ),
           ),
