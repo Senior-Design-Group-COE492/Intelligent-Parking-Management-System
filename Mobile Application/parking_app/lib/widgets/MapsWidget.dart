@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
-import 'package:parking_app/handlers/SearchHandler.dart';
 
 class Maps extends StatefulWidget {
   @override

@@ -32,6 +32,8 @@ class MapsController extends GetxController {
   }
 
   void addMarkerToMap(Marker marker) {
+    // removes the previous marker if their is one with the same ID
+    markerSet.remove(marker);
     markerSet.add(marker);
     update();
   }
@@ -66,5 +68,14 @@ class MapsController extends GetxController {
       coords: Coords(lat, lng),
       title: title,
     );
+  }
+
+  void moveMapCamera(double lat, double lng, double zoom) async {
+    final GoogleMapController googleMapController = await controller.future;
+    googleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(lat, lng),
+      zoom: zoom,
+    )));
   }
 }

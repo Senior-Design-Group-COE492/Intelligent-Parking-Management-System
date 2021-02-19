@@ -27,4 +27,6 @@ class FieldController extends GetxController {
   RxBool isBasement = false.obs;
   RxBool isMultiStorey = false.obs;
   RxBool isFree = false.obs;
+  RxBool isSearching = false.obs;
+  RxBool isExpanded = false.obs;
 }

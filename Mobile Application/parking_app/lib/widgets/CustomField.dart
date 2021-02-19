@@ -9,10 +9,8 @@ import 'package:parking_app/widgets/FiltersWidget.dart';
 import 'package:parking_app/widgets/SearchResultsWidget.dart';
 
 class CustomTextField extends StatelessWidget {
-  final RxBool isExpanded = false.obs;
   final FieldController fieldController = Get.put(FieldController());
   final RxString destination = ''.obs;
-  final RxBool isSearching = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class CustomTextField extends StatelessWidget {
       thickness: 1,
     );
 
-    final expandedWidget = Obx(() => isSearching.value
+    final expandedWidget = Obx(() => fieldController.isSearching.value
         ? SearchWidget(
             placesFuture: SearchHandler.searchPlace(destination.value, 'SG'))
         : FiltersWidget());
@@ -63,8 +61,9 @@ class CustomTextField extends StatelessWidget {
               controller: _controller,
               onSubmitted: (newDestination) {
                 destination.value = newDestination;
-                isSearching.value = true;
-                if (!isExpanded.value) isExpanded.toggle();
+                fieldController.isSearching.value = true;
+                if (!fieldController.isExpanded.value)
+                  fieldController.isExpanded.toggle();
               },
               decoration: InputDecoration(
                 hintText: 'Enter Destination',
@@ -81,9 +80,8 @@ class CustomTextField extends StatelessWidget {
             height: 30,
             child: verticalDivider,
           ),
-          Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: FloatingActionButton(
+          Obx(
+            () => FloatingActionButton(
               // Can't use IconButton since ripple effect is messed up for it
               // so using FAB with no elevation instead
               hoverElevation: 0,
@@ -92,15 +90,16 @@ class CustomTextField extends StatelessWidget {
               focusElevation: 0,
               mini: true,
               elevation: 0,
-              child: filtersIcon,
+              child: fieldController.isSearching.value
+                  ? Icon(Icons.close, size: 24)
+                  : filtersIcon,
               backgroundColor: Colors.transparent,
               // TODO: implement onPressed
               onPressed: () {
                 // only re-rending widget once instead of twice
-                if (isSearching.value)
-                  isSearching.value = false;
-                else
-                  isExpanded.toggle();
+                if (fieldController.isSearching.value)
+                  fieldController.isSearching.value = false;
+                fieldController.isExpanded.toggle();
               },
             ),
           ),
@@ -126,7 +125,9 @@ class CustomTextField extends StatelessWidget {
           padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
           width: widgetWidth,
           margin: EdgeInsets.only(top: marginWithStatusBar),
-          height: isExpanded.value ? expandedHeight : originalHeight,
+          height: fieldController.isExpanded.value
+              ? expandedHeight
+              : originalHeight,
           duration: Globals.EXPAND_ANIMATION_DURATION,
           child: SingleChildScrollView(
             physics: ScrollPhysics(),
@@ -134,7 +135,9 @@ class CustomTextField extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
-                isExpanded.value ? (expandedWidget) : Container()
+                fieldController.isExpanded.value
+                    ? (expandedWidget)
+                    : Container()
               ],
             ),
           ),
