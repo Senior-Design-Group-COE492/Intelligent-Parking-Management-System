@@ -32,58 +32,58 @@ class LoginSelectorWidget extends StatelessWidget {
     );
 
     return Container(
-        alignment: Alignment.center,
-        child: Container(
-          width: buttonWidth,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Sign in with one of the options below to see your favorites',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+      alignment: Alignment.center,
+      child: Container(
+        width: buttonWidth,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Sign in with one of the options below to see your favorites',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
+            Container(
+              height: buttonHeight,
+              child: RaisedButton(
+                elevation: 5,
+                splashColor: Colors.black12,
+                highlightColor: Colors.transparent,
+                color: Colors.white,
+                onPressed: () => Get.to(LoginPage()),
+                child: emailLoginRow,
+                shape: buttonShape,
               ),
-              Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
-              Container(
-                height: buttonHeight,
-                child: RaisedButton(
-                  elevation: 5,
-                  splashColor: Colors.black12,
-                  highlightColor: Colors.transparent,
-                  color: Colors.white,
-                  onPressed: () => Get.to(LoginPage()),
-                  child: emailLoginRow,
-                  shape: buttonShape,
-                ),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 16)),
+            Container(
+              height: buttonHeight,
+              child: RaisedButton(
+                elevation: 5,
+                splashColor: Colors.black12,
+                highlightColor: Colors.transparent,
+                color: Colors.white,
+                onPressed: () => LoginHandler.signInWithGoogle(),
+                child: googleLoginRow,
+                shape: buttonShape,
               ),
-              Padding(padding: EdgeInsets.only(bottom: 16)),
-              Container(
-                height: buttonHeight,
-                child: RaisedButton(
-                  elevation: 5,
-                  splashColor: Colors.black12,
-                  highlightColor: Colors.transparent,
-                  color: Colors.white,
-                  onPressed: () => LoginHandler.signInWithGoogle(),
-                  child: googleLoginRow,
-                  shape: buttonShape,
-                ),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
+            TextButton(
+              onPressed: () => {Get.to(RegisterPage())},
+              child: Text(
+                "Don't have an account? Click here to sign up!",
+                style: TextStyle(
+                    color: Colors.black, decoration: TextDecoration.underline),
               ),
-              Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
-              TextButton(
-                onPressed: () => {Get.to(RegisterPage())},
-                child: Text(
-                  "Don't have an account? Click here to sign up!",
-                  style: TextStyle(
-                      color: Colors.black,
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-              // bottom padding of 70 needed to offset navigation bar and
-              // to properly center widget
-              Padding(padding: EdgeInsets.only(bottom: 70)),
-            ],
-          ),
-        ));
+            ),
+            // bottom padding of 70 needed to offset navigation bar and
+            // to properly center widget
+            Padding(padding: EdgeInsets.only(bottom: 70)),
+          ],
+        ),
+      ),
+    );
   }
 }

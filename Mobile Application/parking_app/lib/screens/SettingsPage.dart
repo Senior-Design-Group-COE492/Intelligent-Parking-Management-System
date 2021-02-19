@@ -21,9 +21,11 @@ class SettingsPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            ListView(
-              padding: EdgeInsets.all(10.0),
-              children: <Widget>[],
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.all(10.0),
+                children: <Widget>[],
+              ),
             )
           ],
         ),

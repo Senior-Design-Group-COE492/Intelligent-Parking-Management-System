@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
+import 'package:parking_app/screens/VerificationPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EmailLoginWidget extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -117,7 +119,14 @@ class EmailLoginWidget extends StatelessWidget {
                               if (await LoginHandler.signIn(
                                       _email.value, _password.value) !=
                                   false) {
-                                Get.back();
+                                User user = FirebaseAuth.instance.currentUser;
+                                if (!user.emailVerified) {
+                                  await user.sendEmailVerification();
+                                  Get.to(VerificationPage());
+                                  _isLoading.toggle();
+                                } else {
+                                  Get.back();
+                                }
                               } else {
                                 print('Error Loggin in.');
                                 _isLoading.toggle();
