@@ -63,6 +63,7 @@ class MarkerHandler {
   }
 
   static void addMarkersFromJson(BuildContext context) async {
+    MapsController.to.setIsLoading(true);
     MediaQueryData queryData = MediaQuery.of(context);
     double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
@@ -89,5 +90,6 @@ class MarkerHandler {
       if (i == parkingLots.length - 1)
         MapsController.to.setMarkerSet(markerSet);
     }
+    MapsController.to.setIsLoading(false);
   }
 }

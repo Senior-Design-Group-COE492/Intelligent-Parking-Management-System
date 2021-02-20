@@ -42,12 +42,37 @@ class MapsPage extends StatelessWidget {
                 lng: 30,
               )
             : Container(
-                child: CustomTextField(), height: 100, width: Get.width),
+                child: CustomTextField(),
+                height: 100,
+                width: Get.width,
+              ),
       ),
     );
 
+    final loadingWidget = AnimatedContainer(
+        duration:
+            Globals.EXPAND_ANIMATION_DURATION + Duration(milliseconds: 100),
+        padding: EdgeInsets.only(top: 125, left: 17, right: 16),
+        height: isHidden ? 0 : 170,
+        width: 100,
+        child: GetBuilder<MapsController>(
+          builder: (state) => state.isLoading
+              ? Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(3)),
+                  child: Container(
+                      alignment: Alignment.center,
+                      width: 25,
+                      height: 35,
+                      child: CircularProgressIndicator(strokeWidth: 2.5)),
+                )
+              : Container(),
+        ));
+
     final List<Widget> stackChildren = [
       map,
+      loadingWidget,
       topWidget,
     ];
 

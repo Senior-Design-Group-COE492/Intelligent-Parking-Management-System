@@ -17,8 +17,10 @@ class MapsController extends GetxController {
       false; // info window shown when true, textfield shown when false
   String parkingId = '';
   Completer<GoogleMapController> controller = Completer();
+  bool isLoading = false;
   final availableMapsFuture = MapLauncher.installedMaps;
   static MapsController get to => Get.find();
+
   void setCurrentLocation(newCurrentLocation) {
     currentLocation = newCurrentLocation;
     update();
@@ -40,6 +42,11 @@ class MapsController extends GetxController {
 
   void setMarkerSet(Set<Marker> newMarkerSet) {
     markerSet = newMarkerSet;
+    update();
+  }
+
+  void setIsLoading(bool isLoading) {
+    this.isLoading = isLoading;
     update();
   }
 

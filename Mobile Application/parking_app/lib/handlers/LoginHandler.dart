@@ -59,4 +59,9 @@ class LoginHandler {
     await auth.signOut();
     LoginController.to.setIsSignedIn(false);
   }
+
+  static bool isVerified() {
+    // returns false if the user is not logged in or verified
+    return auth.currentUser?.emailVerified ?? false;
+  }
 }

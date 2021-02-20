@@ -9,9 +9,6 @@ import 'package:parking_app/widgets/LoginSelectorWidget.dart';
 class Favorites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _orangeColor = context.theme.primaryColor;
-    final _lightOrangeColor = Color(0xFFFFBFA0);
-
     final settingsButton = IconButton(
       icon: Icon(Icons.settings),
       color: Colors.white,

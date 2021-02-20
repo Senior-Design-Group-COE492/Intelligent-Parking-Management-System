@@ -16,13 +16,19 @@ class SearchWidget extends StatelessWidget {
     return FutureBuilder(
         future: placesFuture,
         builder: (context, snapshot) {
+          print(snapshot.error.runtimeType);
           if (snapshot.hasError) {
-            print(snapshot.error);
+            String errorText = '';
+            if (snapshot.error.runtimeType.toString() == 'RangeError')
+              errorText = 'No locations were found!';
+            if (snapshot.error.runtimeType.toString() == 'SocketException')
+              errorText = 'Please make sure you are connected to the internet!';
             return Container(
                 padding: EdgeInsets.only(top: 16),
                 alignment: Alignment.center,
                 child: Text(
-                  'No locations were found!',
+                  errorText,
+                  textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ));
           }
