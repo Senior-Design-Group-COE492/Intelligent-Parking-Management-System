@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>736563084724-hh1v0ptki4f8p7vnrjmfrqklboqo25mo.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.736563084724-hh1v0ptki4f8p7vnrjmfrqklboqo25mo</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>736563084724-pr152s8rumc3t5ktek0cc9pellv89h19.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAA8k5l5TAR8x_ubmQmC_sYPiSyzKOkmU4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>736563084724</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.seniordesign.parkingapp</string>
+	<key>PROJECT_ID</key>
+	<string>parkingapp-6ecfd</string>
+	<key>STORAGE_BUCKET</key>
+	<string>parkingapp-6ecfd.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:736563084724:ios:15c7c53da8fcd92b43c6e1</string>
+</dict>
+</plist>
