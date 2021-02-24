@@ -24,6 +24,22 @@ class Favorites extends StatelessWidget {
       highlightColor: Colors.black12,
     );
 
+    final parkingWidget = FavoritedParkingInfo(
+      parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
+      parkingType: 'Basement Car Park',
+      currentAvailable: '245',
+      carParkID: 'HE45',
+      lat: 1,
+      lng: 30,
+      predictions: [235],
+    );
+
+    var widgetList = <Widget>[
+      parkingWidget,
+      parkingWidget,
+      parkingWidget,
+    ].obs;
+
     return GetBuilder<LoginController>(
       init: LoginController(),
       builder: (state) => Scaffold(
@@ -36,23 +52,34 @@ class Favorites extends StatelessWidget {
           ],
         ),
         body: state.isSignedIn
-            ? Center(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 5),
-                    ),
-                    FavoritedParkingInfo(
-                      parkingName:
-                          'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-                      parkingType: 'Basement Car Park',
-                      currentAvailable: '245',
-                      carParkID: 'HE45',
-                      lat: 1,
-                      lng: 30,
-                      predictions: [235],
-                    ),
-                  ],
+            ? Obx(
+                () => Container(
+                  padding: EdgeInsets.only(left: 15, top: 10),
+                  child: ListView.builder(
+                    itemCount: widgetList.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(child: widgetList[index]),
+                              IconButton(
+                                icon: Icon(Icons.delete_forever),
+                                onPressed: () => {
+                                  widgetList.removeAt(index),
+                                  print(index),
+                                  print(widgetList.length)
+                                },
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                          )
+                        ],
+                      );
+                    },
+                  ),
                 ),
               )
             : LoginSelectorWidget(),

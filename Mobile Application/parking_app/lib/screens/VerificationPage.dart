@@ -17,7 +17,7 @@ class VerificationPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Please verify your email then login again.',
+              'An email has been sent with a verification link. Please verify your email then login again.',
               style: TextStyle(
                 fontSize: 20,
               ),
