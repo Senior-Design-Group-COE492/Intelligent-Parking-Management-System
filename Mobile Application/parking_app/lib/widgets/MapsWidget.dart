@@ -24,7 +24,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
 
   _MapsState() {
     _initializeMarkers();
-    _initializeGeolocator();
+    _initializeGeolocator().catchError((error) => print(error));
   }
 
   @override

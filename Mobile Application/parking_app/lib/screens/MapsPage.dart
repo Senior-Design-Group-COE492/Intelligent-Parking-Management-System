@@ -4,6 +4,7 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/widgets/CustomField.dart';
 import 'package:parking_app/widgets/MapsWidget.dart';
+import 'package:parking_app/widgets/ParkingInfoFromFutureWidget.dart';
 import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class MapsPage extends StatelessWidget {
@@ -25,22 +26,7 @@ class MapsPage extends StatelessWidget {
       child: GetBuilder<MapsController>(
         init: MapsController(),
         builder: (state) => state.isParkingInfo
-            ? ParkingInfo(
-                currentAvailable: 245,
-                distanceFromCurrent: '1.1 km',
-                routeTimeFromCurrent: '22 minutes',
-                predictions: [179],
-                parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-                parkingType: 'Basement Car Park',
-                gantryHeight: 4.5,
-                freeParking:
-                    'All day on Sunday and public holidays, and Friday between 7AM - 10:30PM',
-                shortTermParking: 'Available for the whole day',
-                nightParking: 'Yes',
-                parkingSystem: 'Electronic',
-                lat: 1.01,
-                lng: 30,
-              )
+            ? ParkingInfoFromFuture(parkingId: state.parkingId)
             : Container(
                 child: CustomTextField(),
                 height: 100,

@@ -19,27 +19,48 @@ class ParkingInfo extends StatelessWidget {
   final String nightParking;
   final String parkingSystem;
   final List<int> predictions;
+  final bool isLoading;
   final double lat;
   final double lng;
   final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
+  ParkingInfo({
+    Key key,
+    @required this.distanceFromCurrent,
+    @required this.routeTimeFromCurrent,
+    @required this.currentAvailable,
+    @required this.predictions,
+    @required this.parkingName,
+    @required this.parkingType,
+    @required this.lat,
+    @required this.lng,
+    @required this.gantryHeight,
+    @required this.freeParking,
+    @required this.shortTermParking,
+    @required this.nightParking,
+    @required this.parkingSystem,
+    this.isLoading = false,
+  }) : super(key: key);
 
-  ParkingInfo(
-      {Key key,
-      @required this.distanceFromCurrent,
-      @required this.routeTimeFromCurrent,
-      @required this.currentAvailable,
-      @required this.predictions,
-      @required this.parkingName,
-      @required this.parkingType,
-      @required this.lat,
-      @required this.lng,
-      @required this.gantryHeight,
-      @required this.freeParking,
-      @required this.shortTermParking,
-      @required this.nightParking,
-      @required this.parkingSystem})
-      : super(key: key);
+  // constructor to show CircularProgress
+  // NOTE: initializing the other variables doesn't matter as CircularProgress
+  // would always be shown
+  ParkingInfo.isLoading({
+    Key key,
+    this.distanceFromCurrent,
+    this.routeTimeFromCurrent,
+    this.currentAvailable,
+    this.predictions,
+    this.parkingName,
+    this.parkingType,
+    this.lat,
+    this.lng,
+    this.gantryHeight,
+    this.freeParking,
+    this.shortTermParking,
+    this.nightParking,
+    this.parkingSystem,
+  }) : isLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +78,34 @@ class ParkingInfo extends StatelessWidget {
     final double expandedHeight = Get.height - marginWithStatusBar - 70 - 16;
     final double widthPadding = Get.width * 0.043; // 16/375 = 0.043
     final double navigationButtonWidth = Get.width * 0.66; // 247/375 = 0.66
+
+    if (isLoading)
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
+          width: widgetWidth,
+          height: unexpandedHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            color: Color(0xE6FFFFFF),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 16,
+                offset: Offset(0, 12),
+              ),
+            ],
+          ),
+          margin: EdgeInsets.only(top: marginWithStatusBar),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+                padding: EdgeInsets.all(24),
+                child: CircularProgressIndicator(strokeWidth: 2.5)),
+          ),
+        ),
+      );
 
     final TextStyle smallFontLight =
         TextStyle(fontSize: 12, fontWeight: FontWeight.w300);

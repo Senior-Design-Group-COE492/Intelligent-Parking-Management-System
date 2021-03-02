@@ -23,6 +23,8 @@ class SearchWidget extends StatelessWidget {
               errorText = 'No locations were found!';
             if (snapshot.error.runtimeType.toString() == 'SocketException')
               errorText = 'Please make sure you are connected to the internet!';
+            else
+              errorText = 'Something went wrong! Please try again later.';
             return Container(
                 padding: EdgeInsets.only(top: 16),
                 alignment: Alignment.center,
@@ -71,7 +73,9 @@ class SearchWidget extends StatelessWidget {
           return Container(
               padding: EdgeInsets.only(top: 16),
               alignment: Alignment.center,
-              child: CircularProgressIndicator());
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+              ));
         });
   }
 }
