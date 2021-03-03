@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
@@ -224,9 +225,22 @@ class ParkingInfo extends StatelessWidget {
               size: 30,
               color: Colors.grey[850],
             ),
-            // TODO: Implement favoriting here once it's done in backend
             onPressed: () {
-              isFavorited.toggle();
+              if (LoginHandler.isSignedIn()) {
+                // TODO: Add/remove favorite from firestore here
+                isFavorited.toggle();
+              } else {
+                Get.snackbar('Login required',
+                    'Please login using the Favorites page first!',
+                    duration: Duration(seconds: 3),
+                    snackPosition: SnackPosition.BOTTOM,
+                    onTap: (snackBar) =>
+                        DefaultTabController.of(context).animateTo(1),
+                    margin: EdgeInsets.only(
+                        bottom: 86, left: widthPadding, right: widthPadding),
+                    animationDuration: Duration(milliseconds: 250),
+                    backgroundColor: Colors.grey[50].withOpacity(0.7));
+              }
             },
           ),
         ));
