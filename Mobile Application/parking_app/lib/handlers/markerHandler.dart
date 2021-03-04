@@ -19,7 +19,6 @@ class MarkerHandler {
   }
 
   static Future<Marker> _makeParkingMarker(
-      // TODO: make camera zoom to the marker when the marker is tapped
       double width,
       double height,
       int nAvailableParkingSpaces,

@@ -94,7 +94,6 @@ class CustomTextField extends StatelessWidget {
                   ? Icon(Icons.close, size: 24)
                   : filtersIcon,
               backgroundColor: Colors.transparent,
-              // TODO: implement onPressed
               onPressed: () {
                 // only re-rending widget once instead of twice
                 if (fieldController.isSearching.value)

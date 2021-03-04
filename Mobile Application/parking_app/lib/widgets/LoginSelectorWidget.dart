@@ -10,14 +10,12 @@ class LoginSelectorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonWidth = Get.width * 0.85;
     final double buttonHeight = 60;
-    final buttonShape =
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
     final Row emailLoginRow = Row(
       children: [
-        Icon(Icons.email),
+        Icon(Icons.email, color: Colors.black),
         Padding(padding: EdgeInsets.only(left: 22)),
         Text('Sign in with Email',
-            style: TextStyle(fontWeight: FontWeight.w500))
+            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black))
       ],
     );
     final Row googleLoginRow = Row(
@@ -27,8 +25,17 @@ class LoginSelectorWidget extends StatelessWidget {
         SvgPicture.asset('assets/icons/googleLogo.svg', height: 24, width: 24),
         Padding(padding: EdgeInsets.only(left: 24)),
         Text('Sign in with Google',
-            style: TextStyle(fontWeight: FontWeight.w500))
+            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black))
       ],
+    );
+
+    final ButtonStyle buttonStyle = ButtonStyle(
+      elevation: MaterialStateProperty.resolveWith<double>(
+          (states) => states.contains(MaterialState.pressed) ? 8 : 5),
+      overlayColor: MaterialStateProperty.all<Color>(Colors.black12),
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
     );
 
     return Container(
@@ -46,27 +53,19 @@ class LoginSelectorWidget extends StatelessWidget {
             Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),
             Container(
               height: buttonHeight,
-              child: RaisedButton(
-                elevation: 5,
-                splashColor: Colors.black12,
-                highlightColor: Colors.transparent,
-                color: Colors.white,
+              child: ElevatedButton(
+                style: buttonStyle,
                 onPressed: () => Get.to(LoginPage()),
                 child: emailLoginRow,
-                shape: buttonShape,
               ),
             ),
             Padding(padding: EdgeInsets.only(bottom: 16)),
             Container(
               height: buttonHeight,
-              child: RaisedButton(
-                elevation: 5,
-                splashColor: Colors.black12,
-                highlightColor: Colors.transparent,
-                color: Colors.white,
+              child: ElevatedButton(
+                style: buttonStyle,
                 onPressed: () => LoginHandler.signInWithGoogle(),
                 child: googleLoginRow,
-                shape: buttonShape,
               ),
             ),
             Padding(padding: EdgeInsets.only(bottom: Get.height * 0.15)),

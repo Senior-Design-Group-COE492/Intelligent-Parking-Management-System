@@ -4,8 +4,6 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/screens/FavoritesPage.dart';
 import 'package:parking_app/screens/MapsPage.dart';
-import 'package:parking_app/widgets/CustomField.dart';
-import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class Navigation extends StatelessWidget {
   @override
@@ -22,29 +20,11 @@ class Navigation extends StatelessWidget {
     );
 
     final tabsChildrenList = [
-      // TODO: add Map and Favorites Screens in this list
       GetBuilder<MapsController>(
         init: MapsController(),
         builder: (state) => MapsPage(isHidden: state.isHidden),
       ),
       Favorites(),
-      // ParkingInfo(
-      //   currentAvailable: 245,
-      //   distanceFromCurrent: '1.1 km',
-      //   routeTimeFromCurrent: '22 minutes',
-      //   predictions: [179],
-      //   parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-      //   parkingType: 'Basement Car Park',
-      //   gantryHeight: 4.5,
-      //   freeParking:
-      //       'All day on Sunday and public holidays, and Friday between 7AM - 10:30PM',
-      //   shortTermParking: 'Available for the whole day',
-      //   nightParking: 'Yes',
-      //   parkingSystem: 'Electronic',
-      //   lat: 1.01,
-      //   lng: 30,
-      // ),
-      // CustomTextField(),
     ];
 
     final tabsWidget = DefaultTabController(

@@ -57,7 +57,6 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   Future<void> _initializeGeolocator() async {
     bool serviceEnabled;
     LocationPermission permission;
-    // TODO: handle permission errors
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');

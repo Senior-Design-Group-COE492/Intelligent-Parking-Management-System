@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PredictionsBarChart extends StatelessWidget {
-  // TODO: finish styling of bar chart
   final List<double> predictions = [
     for (var i = 0; i < 12; i++) Random().nextInt(100).toDouble() + 100
   ];

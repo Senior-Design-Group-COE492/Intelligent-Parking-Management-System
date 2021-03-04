@@ -8,7 +8,6 @@ import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
-  // TODO: add constructor with parking ID
   final String distanceFromCurrent;
   final String routeTimeFromCurrent;
   final int currentAvailable;

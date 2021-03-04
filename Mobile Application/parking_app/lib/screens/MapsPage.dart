@@ -5,7 +5,6 @@ import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/widgets/CustomField.dart';
 import 'package:parking_app/widgets/MapsWidget.dart';
 import 'package:parking_app/widgets/ParkingInfoFromFutureWidget.dart';
-import 'package:parking_app/widgets/ParkingInfoWidget.dart';
 
 class MapsPage extends StatelessWidget {
   final bool isHidden; // passed down from Navigation page
