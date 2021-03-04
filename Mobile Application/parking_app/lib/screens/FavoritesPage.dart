@@ -10,15 +10,13 @@ class Favorites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settingsButton = IconButton(
-      icon: Icon(Icons.settings),
-      color: Colors.white,
+      icon: Icon(Icons.settings, color: Colors.white),
       onPressed: () => Get.to(SettingsPage()),
       splashColor: Colors.black12,
       highlightColor: Colors.black12,
     );
     final logOutButton = IconButton(
-      icon: Icon(Icons.logout),
-      color: Colors.white,
+      icon: Icon(Icons.logout, color: Colors.white),
       onPressed: () => _showAlertDialog(context),
       splashColor: Colors.black12,
       highlightColor: Colors.black12,
@@ -38,26 +36,37 @@ class Favorites extends StatelessWidget {
       parkingWidget,
       parkingWidget,
       parkingWidget,
+      parkingWidget,
+      parkingWidget,
     ].obs;
 
     return GetBuilder<LoginController>(
       init: LoginController(),
       builder: (state) => Scaffold(
-        appBar: AppBar(
-          title: Text("Favorites",
-              style: TextStyle(color: Colors.white, fontSize: 20)),
-          actions: [
-            state.isSignedIn ? logOutButton : Container(),
-            settingsButton
-          ],
-        ),
+          body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => <Widget>[
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            title: Text("Favorites",
+                style: TextStyle(fontSize: 20, color: Colors.white)),
+            actions: [
+              state.isSignedIn ? logOutButton : Container(),
+              settingsButton
+            ],
+          ),
+        ],
         body: state.isSignedIn
             ? Obx(
                 () => Container(
-                  padding: EdgeInsets.only(left: 15, top: 10),
+                  padding: EdgeInsets.only(left: 15, top: 0),
                   child: ListView.builder(
+                    padding: EdgeInsets.only(top: 16),
+                    shrinkWrap: true,
                     itemCount: widgetList.length,
                     itemBuilder: (context, index) {
+                      final double padding =
+                          index == widgetList.length - 1 ? 90 : 10;
                       return Column(
                         children: [
                           Row(
@@ -74,7 +83,7 @@ class Favorites extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.only(top: padding),
                           )
                         ],
                       );
@@ -83,14 +92,13 @@ class Favorites extends StatelessWidget {
                 ),
               )
             : LoginSelectorWidget(),
-      ),
+      )),
     );
   }
 
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Log Out'),
