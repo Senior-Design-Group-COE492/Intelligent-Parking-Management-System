@@ -86,7 +86,7 @@ class FiltersWidget extends StatelessWidget {
       ]);
     }
 
-    return Column(
+    return Obx( () => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -163,10 +163,10 @@ class FiltersWidget extends StatelessWidget {
         GetBuilder<FieldController>(
           builder: (_) => Row(
             children: [
-              _radioListTile(125.0, fieldController!.groupValue,
-                  fieldController!.changeRadio, 1, 'Yes'),
-              _radioListTile(120.0, fieldController!.groupValue,
-                  fieldController!.changeRadio, 0, 'No'),
+              _radioListTile(125.0, fieldController!.freeGroupValue,
+                  fieldController!.changeFreeRadio, 1, 'Yes'),
+              _radioListTile(120.0, fieldController!.freeGroupValue,
+                  fieldController!.changeFreeRadio, 0, 'No'),
             ],
           ),
         ),
@@ -174,14 +174,28 @@ class FiltersWidget extends StatelessWidget {
         GetBuilder<FieldController>(
           builder: (_) => Row(
             children: [
-              _radioListTile(125.0, fieldController!.groupValue,
-                  fieldController!.changeRadio, 1, 'Yes'),
-              _radioListTile(120.0, fieldController!.groupValue,
-                  fieldController!.changeRadio, 0, 'No'),
+              _radioListTile(125.0, fieldController!.nightGroupValue,
+                  fieldController!.changeNightRadio, 1, 'Yes'),
+              _radioListTile(120.0, fieldController!.nightGroupValue,
+                  fieldController!.changeNightRadio, 0, 'No'),
             ],
           ),
+
+        ),
+        Text('Parking Type'),
+        GetBuilder<FieldController>(
+          builder: (_) => Row(
+            children: [
+              _radioListTile(125.0, fieldController!.parkingTypeGroupValue,
+                  fieldController!.changeParkingTypeRadio, 1, 'Electronic'),
+              _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
+                  fieldController!.changeParkingTypeRadio, 0, 'Coupon'),
+            ],
+          ),
+          
         ),
       ],
+    ),
     );
   }
 }
