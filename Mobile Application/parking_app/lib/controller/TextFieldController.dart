@@ -13,6 +13,12 @@ class FieldController extends GetxController {
         update(),
       };
 
+  RxDouble gantrySliderValue = 180.0.obs;
+  gantryChangeSlder(double value) => {
+        gantrySliderValue.value = value,
+        update(),
+      };
+
   int groupValue = 1;
   RxInt radioValue = 0.obs;
   changeRadio(dynamic newValue) {
@@ -29,4 +35,6 @@ class FieldController extends GetxController {
   RxBool isFree = false.obs;
   RxBool isSearching = false.obs;
   RxBool isExpanded = false.obs;
+  RxBool isNight = false.obs;
+  RxBool isElectronic = false.obs;
 }

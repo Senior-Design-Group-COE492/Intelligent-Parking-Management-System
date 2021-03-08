@@ -24,6 +24,13 @@ class FiltersWidget extends StatelessWidget {
     }
   }
 
+  String gantrySliderValueLabelMarker(double sliderValue) {
+    if (sliderValue < 1000)
+      return (sliderValue / 100).toStringAsFixed(2).toString() + ' m';
+    else
+      return (sliderValue / 100).toStringAsFixed(2) + ' m';
+  }
+
   @override
   Widget build(BuildContext context) {
     final double checkBoxRowWidth = Get.width * 0.274;
@@ -111,6 +118,19 @@ class FiltersWidget extends StatelessWidget {
             onChanged: fieldController.distanceChangeSlider,
           ),
         ),
+        Text('Gantry Height (max.)'),
+        SliderTheme(
+          data: sliderThemeData,
+          child: Slider(
+            value: fieldController.gantrySliderValue.value,
+            min: 180,
+            max: 1000,
+            divisions: 20,
+            label: gantrySliderValueLabelMarker(
+                fieldController.gantrySliderValue.value),
+            onChanged: fieldController.gantryChangeSlder,
+          ),
+        ),
         Text('Parking Type'),
         Padding(
           padding: EdgeInsets.only(top: 16),
@@ -140,6 +160,17 @@ class FiltersWidget extends StatelessWidget {
           padding: EdgeInsets.only(top: 16),
         ),
         Text('Free only'),
+        GetBuilder<FieldController>(
+          builder: (_) => Row(
+            children: [
+              _radioListTile(125.0, fieldController.groupValue,
+                  fieldController.changeRadio, 1, 'Yes'),
+              _radioListTile(120.0, fieldController.groupValue,
+                  fieldController.changeRadio, 0, 'No'),
+            ],
+          ),
+        ),
+        Text('Night Parking'),
         GetBuilder<FieldController>(
           builder: (_) => Row(
             children: [
