@@ -31,8 +31,8 @@ class MarkerHandler {
         MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), '0');
     ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
     ui.Image image = await picture.toImage(width.toInt(), height.toInt());
-    ByteData bytes = await (image.toByteData(format: ui.ImageByteFormat.png)
-        as FutureOr<ByteData>);
+    ByteData bytes =
+        (await (image.toByteData(format: ui.ImageByteFormat.png)))!;
     final newMarkerBitmap =
         BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
     return Marker(
