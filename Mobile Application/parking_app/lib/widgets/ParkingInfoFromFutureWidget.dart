@@ -5,7 +5,7 @@ class ParkingInfoFromFuture extends StatelessWidget {
   // returns the ParkingInfo widget and constructs it after reading
   // the parking info from Firestore
   final String parkingId;
-  ParkingInfoFromFuture({Key key, @required this.parkingId})
+  ParkingInfoFromFuture({Key? key, required this.parkingId})
       // TODO: replace future delay with a reading from Firestore
       : super(key: key);
 

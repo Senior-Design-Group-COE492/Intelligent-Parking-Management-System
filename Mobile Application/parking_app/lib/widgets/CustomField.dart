@@ -9,7 +9,7 @@ import 'package:parking_app/widgets/FiltersWidget.dart';
 import 'package:parking_app/widgets/SearchResultsWidget.dart';
 
 class CustomTextField extends StatelessWidget {
-  final FieldController fieldController = Get.put(FieldController());
+  final FieldController? fieldController = Get.put(FieldController());
   final RxString destination = ''.obs;
 
   @override
@@ -35,9 +35,9 @@ class CustomTextField extends StatelessWidget {
       thickness: 1,
     );
 
-    final expandedWidget = Obx(() => fieldController.isSearching.value
+    final expandedWidget = Obx(() => fieldController!.isSearching.value!
         ? SearchWidget(
-            placesFuture: SearchHandler.searchPlace(destination.value, 'SG'))
+            placesFuture: SearchHandler.searchPlace(destination.value!, 'SG'))
         : FiltersWidget());
 
     final Widget header = Container(
@@ -61,9 +61,9 @@ class CustomTextField extends StatelessWidget {
               controller: _controller,
               onSubmitted: (newDestination) {
                 destination.value = newDestination;
-                fieldController.isSearching.value = true;
-                if (!fieldController.isExpanded.value)
-                  fieldController.isExpanded.toggle();
+                fieldController!.isSearching.value = true;
+                if (!fieldController!.isExpanded.value!)
+                  fieldController!.isExpanded.toggle();
               },
               decoration: InputDecoration(
                 hintText: 'Enter Destination',
@@ -90,15 +90,15 @@ class CustomTextField extends StatelessWidget {
               focusElevation: 0,
               mini: true,
               elevation: 0,
-              child: fieldController.isSearching.value
+              child: fieldController!.isSearching.value!
                   ? Icon(Icons.close, size: 24)
                   : filtersIcon,
               backgroundColor: Colors.transparent,
               onPressed: () {
                 // only re-rending widget once instead of twice
-                if (fieldController.isSearching.value)
-                  fieldController.isSearching.value = false;
-                fieldController.isExpanded.toggle();
+                if (fieldController!.isSearching.value!)
+                  fieldController!.isSearching.value = false;
+                fieldController!.isExpanded.toggle();
               },
             ),
           ),
@@ -124,7 +124,7 @@ class CustomTextField extends StatelessWidget {
           padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
           width: widgetWidth,
           margin: EdgeInsets.only(top: marginWithStatusBar),
-          height: fieldController.isExpanded.value
+          height: fieldController!.isExpanded.value!
               ? expandedHeight
               : originalHeight,
           duration: Globals.EXPAND_ANIMATION_DURATION,
@@ -134,7 +134,7 @@ class CustomTextField extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
-                fieldController.isExpanded.value
+                fieldController!.isExpanded.value!
                     ? (expandedWidget)
                     : Container()
               ],

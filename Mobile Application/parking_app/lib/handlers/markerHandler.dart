@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +12,7 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
 
 class MarkerHandler {
-  static Map parkingLots;
+  static Map? parkingLots;
 
   static Future<void> getJsonFromFile() async {
     final parkingLotsString = await rootBundle
@@ -26,10 +28,11 @@ class MarkerHandler {
       String markerIdString,
       Function() handleMarkerTap) async {
     DrawableRoot svgDrawableRoot = await svg.fromSvgString(
-        MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), null);
+        MapsGlobals.makeMapMarkerSvg(nAvailableParkingSpaces), '0');
     ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
     ui.Image image = await picture.toImage(width.toInt(), height.toInt());
-    ByteData bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    ByteData bytes = await (image.toByteData(format: ui.ImageByteFormat.png)
+        as FutureOr<ByteData>);
     final newMarkerBitmap =
         BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
     return Marker(
@@ -43,7 +46,7 @@ class MarkerHandler {
   static Future<void> addDestinationMarker(
       double lat, double lng, BuildContext context) async {
     DrawableRoot svgDrawableRoot =
-        await svg.fromSvgString(MapsGlobals.flagSvg, null);
+        await svg.fromSvgString(MapsGlobals.flagSvg, '1');
     MediaQueryData queryData = MediaQuery.of(context);
     double devicePixelRatio = queryData.devicePixelRatio;
     double width =
@@ -51,7 +54,8 @@ class MarkerHandler {
     double height = 24 * devicePixelRatio; // same thing
     ui.Picture picture = svgDrawableRoot.toPicture(size: Size(width, height));
     ui.Image image = await picture.toImage(width.toInt(), height.toInt());
-    ByteData bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    ByteData bytes = await (image.toByteData(format: ui.ImageByteFormat.png)
+        as FutureOr<ByteData>);
     final markerBitmap = BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
 
     final marker = Marker(
@@ -69,12 +73,12 @@ class MarkerHandler {
     double height = 47 * devicePixelRatio;
     final Set markerSet = Set<Marker>();
 
-    for (var i = 0; i < parkingLots.length; i++) {
+    for (var i = 0; i < parkingLots!.length; i++) {
       final String indexString = i.toString();
       final int nAvailableParkingSpaces = int.parse(
-          parkingLots[indexString]['carpark_info'][0]['lots_available']);
-      final double latitude = parkingLots[indexString]['lat'];
-      final double longitude = parkingLots[indexString]['lng'];
+          parkingLots![indexString]['carpark_info'][0]['lots_available']);
+      final double latitude = parkingLots![indexString]['lat'];
+      final double longitude = parkingLots![indexString]['lng'];
       final LatLng latLng = LatLng(latitude, longitude);
       final handleMarkerTap = () async {
         // TODO: pass the actual parking ID from the json
@@ -86,8 +90,8 @@ class MarkerHandler {
           nAvailableParkingSpaces, latLng, indexString, handleMarkerTap);
       markerSet.add(newMarker);
       // for performance, state is only updated after all the markers are added
-      if (i == parkingLots.length - 1)
-        MapsController.to.setMarkerSet(markerSet);
+      if (i == parkingLots!.length - 1)
+        MapsController.to.setMarkerSet(markerSet as Set<Marker>);
     }
     MapsController.to.setIsLoading(false);
   }

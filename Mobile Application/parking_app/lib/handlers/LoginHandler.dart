@@ -26,10 +26,10 @@ class LoginHandler {
     return false;
   }
 
-  static Future<UserCredential> signInWithGoogle() async {
+  static Future<UserCredential?> signInWithGoogle() async {
     // Trigger the authentication flow
     try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         throw ('Google user is null!');
       }
@@ -39,7 +39,7 @@ class LoginHandler {
 
       // Create a new credential
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken) as GoogleAuthCredential;
       // Once signed in, return the UserCredential
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);

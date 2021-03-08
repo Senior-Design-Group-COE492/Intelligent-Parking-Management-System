@@ -10,7 +10,7 @@ class EmailRegisterWidget extends StatelessWidget {
   final RxString _email = ''.obs;
   final RxString _password = ''.obs;
   final RxBool _isLoading = false.obs;
-  RegisterHandler handler;
+  RegisterHandler? handler;
 
   @override
   Widget build(context) {
@@ -22,7 +22,7 @@ class EmailRegisterWidget extends StatelessWidget {
         borderSide: BorderSide(color: _orangeColor, width: 2));
     final _transparentBorder = OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
-        borderSide: BorderSide(color: Colors.grey[300], width: 2));
+        borderSide: BorderSide(color: Colors.grey[300]!, width: 2));
 
     return Scaffold(
       body: Form(
@@ -53,7 +53,7 @@ class EmailRegisterWidget extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Please enter some text';
                   }
                   _email.value = value;
@@ -64,12 +64,12 @@ class EmailRegisterWidget extends StatelessWidget {
               Padding(padding: EdgeInsets.all(Get.height * 0.02)),
               Obx(
                 () => TextFormField(
-                  obscureText: _isShowingPassword.value,
+                  obscureText: _isShowingPassword.value!,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                       icon: Icon(Icons.remove_red_eye,
-                          color: _isShowingPassword.value
+                          color: _isShowingPassword.value!
                               ? Colors.grey[600]
                               : _lightBlueColor),
                       onPressed: () => _isShowingPassword.toggle(),
@@ -83,7 +83,7 @@ class EmailRegisterWidget extends StatelessWidget {
                     fillColor: Colors.white,
                   ),
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return 'Please enter some text';
                     }
                     _password.value = value;
@@ -97,7 +97,7 @@ class EmailRegisterWidget extends StatelessWidget {
               ),
               Obx(
                 () => Text(
-                  _errorMessage.value,
+                  _errorMessage.value!,
                   style: TextStyle(
                     color: Colors.red[900],
                   ),
@@ -108,15 +108,15 @@ class EmailRegisterWidget extends StatelessWidget {
                 padding: EdgeInsets.all(0),
                 child: Obx(
                   () => FlatButton(
-                    onPressed: _isLoading.value
+                    onPressed: _isLoading.value!
                         ? null
                         : () async {
                             // Validate will return true if the form is valid, or false if
                             // the form is invalid.
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               _isLoading.toggle();
                               if (await RegisterHandler.register(
-                                      _email.value, _password.value) !=
+                                      _email.value!, _password.value!) !=
                                   false) {
                                 Get.off(LoginPage());
                               } else {

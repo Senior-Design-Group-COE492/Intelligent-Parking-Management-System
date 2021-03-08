@@ -10,10 +10,9 @@ class Controller extends GetxController {
 }
 
 class SettingsPage extends StatelessWidget {
-  final Controller c = Get.put(Controller());
+  final Controller? c = Get.put(Controller());
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings Page"),

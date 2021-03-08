@@ -7,15 +7,15 @@ import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
 
 class SearchWidget extends StatelessWidget {
-  final Future<List<PlacesSearchResult>> placesFuture;
-  final FieldController fieldController = Get.put(FieldController());
+  final Future<List<PlacesSearchResult>>? placesFuture;
+  final FieldController? fieldController = Get.put(FieldController());
 
-  SearchWidget({Key key, this.placesFuture}) : super(key: key);
+  SearchWidget({Key? key, this.placesFuture}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: placesFuture,
-        builder: (context, snapshot) {
+        builder: (context, dynamic snapshot) {
           print(snapshot.error.runtimeType);
           if (snapshot.hasError) {
             String errorText = '';
@@ -40,7 +40,7 @@ class SearchWidget extends StatelessWidget {
               shrinkWrap: true,
               padding: EdgeInsets.all(0),
               physics: NeverScrollableScrollPhysics(),
-              itemCount: snapshot.data.length,
+              itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -60,8 +60,8 @@ class SearchWidget extends StatelessWidget {
                         final lng = snapshot.data[index].geometry.location.lng;
                         MapsController.to.moveMapCamera(lat, lng, 16);
                         // updating state once instead of twice
-                        fieldController.isSearching.value = false;
-                        fieldController.isExpanded.toggle();
+                        fieldController!.isSearching.value = false;
+                        fieldController!.isExpanded.toggle();
                         MarkerHandler.addDestinationMarker(lat, lng, context);
                       },
                     ),

@@ -8,37 +8,37 @@ import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
-  final String distanceFromCurrent;
-  final String routeTimeFromCurrent;
-  final int currentAvailable;
-  final String parkingName;
-  final String parkingType;
-  final double gantryHeight;
-  final String freeParking;
-  final String shortTermParking;
-  final String nightParking;
-  final String parkingSystem;
-  final List<int> predictions;
+  final String? distanceFromCurrent;
+  final String? routeTimeFromCurrent;
+  final int? currentAvailable;
+  final String? parkingName;
+  final String? parkingType;
+  final double? gantryHeight;
+  final String? freeParking;
+  final String? shortTermParking;
+  final String? nightParking;
+  final String? parkingSystem;
+  final List<int>? predictions;
   final bool isLoading;
-  final double lat;
-  final double lng;
+  final double? lat;
+  final double? lng;
   final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
   ParkingInfo({
-    Key key,
-    @required this.distanceFromCurrent,
-    @required this.routeTimeFromCurrent,
-    @required this.currentAvailable,
-    @required this.predictions,
-    @required this.parkingName,
-    @required this.parkingType,
-    @required this.lat,
-    @required this.lng,
-    @required this.gantryHeight,
-    @required this.freeParking,
-    @required this.shortTermParking,
-    @required this.nightParking,
-    @required this.parkingSystem,
+    Key? key,
+    required this.distanceFromCurrent,
+    required this.routeTimeFromCurrent,
+    required this.currentAvailable,
+    required this.predictions,
+    required this.parkingName,
+    required this.parkingType,
+    required this.lat,
+    required this.lng,
+    required this.gantryHeight,
+    required this.freeParking,
+    required this.shortTermParking,
+    required this.nightParking,
+    required this.parkingSystem,
     this.isLoading = false,
   }) : super(key: key);
 
@@ -46,7 +46,7 @@ class ParkingInfo extends StatelessWidget {
   // NOTE: initializing the other variables doesn't matter as CircularProgress
   // would always be shown
   ParkingInfo.isLoading({
-    Key key,
+    Key? key,
     this.distanceFromCurrent,
     this.routeTimeFromCurrent,
     this.currentAvailable,
@@ -122,7 +122,7 @@ class ParkingInfo extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(top: 20),
             child: Text(
-              parkingName.toUpperCase(),
+              parkingName!.toUpperCase(),
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -130,53 +130,35 @@ class ParkingInfo extends StatelessWidget {
             ),
             width: headerTextWidth,
           ),
-          Expanded(
-            // EXpanded needed to prevent button from overflowing due to padding
-            child: FloatingActionButton(
-              // Can't use IconButton since ripple effect is messed up for it
-              // so using FAB with no elevation instead
-              hoverElevation: 0,
-              disabledElevation: 0,
-              highlightElevation: 0,
-              focusElevation: 0,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              child: Icon(
-                Icons.close,
-                size: 35,
-              ),
-              onPressed: () => MapsController.to.hideInfoWindow(),
-            ),
-          ),
         ],
       ),
     );
 
-    final parkingTypeWidget = Text(parkingType, style: TextStyle(fontSize: 12));
+    final parkingTypeWidget = Text(parkingType!, style: TextStyle(fontSize: 12));
 
     final distanceFromCurrentWidget =
-        Text(distanceFromCurrent, style: smallFontWithColor);
+        Text(distanceFromCurrent!, style: smallFontWithColor);
 
     final currentRouteTimeWidget =
-        Text(routeTimeFromCurrent, style: smallFontWithColor);
+        Text(routeTimeFromCurrent!, style: smallFontWithColor);
 
     final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
         style: smallFontWithColor);
 
     final predictedAvailableWidget =
-        Text(predictions[0].toString() + ' spaces', style: smallFontWithColor);
+        Text(predictions![0].toString() + ' spaces', style: smallFontWithColor);
 
     final gantryHeightWidget =
-        Text(gantryHeight.toStringAsFixed(1) + ' m', style: smallFontWithColor);
+        Text(gantryHeight!.toStringAsFixed(1) + ' m', style: smallFontWithColor);
 
-    final freeParkingWidget = Text(freeParking, style: smallFontWithColor);
+    final freeParkingWidget = Text(freeParking!, style: smallFontWithColor);
 
     final shortTermParkingWidget =
-        Text(shortTermParking, style: smallFontWithColor);
+        Text(shortTermParking!, style: smallFontWithColor);
 
-    final nightParkingWidget = Text(nightParking, style: smallFontWithColor);
+    final nightParkingWidget = Text(nightParking!, style: smallFontWithColor);
 
-    final parkingSystemWidget = Text(parkingSystem, style: smallFontWithColor);
+    final parkingSystemWidget = Text(parkingSystem!, style: smallFontWithColor);
 
     final footerWidget = Container(
       alignment: Alignment.center,
@@ -207,7 +189,7 @@ class ParkingInfo extends StatelessWidget {
         // TODO: Implement notifications to show the real-time availability
         // after clicking the button
         onPressed: () =>
-            MapsController.to.startNavigation(lat, lng, parkingName),
+            MapsController.to.startNavigation(lat!, lng!, parkingName!),
       ),
     );
 
@@ -220,7 +202,7 @@ class ParkingInfo extends StatelessWidget {
             focusElevation: 0,
             backgroundColor: Colors.transparent,
             child: Icon(
-              isFavorited.value ? Icons.star : Icons.star_outline,
+              isFavorited.value! ? Icons.star : Icons.star_outline,
               size: 30,
               color: Colors.grey[850],
             ),
@@ -234,11 +216,11 @@ class ParkingInfo extends StatelessWidget {
                     duration: Duration(seconds: 3),
                     snackPosition: SnackPosition.BOTTOM,
                     onTap: (snackBar) =>
-                        DefaultTabController.of(context).animateTo(1),
+                        DefaultTabController.of(context)!.animateTo(1),
                     margin: EdgeInsets.only(
                         bottom: 86, left: widthPadding, right: widthPadding),
                     animationDuration: Duration(milliseconds: 250),
-                    backgroundColor: Colors.grey[50].withOpacity(0.7));
+                    backgroundColor: Colors.grey[50]!.withOpacity(0.7));
               }
             },
           ),
@@ -289,7 +271,7 @@ class ParkingInfo extends StatelessWidget {
             duration: Globals.EXPAND_ANIMATION_DURATION,
             padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
             width: widgetWidth,
-            height: isExpanded.value ? expandedHeight : unexpandedHeight,
+            height: isExpanded.value! ? expandedHeight : unexpandedHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               color: Color(0xE6FFFFFF),
@@ -324,9 +306,9 @@ class ParkingInfo extends StatelessWidget {
                       style: smallFontLight),
                   predictedAvailableWidget,
                   topPadding12,
-                  (isExpanded.value ? Container() : buttonsRow),
+                  (isExpanded.value! ? Container() : buttonsRow),
                   Padding(padding: EdgeInsets.only(top: 4)),
-                  (isExpanded.value ? expandedWidget : footerWidget),
+                  (isExpanded.value! ? expandedWidget : footerWidget),
                 ],
               ),
             ),

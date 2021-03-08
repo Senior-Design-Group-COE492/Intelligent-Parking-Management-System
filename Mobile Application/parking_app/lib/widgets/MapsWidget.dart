@@ -17,10 +17,10 @@ class Maps extends StatefulWidget {
 // switches to another tab and then comes back to it
 // the widget also needs to be stateful to use the mixin
 class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
-  bool serviceEnabled;
-  LocationPermission permission;
-  final MapsController mapsController = Get.put(MapsController());
-  BitmapDescriptor markerSvg;
+  bool? serviceEnabled;
+  LocationPermission? permission;
+  final MapsController? mapsController = Get.put(MapsController());
+  BitmapDescriptor? markerSvg;
 
   _MapsState() {
     _initializeMarkers();
@@ -45,7 +45,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
           MapsController.to.setGoogleMapController(controller);
           controller.setMapStyle(MapsGlobals.style);
         },
-        markers: state.markerSet,
+        markers: state.markerSet as Set<Marker>,
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
@@ -80,7 +80,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
     final currentLocation = await Geolocator.getCurrentPosition();
     MapsController.to.setCurrentLocation(currentLocation);
     final GoogleMapController controller =
-        await mapsController.controller.future;
+        await mapsController!.controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(currentLocation.latitude, currentLocation.longitude),
       zoom: 16,
