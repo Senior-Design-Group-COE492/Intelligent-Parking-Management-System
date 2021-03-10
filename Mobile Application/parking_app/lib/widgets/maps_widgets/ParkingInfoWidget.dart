@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
+  final String? carParkID;
   final String? distanceFromCurrent;
   final String? routeTimeFromCurrent;
   final int? currentAvailable;
@@ -24,6 +26,7 @@ class ParkingInfo extends StatelessWidget {
   final double? lng;
   final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
+
   ParkingInfo({
     Key? key,
     required this.distanceFromCurrent,
@@ -39,6 +42,7 @@ class ParkingInfo extends StatelessWidget {
     required this.shortTermParking,
     required this.nightParking,
     required this.parkingSystem,
+    required this.carParkID,
     this.isLoading = false,
   }) : super(key: key);
 
@@ -59,6 +63,7 @@ class ParkingInfo extends StatelessWidget {
     this.freeParking,
     this.shortTermParking,
     this.nightParking,
+    this.carParkID,
     this.parkingSystem,
   }) : isLoading = true;
 
@@ -130,11 +135,30 @@ class ParkingInfo extends StatelessWidget {
             ),
             width: headerTextWidth,
           ),
+          Expanded(
+            // EXpanded needed to prevent button from overflowing due to padding
+            child: FloatingActionButton(
+              // Can't use IconButton since ripple effect is messed up for it
+              // so using FAB with no elevation instead
+              hoverElevation: 0,
+              disabledElevation: 0,
+              highlightElevation: 0,
+              focusElevation: 0,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Icon(
+                Icons.close,
+                size: 35,
+              ),
+              onPressed: () => MapsController.to.hideInfoWindow(),
+            ),
+          ),
         ],
       ),
     );
 
-    final parkingTypeWidget = Text(parkingType!, style: TextStyle(fontSize: 12));
+    final parkingTypeWidget =
+        Text(parkingType!, style: TextStyle(fontSize: 12));
 
     final distanceFromCurrentWidget =
         Text(distanceFromCurrent!, style: smallFontWithColor);
@@ -148,8 +172,8 @@ class ParkingInfo extends StatelessWidget {
     final predictedAvailableWidget =
         Text(predictions![0].toString() + ' spaces', style: smallFontWithColor);
 
-    final gantryHeightWidget =
-        Text(gantryHeight!.toStringAsFixed(1) + ' m', style: smallFontWithColor);
+    final gantryHeightWidget = Text(gantryHeight!.toStringAsFixed(1) + ' m',
+        style: smallFontWithColor);
 
     final freeParkingWidget = Text(freeParking!, style: smallFontWithColor);
 
@@ -209,7 +233,12 @@ class ParkingInfo extends StatelessWidget {
             onPressed: () {
               if (LoginHandler.isSignedIn()) {
                 // TODO: Add/remove favorite from firestore here
+                final uid = LoginHandler.getCurrentUserID();
                 isFavorited.toggle();
+                if (isFavorited.value!)
+                  FirestoreHandler.addFavorite(carParkID!);
+                else
+                  FirestoreHandler.removeFavorite(carParkID!);
               } else {
                 Get.snackbar('Login required',
                     'Please login using the Favorites page first!',

@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
-import 'package:parking_app/widgets/FiltersWidget.dart';
-import 'package:parking_app/widgets/SearchResultsWidget.dart';
+import 'package:parking_app/widgets/search_widgets/FiltersWidget.dart';
+import 'package:parking_app/widgets/search_widgets/SearchResultsWidget.dart';
 
 class CustomTextField extends StatelessWidget {
   final FieldController? fieldController = Get.put(FieldController());

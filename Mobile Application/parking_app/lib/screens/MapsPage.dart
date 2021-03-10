@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
-import 'package:parking_app/widgets/CustomField.dart';
-import 'package:parking_app/widgets/MapsWidget.dart';
-import 'package:parking_app/widgets/ParkingInfoFromFutureWidget.dart';
+import 'package:parking_app/widgets/search_widgets/CustomField.dart';
+import 'package:parking_app/widgets/maps_widgets/MapsWidget.dart';
+import 'package:parking_app/widgets/maps_widgets/ParkingInfoFromFutureWidget.dart';
 
 class MapsPage extends StatelessWidget {
   final bool isHidden; // passed down from Navigation page

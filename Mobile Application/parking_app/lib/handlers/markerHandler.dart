@@ -75,15 +75,16 @@ class MarkerHandler {
 
     for (var i = 0; i < parkingLots!.length; i++) {
       final String indexString = i.toString();
-      final int nAvailableParkingSpaces = int.parse(
-          parkingLots![indexString]['carpark_info'][0]['lots_available']);
+      final int nAvailableParkingSpaces =
+          int.parse(parkingLots![indexString]['lots_available']);
       final double latitude = parkingLots![indexString]['lat'];
       final double longitude = parkingLots![indexString]['lng'];
       final LatLng latLng = LatLng(latitude, longitude);
       final handleMarkerTap = () async {
         // TODO: pass the actual parking ID from the json
         // instead of a specific ID
-        MapsController.to.showInfoWindow('HE45');
+        MapsController.to
+            .showInfoWindow(parkingLots![indexString]['carpark_number']);
         MapsController.to.moveMapCamera(latitude, longitude, 18);
       };
       final newMarker = await _makeParkingMarker(width, height,

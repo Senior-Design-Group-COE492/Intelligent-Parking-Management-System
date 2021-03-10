@@ -39,7 +39,8 @@ class LoginHandler {
 
       // Create a new credential
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken) as GoogleAuthCredential;
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken) as GoogleAuthCredential;
       // Once signed in, return the UserCredential
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
@@ -63,5 +64,9 @@ class LoginHandler {
   static bool isVerified() {
     // returns false if the user is not logged in or verified
     return auth.currentUser?.emailVerified ?? false;
+  }
+
+  static String? getCurrentUserID() {
+    return auth.currentUser!.uid;
   }
 }

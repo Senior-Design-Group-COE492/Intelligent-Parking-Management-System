@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/widgets/ParkingInfoWidget.dart';
+import 'package:parking_app/widgets/maps_widgets/ParkingInfoWidget.dart';
 
 class ParkingInfoFromFuture extends StatelessWidget {
   // returns the ParkingInfo widget and constructs it after reading
@@ -20,6 +20,7 @@ class ParkingInfoFromFuture extends StatelessWidget {
         }
         if (snapshot.hasData) {
           return ParkingInfo(
+            carParkID: 'HE45',
             currentAvailable: 245,
             distanceFromCurrent: '1.1 km',
             routeTimeFromCurrent: '22 minutes',
