@@ -10,6 +10,7 @@ import 'dart:ui' as ui;
 
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 
 class MarkerHandler {
   static Map? parkingLots;

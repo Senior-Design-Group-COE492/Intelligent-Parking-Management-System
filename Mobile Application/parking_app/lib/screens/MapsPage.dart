@@ -9,7 +9,7 @@ import 'package:parking_app/widgets/maps_widgets/ParkingInfoFromFutureWidget.dar
 class MapsPage extends StatelessWidget {
   final bool isHidden; // passed down from Navigation page
 
-  const MapsPage({Key? key, required this.isHidden}) : super(key: key);
+  MapsPage({Key? key, required this.isHidden}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

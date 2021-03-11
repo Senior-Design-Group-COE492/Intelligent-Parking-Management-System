@@ -3,29 +3,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreHandler {
   static final firestore = FirebaseFirestore.instance;
   static DocumentReference? user;
-  static DocumentSnapshot? _latestSnapshot;
+  static bool isInitialized = false;
 
   static Future<DocumentSnapshot> getUserInformation(String uid) async {
-    final snapshot = (user != null) ? user!.get() : _setDocumentReference(uid);
-    _latestSnapshot = await snapshot;
+    final snapshot = user?.get() ?? _setDocumentReference(uid);
+    isInitialized = true;
     return snapshot;
   }
 
+  static Future<Stream<DocumentSnapshot>> getUserInformationStream(
+      String uid) async {
+    // note: get user information must be called first!
+    if (user == null) await _setDocumentReference(uid);
+    final stream = user!.snapshots();
+    return stream;
+  }
+
   static Future<void> addFavorite(String carParkID) {
-    final currentFavorites =
-        _latestSnapshot!.data()!['favorites'] as List<dynamic>;
-    currentFavorites.add(carParkID);
-    return user!.update({'favorites': currentFavorites});
+    print('entered handler!');
+    return user!.update({
+      'favorites': FieldValue.arrayUnion([carParkID])
+    });
   }
 
   static Future<void> removeFavorite(String carParkID) {
-    final currentFavorites =
-        _latestSnapshot!.data()!['favorites'] as List<dynamic>;
-    currentFavorites.remove(carParkID);
-    return user!.update({'favorites': currentFavorites});
+    return user!.update({
+      'favorites': FieldValue.arrayRemove([carParkID])
+    });
   }
 
-  static void _addUserDocumentToFirestore(String uid) {
+  static void _createUserDocument(String uid) {
     user = firestore.collection('users').doc(uid);
     user!.set({'favorites': []});
   }
@@ -39,11 +46,15 @@ class FirestoreHandler {
         return doc;
       } else {
         // add a document for this user since they are not in the collection
-        _addUserDocumentToFirestore(uid);
+        _createUserDocument(uid);
         return firestore.collection('users').doc(uid).get();
       }
     } catch (e) {
       throw (e);
     }
+  }
+
+  static Future<void> signOutFromFirestore() async {
+    user = null;
   }
 }

@@ -6,7 +6,7 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
-import 'package:parking_app/widgets/PredictionsBarChart.dart';
+import 'package:parking_app/widgets//maps_widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
   final String? carParkID;
@@ -233,7 +233,6 @@ class ParkingInfo extends StatelessWidget {
             onPressed: () {
               if (LoginHandler.isSignedIn()) {
                 // TODO: Add/remove favorite from firestore here
-                final uid = LoginHandler.getCurrentUserID();
                 isFavorited.toggle();
                 if (isFavorited.value!)
                   FirestoreHandler.addFavorite(carParkID!);

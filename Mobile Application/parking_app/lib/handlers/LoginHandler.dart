@@ -1,5 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parking_app/controller/LoginController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -58,6 +59,7 @@ class LoginHandler {
 
   static Future<void> signOut() async {
     await auth.signOut();
+    FirestoreHandler.signOutFromFirestore();
     LoginController.to.setIsSignedIn(false);
   }
 
