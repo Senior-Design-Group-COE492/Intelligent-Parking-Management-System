@@ -13,6 +13,8 @@ class Parking:
         db = firestore.client()
         #for every record in the df, store it in the parking_info collection using the parking ID as document ID
         parking = []
+        #turned it into an array of hashmaps of hashmaps of the parking info such that the car_park_id of the location is the key and
+        # the value is an array of the rest of the parking details hashmaps 
         for i in range (0,len(info_df)):
             parking.append({
                 str(info_df.iloc[i][1]):[ 
@@ -27,11 +29,14 @@ class Parking:
                 {u'car_park_basement': True if info_df.iloc[i][10] == 'Y' else False},
                 {u'location': (info_df.iloc[0][11] , info_df.iloc[i][12])}]
             })
-
+        
+        #sending the array to firestore
         data = {
             u'parking' : parking
         }
         db.collection(u'parking_info').document('parkings').set(data)
+
+        #return true after you're done
         return (True,)
 
 
