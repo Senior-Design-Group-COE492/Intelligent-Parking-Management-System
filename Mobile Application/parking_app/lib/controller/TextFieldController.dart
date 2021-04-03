@@ -13,13 +13,40 @@ class FieldController extends GetxController {
         update(),
       };
 
-  int groupValue = 1;
-  RxInt radioValue = 0.obs;
-  changeRadio(dynamic newValue) {
-    radioValue.value = newValue;
-    groupValue = newValue;
+  RxDouble gantrySliderValue = 180.0.obs;
+  gantryChangeSlder(double value) => {
+        gantrySliderValue.value = value,
+        update(),
+      };
+
+  int freeGroupValue = 1;
+  RxInt freeRadioValue = 0.obs;
+  changeFreeRadio(dynamic newValue) {
+    freeRadioValue.value = newValue;
+    freeGroupValue = newValue;
+    update();
+    print(freeGroupValue);
+    print(freeRadioValue.value);
+  }
+
+  int nightGroupValue = 1;
+  RxInt nightRadioValue = 0.obs;
+  changeNightRadio(dynamic newValue) {
+    nightRadioValue.value = newValue;
+    nightGroupValue = newValue;
+    update();
+    print(nightGroupValue);
+    print(nightRadioValue.value);
+  }
+
+  int parkingTypeGroupValue = 1;
+  RxInt parkingTypeRadioValue = 0.obs;
+  changeParkingTypeRadio(dynamic newValue) {
+    parkingTypeRadioValue.value = newValue;
+    parkingTypeGroupValue = newValue;
     update();
   }
+
 
   RxBool isSurface = false.obs;
   RxBool isMechanised = false.obs;
@@ -29,4 +56,6 @@ class FieldController extends GetxController {
   RxBool isFree = false.obs;
   RxBool isSearching = false.obs;
   RxBool isExpanded = false.obs;
+  RxBool isNight = false.obs;
+  RxBool isElectronic = false.obs;
 }

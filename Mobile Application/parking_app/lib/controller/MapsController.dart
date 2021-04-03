@@ -10,7 +10,7 @@ class MapsController extends GetxController {
   // https://github.com/jonataslaw/getx/blob/master/documentation/en_US/state_management.md#simple-state-manager
   // use GetBuilder when actually using the controller
   // use MapsController.to.func() for functions
-  Position currentLocation;
+  Position? currentLocation;
   Set markerSet = Set<Marker>();
   bool isHidden = false;
   bool isParkingInfo =

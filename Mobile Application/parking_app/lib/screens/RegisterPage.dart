@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/widgets/EmailRegisterWidget.dart';
+import 'package:parking_app/widgets/authentication_widgets/EmailRegisterWidget.dart';
 
 class RegisterPage extends StatelessWidget {
   @override

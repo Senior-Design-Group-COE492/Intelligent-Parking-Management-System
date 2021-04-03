@@ -1,5 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parking_app/controller/LoginController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,10 +27,10 @@ class LoginHandler {
     return false;
   }
 
-  static Future<UserCredential> signInWithGoogle() async {
+  static Future<UserCredential?> signInWithGoogle() async {
     // Trigger the authentication flow
     try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         throw ('Google user is null!');
       }
@@ -39,7 +40,8 @@ class LoginHandler {
 
       // Create a new credential
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken) as GoogleAuthCredential;
       // Once signed in, return the UserCredential
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
@@ -57,11 +59,16 @@ class LoginHandler {
 
   static Future<void> signOut() async {
     await auth.signOut();
+    FirestoreHandler.signOutFromFirestore();
     LoginController.to.setIsSignedIn(false);
   }
 
   static bool isVerified() {
     // returns false if the user is not logged in or verified
     return auth.currentUser?.emailVerified ?? false;
+  }
+
+  static String? getCurrentUserID() {
+    return auth.currentUser!.uid;
   }
 }

@@ -14,14 +14,14 @@ class FavoritedParkingInfo extends StatelessWidget {
   final String currentAvailable;
   final List<int> predictions;
   const FavoritedParkingInfo({
-    Key key,
-    @required this.carParkID,
-    @required this.lat,
-    @required this.lng,
-    @required this.parkingName,
-    @required this.parkingType,
-    @required this.currentAvailable,
-    @required this.predictions,
+    Key? key,
+    required this.carParkID,
+    required this.lat,
+    required this.lng,
+    required this.parkingName,
+    required this.parkingType,
+    required this.currentAvailable,
+    required this.predictions,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class FavoritedParkingInfo extends StatelessWidget {
     final LatLng latLng = LatLng(lat, lng);
 
     final viewMapOnPressed = () async {
-      DefaultTabController.of(context).animateTo(0);
+      DefaultTabController.of(context)!.animateTo(0);
       MapsController.to.showInfoWindow('HE45');
       final GoogleMapController controller =
           await MapsController.to.controller.future;

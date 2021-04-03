@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parking_app/widgets/EmailLoginWidget.dart';
+import 'package:parking_app/widgets/authentication_widgets/EmailLoginWidget.dart';
 
 class LoginPage extends StatelessWidget {
   @override

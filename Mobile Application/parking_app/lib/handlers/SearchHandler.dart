@@ -18,7 +18,7 @@ class SearchHandler {
       if (place.formattedAddress == null)
         combinedAddress.add(place.name);
       else
-        combinedAddress.add(place.name + ', ' + place.formattedAddress);
+        combinedAddress.add(place.name + ', ' + place.formattedAddress!);
     }
     return combinedAddress;
   }

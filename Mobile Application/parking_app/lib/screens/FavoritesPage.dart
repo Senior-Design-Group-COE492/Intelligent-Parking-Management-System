@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/LoginController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/screens/SettingsPage.dart';
-import 'package:parking_app/widgets/FavoritedParkingInfoWidget.dart';
-import 'package:parking_app/widgets/LoginSelectorWidget.dart';
+import 'package:parking_app/widgets/favorites_widgets/FavoritedParkingInfoWidget.dart';
+import 'package:parking_app/widgets/authentication_widgets/LoginSelectorWidget.dart';
+import 'package:parking_app/widgets/favorites_widgets/FavoritesListWidget.dart';
 
 class Favorites extends StatelessWidget {
   @override
@@ -22,24 +24,6 @@ class Favorites extends StatelessWidget {
       highlightColor: Colors.black12,
     );
 
-    final parkingWidget = FavoritedParkingInfo(
-      parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-      parkingType: 'Basement Car Park',
-      currentAvailable: '245',
-      carParkID: 'HE45',
-      lat: 1,
-      lng: 30,
-      predictions: [235],
-    );
-
-    var widgetList = <Widget>[
-      parkingWidget,
-      parkingWidget,
-      parkingWidget,
-      parkingWidget,
-      parkingWidget,
-    ].obs;
-
     return GetBuilder<LoginController>(
       init: LoginController(),
       builder: (state) => Scaffold(
@@ -56,42 +40,7 @@ class Favorites extends StatelessWidget {
             ],
           ),
         ],
-        body: state.isSignedIn
-            ? Obx(
-                () => Container(
-                  padding: EdgeInsets.only(left: 15, top: 0),
-                  child: ListView.builder(
-                    padding: EdgeInsets.only(top: 16),
-                    shrinkWrap: true,
-                    itemCount: widgetList.length,
-                    itemBuilder: (context, index) {
-                      final double padding =
-                          index == widgetList.length - 1 ? 90 : 10;
-                      return Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(child: widgetList[index]),
-                              IconButton(
-                                icon: Icon(Icons.delete_forever),
-                                onPressed: () => {
-                                  widgetList.removeAt(index),
-                                  print(index),
-                                  print(widgetList.length)
-                                },
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: padding),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              )
-            : LoginSelectorWidget(),
+        body: state.isSignedIn ? FavoritesList() : LoginSelectorWidget(),
       )),
     );
   }
