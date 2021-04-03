@@ -1,4 +1,4 @@
-ignore,CarParkID,address,car_park_type,type_of_parking_system,short_term_parking,free_parking,night_parking,car_park_decks,gantry_height,car_park_basement,lat,lng
+,CarParkID,address,car_park_type,type_of_parking_system,short_term_parking,free_parking,night_parking,car_park_decks,gantry_height,car_park_basement,lat,lng
 0,A2,BLK 206/207 ANG MO KIO STREET 22,SURFACE CAR PARK,ELECTRONIC PARKING,WHOLE DAY,SUN & PH FR 7AM-10.30PM,YES,0,0.0,N,1.366237056,103.8430464
 1,A4,BLK 217/220 ANG MO KIO AVENUE 1,SURFACE CAR PARK,ELECTRONIC PARKING,WHOLE DAY,SUN & PH FR 7AM-10.30PM,YES,0,4.5,N,1.365691621,103.8411922
 2,A7,BLK 212/213 ANG MO KIO STREET 23,SURFACE CAR PARK,ELECTRONIC PARKING,WHOLE DAY,SUN & PH FR 7AM-10.30PM,YES,0,4.5,N,1.368392487,103.8413018
