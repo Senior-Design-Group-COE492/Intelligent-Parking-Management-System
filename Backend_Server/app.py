@@ -1,9 +1,11 @@
-from flask import Flask, firebase_admin, os, jsonify
-from firebase_admin import credentials
+from flask import Flask, jsonify
+import os
+import firebase_admin
+from firebase_admin import credentials,firestore
 
+from parking import Parking
 app = Flask(__name__)
 app.config.from_object("config")
-
 
 #initializing the sdk
 default_app = firebase_admin.initialize_app()
@@ -11,11 +13,15 @@ default_app = firebase_admin.initialize_app()
 ## not using this to auth because OAuth 2.0 tokens are not supported with  firestore
 #cred = credentials.Certificate("parkingapp-6ecfd-firebase-adminsdk-4dxe4-9280754b4c.json")
 #firebase_admin.initialize_app(cred)
+#db = firestore.client()
 
 @app.route("/")
 def main():
     print("server running")
-    return jsonify(success = True)
+    #result = Parking.initializeLocations()   ##ONLY UNCOMMENT THIS WHEN YOU WANT TO RESET THE PARKING LOCATIONS COLLECTION
+    result = True
+    #start thread forr prediction
+    return jsonify(success = result)
 
 ###Parking methods###
 
@@ -24,20 +30,4 @@ def main():
 def getParking():
     pass
 
-#update parking info on firebase
-@app.route("/parking",methods = ["PATCH"])
-def updateParking():
-    pass
-
 ######################
-
-##Prediction methods##
-@app.route("/predict",methods = ["GET"])
-def getPrediction():
-    pass
-
-
-
-# @app.route("/editUser", methods = ["POST","GET"])
-# def updateUser():
-#     pass
