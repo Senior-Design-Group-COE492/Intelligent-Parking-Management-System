@@ -7,7 +7,7 @@ import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
 
 class SearchWidget extends StatelessWidget {
-  final Future<List<PlacesSearchResult>>? placesFuture;
+  final Future<List<dynamic>>? placesFuture;
   final FieldController? fieldController = Get.put(FieldController());
 
   SearchWidget({Key? key, this.placesFuture}) : super(key: key);
@@ -56,8 +56,10 @@ class SearchWidget extends StatelessWidget {
                           style: TextStyle(color: Colors.black)),
                       onPressed: () {
                         // TODO: send request to server with filter info
-                        final lat = snapshot.data[index].geometry.location.lat;
-                        final lng = snapshot.data[index].geometry.location.lng;
+                        final lat =
+                            snapshot.data[index]['geometry']['location']['lat'];
+                        final lng =
+                            snapshot.data[index]['geometry']['location']['lng'];
                         MapsController.to.moveMapCamera(lat, lng, 16);
                         // updating state once instead of twice
                         fieldController!.isSearching.value = false;
