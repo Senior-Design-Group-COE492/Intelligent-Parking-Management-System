@@ -10,11 +10,21 @@ from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
 import firebase_admin
 from firebase_admin import credentials,firestore
-
 from parking import Parking
+
+#initializing the sdk
+default_app = firebase_admin.initialize_app()
+
+## not using this to auth because OAuth 2.0 tokens are not supported with  firestore
+#cred = credentials.Certificate("parkingapp-6ecfd-firebase-adminsdk-4dxe4-9280754b4c.json")
+#firebase_admin.initialize_app(cred)
+#db = firestore.client()
+
 app = Flask(__name__)
 app.config.from_object("config")
-info_df = pd.read_csv('D:\SeniorProject\Intelligent-Parking-Management-System\Backend Server\hdb-carpark-information-with-lat-lng.csv')
+
+
+info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
 R = 6373.0
 parkings = info_df[['CarParkID','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
 no=[]
@@ -38,13 +48,7 @@ def DistCalc(latitude,longtitude):
             print(location[j])
             j+=1
     return location
-#initializing the sdk
-default_app = firebase_admin.initialize_app()
 
-## not using this to auth because OAuth 2.0 tokens are not supported with  firestore
-#cred = credentials.Certificate("parkingapp-6ecfd-firebase-adminsdk-4dxe4-9280754b4c.json")
-#firebase_admin.initialize_app(cred)
-#db = firestore.client()
 
 @app.route("/")
 def main():
