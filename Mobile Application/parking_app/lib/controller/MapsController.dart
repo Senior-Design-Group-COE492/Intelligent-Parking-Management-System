@@ -17,7 +17,7 @@ class MapsController extends GetxController {
       false; // info window shown when true, textfield shown when false
   String parkingId = '';
   Completer<GoogleMapController> controller = Completer();
-  bool isLoading = false;
+  bool isLoading = true;
   final availableMapsFuture = MapLauncher.installedMaps;
   static MapsController get to => Get.find();
 

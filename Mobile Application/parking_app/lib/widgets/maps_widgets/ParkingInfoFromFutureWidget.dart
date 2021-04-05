@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoWidget.dart';
 
 class ParkingInfoFromFuture extends StatelessWidget {
@@ -19,22 +20,22 @@ class ParkingInfoFromFuture extends StatelessWidget {
           return Container();
         }
         if (snapshot.hasData) {
+          final carPark = MarkerHandler.parkingLots![parkingId];
           return ParkingInfo(
-            carParkID: 'HE45',
+            carParkID: parkingId,
             currentAvailable: 245,
             distanceFromCurrent: '1.1 km',
             routeTimeFromCurrent: '22 minutes',
             predictions: [179],
-            parkingName: 'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-            parkingType: 'Basement Car Park',
-            gantryHeight: 4.5,
-            freeParking:
-                'All day on Sunday and public holidays, and Friday between 7AM - 10:30PM',
-            shortTermParking: 'Available for the whole day',
-            nightParking: 'Yes',
-            parkingSystem: 'Electronic',
-            lat: 1.01,
-            lng: 30,
+            parkingName: carPark['address'],
+            parkingType: carPark['car_park_type'],
+            gantryHeight: carPark['gantry_height'],
+            freeParking: carPark['free_parking'],
+            shortTermParking: carPark['short_term_parking'],
+            nightParking: carPark['night_parking'],
+            parkingSystem: carPark['type_of_parking_system'],
+            lat: carPark['lat'],
+            lng: carPark['lng'],
           );
         }
         // displays a circular progress
