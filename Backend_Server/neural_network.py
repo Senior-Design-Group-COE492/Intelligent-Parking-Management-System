@@ -7,7 +7,7 @@ import os
 from pytz import timezone
 
 class NN:
-    def getCurrentAvailability(info_df=pd.DataFrame()):
+    def getCurrentAvailability(self,info_df=pd.DataFrame()):
         # gets current availability from Singapore Government's 'Carpark Availability' API
         response = requests.get('https://api.data.gov.sg/v1/transport/carpark-availability')
         parking_availability = response.json()['items'][0]
@@ -28,7 +28,7 @@ class NN:
         df = df.drop(['carpark_info'], axis=1)
         return df
 
-    def getSequenceFromCurrentTime(minutes_in_future=225, minute_increments=15):
+    def getSequenceFromCurrentTime(self,minutes_in_future=225, minute_increments=15):
         # creates a list of dataframes, that is
         # each taken from the api at minute_increments apart from each other
         # until the minutes_in_future is reached, then returns the list of dataframes
@@ -81,7 +81,7 @@ class NN:
                 
         return df_list
     
-    def sortDataframeList(df_list, merge_with_info=False, info_df=pd.DataFrame()):
+    def sortDataframeList(self,df_list, merge_with_info=False, info_df=pd.DataFrame()):
         # combines the df_list into one dataframe, then sorts it
         # if merge_with_info is set to True, then the sorted df 
         # is merged with the info_df that is passed to the function
@@ -98,7 +98,7 @@ class NN:
         return combined_df_sorted
 
     # adding some extra features
-    def addFeaturesToDataframe(combined_df_sorted):
+    def addFeaturesToDataframe(self,combined_df_sorted):
         # adds cyclical data of month, day, hour and minute
         # converts DataSeries into int then does the sin and cos transformation of each time unit
         combined_df_sorted['month_sin'] = np.sin(combined_df_sorted['month'].astype(int).to_numpy() * 2 * np.pi / 12)
@@ -111,7 +111,7 @@ class NN:
         combined_df_sorted['minute_cos'] = np.cos(combined_df_sorted['minute'].astype(int).to_numpy() * 2 * np.pi / 60)
         return combined_df_sorted
         
-    def convertDataframeToList(df):
+    def convertDataframeToList(self,df):
         # seperates grouping into seperate lists by parking area
         df_grouped = df.groupby('carpark_number', axis=0)
         df_list_by_number = list(df_grouped)
@@ -120,14 +120,14 @@ class NN:
         return df_list_by_number
 
 
-    def generateEverything():
-        df = getCurrentAvailability()
+    def generateEverything(self):
+        df = self.getCurrentAvailability()
         info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
         # merges the availability dataframe with the iformation dataframe
         merged_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['CarParkID']).drop(['CarParkID', 'Unnamed: 0'], axis=1)
-        df_list = getSequenceFromCurrentTime()
-        combined_df_sorted = sortDataframeList(df_list)
-        new_df = addFeaturesToDataframe(combined_df_sorted)
-        new_df_list = convertDataframeToList(new_df)
+        df_list = self.getSequenceFromCurrentTime()
+        combined_df_sorted = self.sortDataframeList(df_list)
+        new_df = self.addFeaturesToDataframe(combined_df_sorted)
+        new_df_list = self.convertDataframeToList(new_df)
 
         return new_df_list

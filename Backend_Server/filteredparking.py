@@ -8,37 +8,17 @@ from flask import Flask,request, jsonify,make_response
 import os
 from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
-info_df = pd.read_csv('D:\SeniorProject\Intelligent-Parking-Management-System\Backend Server\hdb-carpark-information-with-lat-lng.csv')
+from neural_network import NN
+info_df = pd.read_csv('D:\SeniorProject\Intelligent-Parking-Management-System\Backend_Server\hdb-carpark-information-with-lat-lng.csv')
+#id_df = pd.read_csv('D:\SeniorProject\Intelligent-Parking-Management-System\Backend_Server\selected_carparks.csv')
 app = Flask(__name__)
 # approximate radius of earth in km
 R = 6373.0
 parkings = info_df[['CarParkID','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
-def getCurrentAvailability(info_df=pd.DataFrame()):
-    # gets current availability from Singapore Government's 'Carpark Availability' API
-    response = requests.get('https://api.data.gov.sg/v1/transport/carpark-availability')
-    parking_availability = response.json()['items'][0]
-    timestamp = parking_availability['timestamp']
-    df = pd.DataFrame(parking_availability['carpark_data'])
-    # Seperate info into arrays, as pandas isn't seperating them properly
-    total_lots = []
-    lot_type = []
-    lots_available = []
-    for carpark_info in parking_availability['carpark_data']:
-        total_lots.append(carpark_info['carpark_info'][0]['total_lots'])
-        lot_type.append(carpark_info['carpark_info'][0]['lot_type'])
-        lots_available.append(carpark_info['carpark_info'][0]['lots_available'])
-    # Add the new columns and delete the unneeded one
-    df['total_lots'] = total_lots
-    df['lot_type'] = lot_type
-    df['lots_available'] = lots_available
-    df = df.drop(['carpark_info'], axis=1)
-    return df
-
-df = getCurrentAvailability()
-info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
-# merges the availability dataframe with the iformation dataframe
-merged_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['CarParkID']).drop(['CarParkID', 'Unnamed: 0'], axis=1)
-#count for coordinates added
+NN=NN()
+df=NN.getCurrentAvailability()
+df=pd.merge(df, parkings, left_on=['carpark_number'], right_on=['CarParkID'])
+#df=df[df['CarParkID']==id_df['carpark_number']]
 no=[]
 location=[]
 def DistCalc(latitude,longtitude):
@@ -66,10 +46,10 @@ def filter():
     if request.is_json:
         req=request.get_json()
         id=DistCalc(req.get("lat"),req.get("lon"))
-        filtparkings=parkings[(parkings['night_parking']==req.get("night_parking")) & (parkings['free_parking']==req.get("free_parking")) & (parkings['car_park_type'].isin(req.get("car_park_type"))) & (parkings['type_of_parking_system']==req.get("type_of_parking_system"))]
+        filtparkings=df[(df['night_parking']==req.get("night_parking")) & (df['free_parking']==req.get("free_parking")) & (df['car_park_type'].isin(req.get("car_park_type"))) & (df['type_of_parking_system']==req.get("type_of_parking_system"))]
         filteredparkings=filtparkings[filtparkings['CarParkID'].isin(id)]
         print(filteredparkings)
-        res=filteredparkings[['CarParkID','lat','lng']].set_index('CarParkID').T.to_json()
+        res=filteredparkings[['CarParkID','lat','lng','lots_available']].set_index('CarParkID').T.to_json()
         return res
     else:
         res=make_response(jsonify({"message":"No JSON received"}),400)
