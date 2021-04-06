@@ -10,7 +10,6 @@ import 'dart:ui' as ui;
 
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
-import 'package:parking_app/handlers/FirestoreHandler.dart';
 
 class MarkerHandler {
   static Map? parkingLots;
@@ -67,8 +66,7 @@ class MarkerHandler {
   }
 
   static void addMarkersFromJson(BuildContext context) async {
-    if (parkingLots == null)
-      throw ("Initialize the parking information by using getJsonFromFile first!");
+    if (parkingLots == null) await getJsonFromFile();
     MapsController.to.setIsLoading(true);
     MediaQueryData queryData = MediaQuery.of(context);
     double devicePixelRatio = queryData.devicePixelRatio;
@@ -98,6 +96,7 @@ class MarkerHandler {
       // for performance, state is only updated after all the markers are added
     });
 
+    MapsController.to.setDisplayedCarParks(parkingLots!);
     MapsController.to.setIsLoading(false);
   }
 }

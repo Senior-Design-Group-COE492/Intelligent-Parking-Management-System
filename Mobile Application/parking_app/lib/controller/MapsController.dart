@@ -18,11 +18,18 @@ class MapsController extends GetxController {
   String parkingId = '';
   Completer<GoogleMapController> controller = Completer();
   bool isLoading = true;
+  Map? displayedCarParks;
+
   final availableMapsFuture = MapLauncher.installedMaps;
   static MapsController get to => Get.find();
 
-  void setCurrentLocation(newCurrentLocation) {
+  void setCurrentLocation(Position newCurrentLocation) {
     currentLocation = newCurrentLocation;
+    update();
+  }
+
+  void setDisplayedCarParks(Map newDisplayedCarParks) {
+    displayedCarParks = newDisplayedCarParks;
     update();
   }
 

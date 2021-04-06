@@ -1,31 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
+import 'package:parking_app/handlers/SearchHandler.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoWidget.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ParkingInfoFromFuture extends StatelessWidget {
   // returns the ParkingInfo widget and constructs it after reading
   // the parking info from Firestore
   final String parkingId;
-  ParkingInfoFromFuture({Key? key, required this.parkingId})
-      // TODO: replace future delay with a reading from Firestore
-      : super(key: key);
+  ParkingInfoFromFuture({Key? key, required this.parkingId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final carPark = MarkerHandler.parkingLots![parkingId];
+    print(MapsController.to.currentLocation);
     return FutureBuilder(
-      // TODO: modify future to read from Firestore instead
-      future: Future.delayed(Duration(seconds: 2), () => 5),
+      // TODO: modify future to read from Firestore as well
+      future: MapsController.to.currentLocation != null
+          ? SearchHandler.getRouteTime(MapsController.to.currentLocation!,
+              carPark['lat'], carPark['lng'])
+          : Future.delayed(Duration(seconds: 1)),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Container();
         }
         if (snapshot.hasData) {
-          final carPark = MarkerHandler.parkingLots![parkingId];
+          print((snapshot.data! as Map)['status']);
           return ParkingInfo(
             carParkID: parkingId,
             currentAvailable: 245,
-            distanceFromCurrent: '1.1 km',
-            routeTimeFromCurrent: '22 minutes',
+            distanceFromCurrent:
+                (snapshot.data! as Map)['status'] != 'ZERO_RESULTS'
+                    ? (snapshot.data! as Map)['distance']['text']
+                    : 'Enable location to see this.',
+            routeTimeFromCurrent:
+                (snapshot.data! as Map)['status'] != 'ZERO_RESULTS'
+                    ? (snapshot.data! as Map)['duration']['text']
+                    : 'Enable location to see this.',
             predictions: [179],
             parkingName: carPark['address'],
             parkingType: carPark['car_park_type'],

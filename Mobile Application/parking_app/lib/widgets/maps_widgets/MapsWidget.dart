@@ -78,6 +78,12 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
     }
 
     final currentLocation = await Geolocator.getCurrentPosition();
+
+    Timer.periodic(new Duration(seconds: 10), (timer) async {
+      final currentLocation = await Geolocator.getCurrentPosition();
+      MapsController.to.setCurrentLocation(currentLocation);
+    });
+
     MapsController.to.setCurrentLocation(currentLocation);
     final GoogleMapController controller =
         await mapsController!.controller.future;
