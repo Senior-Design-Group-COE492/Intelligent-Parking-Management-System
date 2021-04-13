@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 
 class FavoritedParkingInfo extends StatelessWidget {
   final String carParkID;
@@ -11,7 +14,7 @@ class FavoritedParkingInfo extends StatelessWidget {
   final double lng;
   final String parkingName;
   final String parkingType;
-  final String currentAvailable;
+  final Stream<DocumentSnapshot> currentAvailableStream;
   final List<int> predictions;
   const FavoritedParkingInfo({
     Key? key,
@@ -20,7 +23,7 @@ class FavoritedParkingInfo extends StatelessWidget {
     required this.lng,
     required this.parkingName,
     required this.parkingType,
-    required this.currentAvailable,
+    required this.currentAvailableStream,
     required this.predictions,
   }) : super(key: key);
 
@@ -28,7 +31,7 @@ class FavoritedParkingInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double widgetHeight = 202;
+    final double widgetHeight = 186;
     final double headerTextWidth =
         Get.width * 0.717; // 269/375 = 0.915 (from design)
 
@@ -36,7 +39,8 @@ class FavoritedParkingInfo extends StatelessWidget {
 
     final viewMapOnPressed = () async {
       DefaultTabController.of(context)!.animateTo(0);
-      MapsController.to.showInfoWindow('HE45');
+      FirestoreHandler.updateCurrentInformationStream();
+      WidgetsController.to.showInfoWindow(carParkID);
       final GoogleMapController controller =
           await MapsController.to.controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -111,11 +115,34 @@ class FavoritedParkingInfo extends StatelessWidget {
     );
 
     final parkingTypeWidget = Text(parkingType, style: TextStyle(fontSize: 12));
-    final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
-        style: smallFontWithColor);
+
+    final loadingIndicator = Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
+        ),
+        height: 15,
+        width: 15,
+      ),
+    );
+
+    final currentAvailableWidget = StreamBuilder(
+        stream: currentAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          return Text(
+              snapshot.data?.data()?['parking'][carParkID]['lots_available'] +
+                  ' spaces',
+              style: smallFontWithColor);
+        });
+
     return Container(
       width: widgetWidth,
-      height: widgetHeight,
       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),

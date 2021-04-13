@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
 
 class MarkerHandler {
@@ -18,6 +19,7 @@ class MarkerHandler {
     final parkingLotsString = await rootBundle
         .loadString("assets/carpark_info/mock/hdb-carpark-information.json");
     parkingLots = jsonDecode(parkingLotsString);
+    MapsController.to.setAllCarParks((parkingLots as Map));
   }
 
   static Future<Marker> _makeParkingMarker(
@@ -67,7 +69,7 @@ class MarkerHandler {
 
   static void addMarkersFromJson(BuildContext context) async {
     if (parkingLots == null) await getJsonFromFile();
-    MapsController.to.setIsLoading(true);
+    WidgetsController.to.setIsLoading(true);
     MediaQueryData queryData = MediaQuery.of(context);
     double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
@@ -82,7 +84,7 @@ class MarkerHandler {
       final LatLng latLng = LatLng(latitude, longitude);
 
       final handleMarkerTap = () async {
-        MapsController.to.showInfoWindow(carParkID);
+        WidgetsController.to.showInfoWindow(carParkID);
         MapsController.to.moveMapCamera(latitude, longitude, 18);
       };
 
@@ -97,6 +99,6 @@ class MarkerHandler {
     });
 
     MapsController.to.setDisplayedCarParks(parkingLots!);
-    MapsController.to.setIsLoading(false);
+    WidgetsController.to.setIsLoading(false);
   }
 }

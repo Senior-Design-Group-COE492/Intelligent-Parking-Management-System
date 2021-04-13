@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
+import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/widgets/favorites_widgets/FavoritedParkingInfoWidget.dart';
 
 class FavoritesList extends StatelessWidget {
@@ -27,12 +28,9 @@ class FavoritesList extends StatelessWidget {
             return StreamBuilder(
               stream: snapshot.data,
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Something went wrong');
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.hasError) return Text('Something went wrong');
+                if (snapshot.connectionState == ConnectionState.waiting)
                   return indicator;
-                }
                 final favoritesList = snapshot.data?.data()?['favorites'];
                 return Container(
                   padding: EdgeInsets.only(left: 15, top: 0),
@@ -43,14 +41,17 @@ class FavoritesList extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final double padding =
                           (index == favoritesList.length - 1) ? 90 : 10;
+                      final carParkID = favoritesList[index];
+                      final carParkInfo = MarkerHandler.parkingLots![carParkID];
+
                       final favoriteWidget = FavoritedParkingInfo(
-                        carParkID: favoritesList[index],
-                        currentAvailable: '123',
-                        lat: 1.01,
-                        lng: 1.02,
-                        parkingName:
-                            'BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK',
-                        parkingType: 'Basement Car Park',
+                        carParkID: carParkID,
+                        currentAvailableStream:
+                            FirestoreHandler.currentAvailStream,
+                        lat: carParkInfo['lat'],
+                        lng: carParkInfo['lng'],
+                        parkingName: carParkInfo['address'],
+                        parkingType: carParkInfo['car_park_type'],
                         predictions: [30],
                       );
                       return Column(

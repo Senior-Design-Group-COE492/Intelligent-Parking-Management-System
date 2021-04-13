@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
@@ -12,7 +14,7 @@ class ParkingInfo extends StatelessWidget {
   final String? carParkID;
   final String? distanceFromCurrent;
   final String? routeTimeFromCurrent;
-  final int? currentAvailable;
+  final Stream<DocumentSnapshot>? currentAvailableStream;
   final String? parkingName;
   final String? parkingType;
   final double? gantryHeight;
@@ -24,14 +26,14 @@ class ParkingInfo extends StatelessWidget {
   final bool isLoading;
   final double? lat;
   final double? lng;
-  final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
+  RxBool isParkingInfoExpanded = false.obs;
 
   ParkingInfo({
     Key? key,
     required this.distanceFromCurrent,
     required this.routeTimeFromCurrent,
-    required this.currentAvailable,
+    required this.currentAvailableStream,
     required this.predictions,
     required this.parkingName,
     required this.parkingType,
@@ -53,7 +55,7 @@ class ParkingInfo extends StatelessWidget {
     Key? key,
     this.distanceFromCurrent,
     this.routeTimeFromCurrent,
-    this.currentAvailable,
+    this.currentAvailableStream,
     this.predictions,
     this.parkingName,
     this.parkingType,
@@ -150,7 +152,7 @@ class ParkingInfo extends StatelessWidget {
                 Icons.close,
                 size: 35,
               ),
-              onPressed: () => MapsController.to.hideInfoWindow(),
+              onPressed: () => WidgetsController.to.hideInfoWindow(),
             ),
           ),
         ],
@@ -166,8 +168,30 @@ class ParkingInfo extends StatelessWidget {
     final currentRouteTimeWidget =
         Text(routeTimeFromCurrent!, style: smallFontWithColor);
 
-    final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
-        style: smallFontWithColor);
+    final loadingIndicator = Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
+        ),
+        height: 15,
+        width: 15,
+      ),
+    );
+
+    final currentAvailableWidget = StreamBuilder(
+        stream: currentAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          return Text(
+              snapshot.data?.data()?['parking'][carParkID]['lots_available'] +
+                  ' spaces',
+              style: smallFontWithColor);
+        });
 
     final predictedAvailableWidget =
         Text(predictions![0].toString() + ' spaces', style: smallFontWithColor);
@@ -232,7 +256,6 @@ class ParkingInfo extends StatelessWidget {
             ),
             onPressed: () {
               if (LoginHandler.isSignedIn()) {
-                // TODO: Add/remove favorite from firestore here
                 isFavorited.toggle();
                 if (isFavorited.value!)
                   FirestoreHandler.addFavorite(carParkID!);
@@ -291,7 +314,7 @@ class ParkingInfo extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () => isExpanded.toggle(),
+      onTap: () => isParkingInfoExpanded.toggle(),
       child: Align(
         alignment: Alignment.topCenter,
         child: Obx(
@@ -299,7 +322,9 @@ class ParkingInfo extends StatelessWidget {
             duration: Globals.EXPAND_ANIMATION_DURATION,
             padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
             width: widgetWidth,
-            height: isExpanded.value! ? expandedHeight : unexpandedHeight,
+            height: isParkingInfoExpanded.value!
+                ? expandedHeight
+                : unexpandedHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               color: Color(0xE6FFFFFF),
@@ -334,9 +359,11 @@ class ParkingInfo extends StatelessWidget {
                       style: smallFontLight),
                   predictedAvailableWidget,
                   topPadding12,
-                  (isExpanded.value! ? Container() : buttonsRow),
+                  (isParkingInfoExpanded.value! ? Container() : buttonsRow),
                   Padding(padding: EdgeInsets.only(top: 4)),
-                  (isExpanded.value! ? expandedWidget : footerWidget),
+                  (isParkingInfoExpanded.value!
+                      ? expandedWidget
+                      : footerWidget),
                 ],
               ),
             ),
