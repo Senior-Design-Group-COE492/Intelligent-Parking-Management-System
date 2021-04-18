@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import os
+import json
 from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
 from neural_network import NN
@@ -10,30 +11,19 @@ from firebase_admin import credentials,firestore
 
 class Parking:
     def __init__(self):
-        self.info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
-        self.parkings = self.info_df[['CarParkID','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
+        info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
+        nn = NN()
+        df = nn.getCurrentAvailability()
+        self.info_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['carpark_number'])
+        self.parkings = self.info_df[['carpark_number','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
+        self.db = firestore.client()
 
     def initializeLocations(self):
         
-        db = firestore.client()
         #for every record in the df, store it in the parking_info collection using the parking ID as document ID
-        parking = {}
-        #turned it into an array of hashmaps of hashmaps of the parking info such that the car_park_id of the location is the key and
-        #the value is an array of the rest of the parking details hashmaps 
-        for i in range (0,len(info_df)):
-            parking[str(info_df.iloc[i][1])] = [
-                {u'address': str(info_df.iloc[i][2])},
-                {u'car_park_type': str(info_df.iloc[i][3])},
-                {u'type_of_parking_system': str(info_df.iloc[i][4])},
-                {u'short_term_parking': str(info_df.iloc[i][5])},
-                {u'free_parking': False if info_df.iloc[i][6] == 'NO' else True},
-                {u'night_parking': True if info_df.iloc[i][7] == 'YES' else False},
-                {u'car_park_decks': str(info_df.iloc[i][8])},
-                {u'gantry_height': str(info_df.iloc[i][9])},
-                {u'car_park_basement': True if info_df.iloc[i][10] == 'Y' else False},
-                {u'location': (info_df.iloc[0][11] , info_df.iloc[i][12])}
-            ]
-        #sending the array to firestore
+        parking = self.info_df.set_index('carpark_number').T.to_json()
+        parking = json.loads(parking)
+        #sending the array to firestored
         data = {
             u'parking' : parking
         }
@@ -42,6 +32,17 @@ class Parking:
         #return true after you're done
 
         return (True,)
+    
+    def updateCurrentAvailability(self):
+        parking = nn.getCurrentAvailability()
+        parking = self.info_df.set_index('carpark_number')[['lots_available']].T.to_json()
+        parking = json.loads(parking)
+        data = {
+            u'current_availability' : parking
+        }
+        db.collection(u'parking_info').document('parkings').set(data)
+
+
     
     def DistCalc(self,latitude,longtitude):
         R = 6373.0

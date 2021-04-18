@@ -26,6 +26,8 @@ class NN:
         df['lot_type'] = lot_type
         df['lots_available'] = lots_available
         df = df.drop(['carpark_info'], axis=1)
+        df = df[df['lot_type'] == 'C']
+        df.reset_index()
         return df
 
     def getSequenceFromCurrentTime(self,minutes_in_future=225, minute_increments=15):
@@ -121,10 +123,10 @@ class NN:
 
 
     def generateEverything(self):
-        df = self.getCurrentAvailability()
         info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
+        df = getCurrentAvailability()
         # merges the availability dataframe with the iformation dataframe
-        merged_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['CarParkID']).drop(['CarParkID', 'Unnamed: 0'], axis=1)
+        merged_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['carpark_number'])
         df_list = self.getSequenceFromCurrentTime()
         combined_df_sorted = self.sortDataframeList(df_list)
         new_df = self.addFeaturesToDataframe(combined_df_sorted)
