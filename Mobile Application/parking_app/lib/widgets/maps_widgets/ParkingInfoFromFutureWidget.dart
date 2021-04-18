@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoWidget.dart';
@@ -15,7 +16,7 @@ class ParkingInfoFromFuture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final carPark = MarkerHandler.parkingLots![parkingId];
-    print(MapsController.to.currentLocation);
+
     return FutureBuilder(
       // TODO: modify future to read from Firestore as well
       future: MapsController.to.currentLocation != null
@@ -30,7 +31,7 @@ class ParkingInfoFromFuture extends StatelessWidget {
           print((snapshot.data! as Map)['status']);
           return ParkingInfo(
             carParkID: parkingId,
-            currentAvailable: 245,
+            currentAvailableStream: FirestoreHandler.currentAvailStream,
             distanceFromCurrent:
                 (snapshot.data! as Map)['status'] != 'ZERO_RESULTS'
                     ? (snapshot.data! as Map)['distance']['text']

@@ -3,11 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreHandler {
   static final firestore = FirebaseFirestore.instance;
   static DocumentReference? user;
-  static bool isInitialized = false;
+  static DocumentReference currentAvail =
+      firestore.collection('parking_info').doc('parkings');
+  static Stream<DocumentSnapshot> currentAvailStream = currentAvail.snapshots();
+  static bool isUsersInitialized = false;
 
+  static Future<DocumentSnapshot> getCurrentInformation() => currentAvail.get();
+
+  static Stream<DocumentSnapshot> updateCurrentInformationStream() =>
+      currentAvailStream = currentAvail.snapshots();
+  // TODO: make functions for retrieving only predicted and
+  // both predicted and current
   static Future<DocumentSnapshot> getUserInformation(String uid) async {
     final snapshot = user?.get() ?? _setDocumentReference(uid);
-    isInitialized = true;
+    isUsersInitialized = true;
     return snapshot;
   }
 

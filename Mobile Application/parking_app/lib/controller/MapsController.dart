@@ -12,12 +12,8 @@ class MapsController extends GetxController {
   // use MapsController.to.func() for functions
   Position? currentLocation;
   Set markerSet = Set<Marker>();
-  bool isHidden = false;
-  bool isParkingInfo =
-      false; // info window shown when true, textfield shown when false
-  String parkingId = '';
   Completer<GoogleMapController> controller = Completer();
-  bool isLoading = true;
+  Map? allCarParks;
   Map? displayedCarParks;
 
   final availableMapsFuture = MapLauncher.installedMaps;
@@ -30,6 +26,11 @@ class MapsController extends GetxController {
 
   void setDisplayedCarParks(Map newDisplayedCarParks) {
     displayedCarParks = newDisplayedCarParks;
+    update();
+  }
+
+  void setAllCarParks(Map newAllCarParks) {
+    allCarParks = newAllCarParks;
     update();
   }
 
@@ -49,30 +50,6 @@ class MapsController extends GetxController {
 
   void setMarkerSet(Set<Marker> newMarkerSet) {
     markerSet = newMarkerSet;
-    update();
-  }
-
-  void setIsLoading(bool isLoading) {
-    this.isLoading = isLoading;
-    update();
-  }
-
-  void toggleIsHidden() {
-    isHidden = !isHidden;
-    update();
-  }
-
-  void hideInfoWindow() {
-    parkingId = '';
-    isParkingInfo = false;
-    update();
-  }
-
-  void showInfoWindow(String parkingId) {
-    // updates parking id to show the appropriate information in the info window
-    // also enables the infoWindow
-    this.parkingId = parkingId;
-    isParkingInfo = true;
     update();
   }
 
