@@ -61,7 +61,7 @@ class Parking:
             c = 2 * atan2(sqrt(a), sqrt(1 - a))
             distance = R * c
             if(distance<1.0000):
-                location.append(self.parkings.CarParkID[i])
+                location.append(self.parkings.carpark_number[i])
                 print(location[j])
                 j+=1
         return location
@@ -69,13 +69,13 @@ class Parking:
     def getFilteredParkings(self,lat,lon,night_parking,free_parking,car_park_type,type_of_parking_system):
         nn=NN()
         df=nn.getCurrentAvailability()
-        df=pd.merge(df, self.parkings, left_on=['carpark_number'], right_on=['CarParkID'])
+        df=pd.merge(df, self.parkings, left_on=['carpark_number'], right_on=['carpark_number'])
 
         id=self.DistCalc(lat,lon)
         filtparkings=df[(df['night_parking']==night_parking) & (df['free_parking']==free_parking) &(df['car_park_type'].isin(car_park_type)) & (df['type_of_parking_system']==type_of_parking_system)]
-        filteredparkings=filtparkings[filtparkings['CarParkID'].isin(id)]
+        filteredparkings=filtparkings[filtparkings['carpark_number'].isin(id)]
         print(filteredparkings)
-        res=filteredparkings[['CarParkID','lat','lng','lots_available']].set_index('CarParkID').T.to_json()
+        res=filteredparkings[['carpark_number','lat','lng','lots_available']].set_index('carpark_number').T.to_json()
         return res
 
     def generatePrediction():
