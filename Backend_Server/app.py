@@ -1,25 +1,14 @@
-from flask import Flask, jsonify,request,make_response
-import os
-import requests
 import pandas as pd
 import numpy as np
 import datetime as dt
-import time
-import json
+from flask import Flask, jsonify,request,make_response
 from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
-import firebase_admin
 from firebase_admin import credentials,firestore
 from parking import Parking
-
+import time, json, threading, os, requests, firebase_admin
 #initializing the sdk
 default_app = firebase_admin.initialize_app()
-
-## not using this to auth because OAuth 2.0 tokens are not supported with  firestore
-#cred = credentials.Certificate("parkingapp-6ecfd-firebase-adminsdk-4dxe4-9280754b4c.json")
-#firebase_admin.initialize_app(cred)
-
-#db = firestore.client()
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -27,11 +16,14 @@ app.config.from_object("config")
 @app.route("/")
 def main():
     print("server running")
-    #parking = Parking()
+    parking = Parking()
     #result = parking.initializeLocations()   ##ONLY UNCOMMENT THIS WHEN YOU WANT TO RESET THE PARKING LOCATIONS COLLECTION
     #start thread for prediction
     
     #start thread that constantly updates the current parking every minute
+    currentAvailabilityThread = threading.Thread(target = parking.updateCurrentAvailability)
+    currentAvailabilityThread.daemon = True
+    currentAvailabilityThread.start()
 
     result = True
     return jsonify(success = result)

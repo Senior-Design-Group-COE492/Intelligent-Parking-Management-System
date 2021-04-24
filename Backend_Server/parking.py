@@ -8,12 +8,12 @@ from pytz import timezone
 from neural_network import NN
 import firebase_admin
 from firebase_admin import credentials,firestore
-
+import time
 class Parking:
     def __init__(self):
         info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
-        nn = NN()
-        df = nn.getCurrentAvailability()
+        self.nn = NN()
+        df = self.nn.getCurrentAvailability()
         self.info_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['carpark_number'])
         self.parkings = self.info_df[['carpark_number','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
         self.db = firestore.client()
@@ -27,20 +27,27 @@ class Parking:
         data = {
             u'parking' : parking
         }
-        db.collection(u'parking_info').document('parkings').set(data)
+        self.db.collection(u'parkings').document('parkings').set(data)
 
         #return true after you're done
 
         return (True,)
     
     def updateCurrentAvailability(self):
-        parking = nn.getCurrentAvailability()
-        parking = self.info_df.set_index('carpark_number')[['lots_available']].T.to_json()
-        parking = json.loads(parking)
-        data = {
-            u'current_availability' : parking
-        }
-        db.collection(u'parking_info').document('parkings').set(data)
+        next_call = time.time()
+        while True:
+            print("getting current availability")
+            parking = self.nn.getCurrentAvailability()
+            parking = self.info_df.set_index('carpark_number')[['lots_available']].T.to_json()
+            parking = json.loads(parking)
+            data = {
+                u'current_availability' : parking
+            }
+            self.db.collection(u'parking_info').document('parkings').set(data)
+            print("pushed to db")
+            next_call+= 60
+            print("sleeping")
+            time.sleep(next_call -time.time())
 
 
     
@@ -79,5 +86,5 @@ class Parking:
         return res
 
     def generatePrediction():
-        list_of_predictions = NN.generateEverything()
+        list_of_predictions = self.nn.generateEverything()
         #loop through the predictions
