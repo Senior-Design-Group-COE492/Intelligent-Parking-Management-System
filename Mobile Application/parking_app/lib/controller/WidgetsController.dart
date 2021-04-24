@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
 
 class WidgetsController extends GetxController {
@@ -11,7 +10,7 @@ class WidgetsController extends GetxController {
   bool isParkingInfo =
       false; // info window shown when true, textfield shown when false
   String parkingId = '';
-  bool isLoading = true;
+  bool isLoading = false;
 
   final availableMapsFuture = MapLauncher.installedMaps;
   static WidgetsController get to => Get.find();

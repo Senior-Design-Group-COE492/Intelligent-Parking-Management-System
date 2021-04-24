@@ -86,116 +86,115 @@ class FiltersWidget extends StatelessWidget {
       ]);
     }
 
-    return Obx( () => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 16),
-        ),
-        Text('Time Till Arrival'),
-        SliderTheme(
-          data: sliderThemeData,
-          child: Slider(
-            value: fieldController!.timeSliderValue.value!,
-            min: 15.0,
-            max: 120.0,
-            divisions: 7,
-            label: timeSliderValueLabelMaker(
-                fieldController!.timeSliderValue.value!),
-            onChanged: fieldController!.timeChangeSlider,
+    return Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 16),
           ),
-        ),
-        Text('Distance (max.)'),
-        SliderTheme(
-          data: sliderThemeData,
-          child: Slider(
-            value: fieldController!.distanceSliderValue.value!,
-            min: 100,
-            max: 1500,
-            divisions: 14,
-            label: distanceSliderValueLabelMaker(
-                fieldController!.distanceSliderValue.value!),
-            onChanged: fieldController!.distanceChangeSlider,
+          Text('Time Till Arrival'),
+          SliderTheme(
+            data: sliderThemeData,
+            child: Slider(
+              value: fieldController!.timeSliderValue.value!,
+              min: 15.0,
+              max: 120.0,
+              divisions: 7,
+              label: timeSliderValueLabelMaker(
+                  fieldController!.timeSliderValue.value!),
+              onChanged: fieldController!.timeChangeSlider,
+            ),
           ),
-        ),
-        Text('Gantry Height (max.)'),
-        SliderTheme(
-          data: sliderThemeData,
-          child: Slider(
-            value: fieldController!.gantrySliderValue.value!,
-            min: 180,
-            max: 1000,
-            divisions: 20,
-            label: gantrySliderValueLabelMarker(
-                fieldController!.gantrySliderValue.value!),
-            onChanged: fieldController!.gantryChangeSlder,
+          Text('Distance (max.)'),
+          SliderTheme(
+            data: sliderThemeData,
+            child: Slider(
+              value: fieldController!.distanceSliderValue.value!,
+              min: 100,
+              max: 1500,
+              divisions: 14,
+              label: distanceSliderValueLabelMaker(
+                  fieldController!.distanceSliderValue.value!),
+              onChanged: fieldController!.distanceChangeSlider,
+            ),
           ),
-        ),
-        Text('Parking Type'),
-        Padding(
-          padding: EdgeInsets.only(top: 16),
-        ),
-        Row(
-          children: [
-            _checkBox(fieldController!.isSurface.value,
-                fieldController!.isSurface, 'Surface'),
-            _checkBox(fieldController!.isMechanised.value,
-                fieldController!.isMechanised, 'Mechanised'),
-            _checkBox(fieldController!.isCovered.value,
-                fieldController!.isCovered, 'Covered'),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 16),
-        ),
-        Row(
-          children: [
-            _checkBox(fieldController!.isBasement.value,
-                fieldController!.isBasement, 'Basement'),
-            _checkBox(fieldController!.isMultiStorey.value,
-                fieldController!.isMultiStorey, 'Multi-Storey'),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 16),
-        ),
-        Text('Free only'),
-        GetBuilder<FieldController>(
-          builder: (_) => Row(
+          Text('Gantry Height (max.)'),
+          SliderTheme(
+            data: sliderThemeData,
+            child: Slider(
+              value: fieldController!.gantrySliderValue.value!,
+              min: 180,
+              max: 1000,
+              divisions: 20,
+              label: gantrySliderValueLabelMarker(
+                  fieldController!.gantrySliderValue.value!),
+              onChanged: fieldController!.gantryChangeSlder,
+            ),
+          ),
+          Text('Parking Type'),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+          ),
+          Row(
             children: [
-              _radioListTile(125.0, fieldController!.freeGroupValue,
-                  fieldController!.changeFreeRadio, 1, 'Yes'),
-              _radioListTile(120.0, fieldController!.freeGroupValue,
-                  fieldController!.changeFreeRadio, 0, 'No'),
+              _checkBox(fieldController!.isSurface.value,
+                  fieldController!.isSurface, 'Surface'),
+              _checkBox(fieldController!.isMechanised.value,
+                  fieldController!.isMechanised, 'Mechanised'),
+              _checkBox(fieldController!.isCovered.value,
+                  fieldController!.isCovered, 'Covered'),
             ],
           ),
-        ),
-        Text('Night Parking'),
-        GetBuilder<FieldController>(
-          builder: (_) => Row(
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+          ),
+          Row(
             children: [
-              _radioListTile(125.0, fieldController!.nightGroupValue,
-                  fieldController!.changeNightRadio, 1, 'Yes'),
-              _radioListTile(120.0, fieldController!.nightGroupValue,
-                  fieldController!.changeNightRadio, 0, 'No'),
+              _checkBox(fieldController!.isBasement.value,
+                  fieldController!.isBasement, 'Basement'),
+              _checkBox(fieldController!.isMultiStorey.value,
+                  fieldController!.isMultiStorey, 'Multi-Storey'),
             ],
           ),
-
-        ),
-        Text('Parking Type'),
-        GetBuilder<FieldController>(
-          builder: (_) => Row(
-            children: [
-              _radioListTile(125.0, fieldController!.parkingTypeGroupValue,
-                  fieldController!.changeParkingTypeRadio, 1, 'Electronic'),
-              _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
-                  fieldController!.changeParkingTypeRadio, 0, 'Coupon'),
-            ],
+          Padding(
+            padding: EdgeInsets.only(top: 16),
           ),
-          
-        ),
-      ],
-    ),
+          Text('Free only'),
+          GetBuilder<FieldController>(
+            builder: (_) => Row(
+              children: [
+                _radioListTile(125.0, fieldController!.freeGroupValue,
+                    fieldController!.changeFreeRadio, 1, 'Yes'),
+                _radioListTile(120.0, fieldController!.freeGroupValue,
+                    fieldController!.changeFreeRadio, 0, 'No'),
+              ],
+            ),
+          ),
+          Text('Night Parking'),
+          GetBuilder<FieldController>(
+            builder: (_) => Row(
+              children: [
+                _radioListTile(125.0, fieldController!.nightGroupValue,
+                    fieldController!.changeNightRadio, 1, 'Yes'),
+                _radioListTile(120.0, fieldController!.nightGroupValue,
+                    fieldController!.changeNightRadio, 0, 'No'),
+              ],
+            ),
+          ),
+          Text('Parking System Type'),
+          GetBuilder<FieldController>(
+            builder: (_) => Row(
+              children: [
+                _radioListTile(125.0, fieldController!.parkingTypeGroupValue,
+                    fieldController!.changeParkingTypeRadio, 1, 'Electronic'),
+                _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
+                    fieldController!.changeParkingTypeRadio, 0, 'Coupon'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

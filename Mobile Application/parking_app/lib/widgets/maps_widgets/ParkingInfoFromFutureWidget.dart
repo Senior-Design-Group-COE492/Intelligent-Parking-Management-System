@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoWidget.dart';
-import 'package:geolocator/geolocator.dart';
 
 class ParkingInfoFromFuture extends StatelessWidget {
   // returns the ParkingInfo widget and constructs it after reading

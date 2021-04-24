@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/LoginController.dart';
-import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/screens/SettingsPage.dart';
-import 'package:parking_app/widgets/favorites_widgets/FavoritedParkingInfoWidget.dart';
 import 'package:parking_app/widgets/authentication_widgets/LoginSelectorWidget.dart';
 import 'package:parking_app/widgets/favorites_widgets/FavoritesListWidget.dart';
 

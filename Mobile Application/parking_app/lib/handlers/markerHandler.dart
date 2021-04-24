@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +12,12 @@ import 'dart:ui' as ui;
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/MapsGlobals.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
+import 'package:parking_app/handlers/LoginHandler.dart';
 
 class MarkerHandler {
   static Map? parkingLots;
+  static Stream<DocumentSnapshot>? favoritesStream;
 
   static Future<void> getJsonFromFile() async {
     final parkingLotsString = await rootBundle
@@ -100,5 +104,51 @@ class MarkerHandler {
 
     MapsController.to.setDisplayedCarParks(parkingLots!);
     WidgetsController.to.setIsLoading(false);
+  }
+
+  static void addMarkersFromFavorites(
+      BuildContext context, List<dynamic> favorites) async {
+    if (parkingLots == null) await getJsonFromFile();
+    WidgetsController.to.setIsLoading(true);
+    MediaQueryData queryData = MediaQuery.of(context);
+    double devicePixelRatio = queryData.devicePixelRatio;
+    double width = 40 * devicePixelRatio;
+    double height = 47 * devicePixelRatio;
+    final Set<Marker> markerSet = Set<Marker>();
+    int counter = favorites.length;
+
+    favorites.forEach((carParkID) async {
+      print(carParkID);
+      final carParkInformation = parkingLots![carParkID];
+      final int nAvailableParkingSpaces =
+          int.parse(carParkInformation['lots_available']);
+      final double latitude = carParkInformation['lat'];
+      final double longitude = carParkInformation['lng'];
+      final LatLng latLng = LatLng(latitude, longitude);
+
+      final handleMarkerTap = () async {
+        WidgetsController.to.showInfoWindow(carParkID);
+        MapsController.to.moveMapCamera(latitude, longitude, 18);
+      };
+
+      final newMarker = await _makeParkingMarker(width, height,
+          nAvailableParkingSpaces, latLng, carParkID, handleMarkerTap);
+      markerSet.add(newMarker);
+      if (--counter == 0) MapsController.to.setMarkerSet(markerSet);
+      // for performance, state is only updated after all the markers are added
+    });
+
+    MapsController.to.setDisplayedCarParks(parkingLots!);
+    WidgetsController.to.setIsLoading(false);
+  }
+
+  static void startFavoritesStream(BuildContext context) async {
+    if (favoritesStream == null) {
+      favoritesStream = await FirestoreHandler.getUserInformationStream(
+          LoginHandler.getCurrentUserID()!);
+      favoritesStream!.listen((favoritesDoc) {
+        addMarkersFromFavorites(context, favoritesDoc.data()?['favorites']);
+      });
+    }
   }
 }

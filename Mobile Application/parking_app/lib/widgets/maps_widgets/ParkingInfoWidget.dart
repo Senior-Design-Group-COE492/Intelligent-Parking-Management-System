@@ -188,7 +188,8 @@ class ParkingInfo extends StatelessWidget {
             return loadingIndicator;
 
           return Text(
-              snapshot.data?.data()?['parking'][carParkID]['lots_available'] +
+              snapshot.data?.data()?['current_availability'][carParkID]
+                      ['lots_available'] +
                   ' spaces',
               style: smallFontWithColor);
         });

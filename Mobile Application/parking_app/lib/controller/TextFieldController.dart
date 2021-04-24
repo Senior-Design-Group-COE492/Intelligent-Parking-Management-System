@@ -45,8 +45,8 @@ class FieldController extends GetxController {
     parkingTypeRadioValue.value = newValue;
     parkingTypeGroupValue = newValue;
     update();
+    print(parkingTypeRadioValue.value);
   }
-
 
   RxBool isSurface = false.obs;
   RxBool isMechanised = false.obs;
@@ -58,4 +58,6 @@ class FieldController extends GetxController {
   RxBool isExpanded = false.obs;
   RxBool isNight = false.obs;
   RxBool isElectronic = false.obs;
+
+  static FieldController get to => Get.find();
 }

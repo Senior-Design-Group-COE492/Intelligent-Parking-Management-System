@@ -23,7 +23,6 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
   BitmapDescriptor? markerSvg;
 
   _MapsState() {
-    _initializeMarkers();
     _initializeGeolocator().catchError((error) => print(error));
   }
 
@@ -45,7 +44,7 @@ class _MapsState extends State<Maps> with AutomaticKeepAliveClientMixin<Maps> {
           MapsController.to.setGoogleMapController(controller);
           controller.setMapStyle(MapsGlobals.style);
         },
-        markers: state.markerSet as Set<Marker>,
+        markers: state.markerSet,
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
