@@ -4,10 +4,13 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
+import 'package:parking_app/handlers/NotificationHandler.dart';
 import 'package:parking_app/screens/FavoritesPage.dart';
 import 'package:parking_app/screens/MapsPage.dart';
 
 class Navigation extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     final double navigationBarHeight = 70;
