@@ -63,13 +63,15 @@ class MapsPage extends StatelessWidget {
       topWidget,
     ];
 
-    return GetBuilder<LoginController>(
-        init: LoginController(),
-        builder: (state) {
-          if (state.isSignedIn) MarkerHandler.startFavoritesStream(context);
-          return Stack(
-            children: stackChildren,
-          );
-        });
+    return Scaffold(
+      body: GetBuilder<LoginController>(
+          init: LoginController(),
+          builder: (state) {
+            //if (state.isSignedIn) MarkerHandler.startFavoritesStream(context);
+            return Stack(
+              children: stackChildren,
+            );
+          }),
+    );
   }
 }
