@@ -126,3 +126,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# environment files and other important stuff to keep hidden
+parkingapp-6ecfd-firebase-adminsdk-4dxe4-9280754b4c.json*
