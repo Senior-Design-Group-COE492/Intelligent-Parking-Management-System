@@ -73,14 +73,14 @@ class NotificationService {
     );
   }
 
-  void showNotification() async {
+  void showNotification(String payload) async {
     var android = AndroidNotificationDetails(
         'Nav_notification', 'nav_channel', 'Notification for user',
         priority: Priority.high, importance: Importance.max);
     var iOS = IOSNotificationDetails();
     var platform = new NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, 'app_icon', 'Flutter Local Notification Demo', platform,
-        payload: 'Welcome to the Local Notification demo');
+        0, 'Parking Update', payload, platform,
+        payload: payload);
   }
 }

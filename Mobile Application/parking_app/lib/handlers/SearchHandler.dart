@@ -48,24 +48,24 @@ class SearchHandler {
     return response.data['rows'][0]['elements'][0];
   }
 
-  static Future<dynamic> searchParkings() async {
-    final destinationLocation = MapsController.to.destinationLocation!;
-    final filters = FieldController.to;
-    final parkingTypes = _parkingTypeMapper(filters);
-    final body = {
-      'lat': destinationLocation.latitude,
-      'lon': destinationLocation.longitude,
-      'night_parking': filters.nightRadioValue.value == 0 ? 'NO' : 'YES',
-      'type_of_parking_system': filters.parkingTypeRadioValue.value == 0
-          ? 'COUPON PARKING'
-          : 'ELECTRONIC PARKING',
-      'car_park_type': parkingTypes,
-    };
-    print(body);
-    final response = await Dio()
-        .post(Globals.IP_ADDRESS + '/parking', queryParameters: body);
-    return 0;
-  }
+  // static Future<dynamic> searchParkings() async {
+  //   final destinationLocation = MapsController.to.destinationLocation!;
+  //   final filters = FieldController.to;
+  //   final parkingTypes = _parkingTypeMapper(filters);
+  //   final body = {
+  //     'lat': destinationLocation.latitude,
+  //     'lon': destinationLocation.longitude,
+  //     'night_parking': filters.nightRadioValue.value == 0 ? 'NO' : 'YES',
+  //     'type_of_parking_system': filters.parkingTypeRadioValue.value == 0
+  //         ? 'COUPON PARKING'
+  //         : 'ELECTRONIC PARKING',
+  //     'car_park_type': parkingTypes,
+  //   };
+  //   print(body);
+  //   final response = await Dio()
+  //       .post(Globals.IP_ADDRESS + '/parking', queryParameters: body);
+  //   return 0;
+  // }
 
   static List<String> _parkingTypeMapper(FieldController filters) {
     final List<String> parkingTypes = [];

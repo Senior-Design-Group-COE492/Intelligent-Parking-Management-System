@@ -8,6 +8,9 @@ import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 
+import '../../handlers/FirestoreHandler.dart';
+import '../../handlers/FirestoreHandler.dart';
+
 class FavoritedParkingInfo extends StatelessWidget {
   final String carParkID;
   final double lat;
@@ -49,8 +52,9 @@ class FavoritedParkingInfo extends StatelessWidget {
       )));
     };
 
-    final startNavigationOnPressed =
-        () async => MapsController.to.startNavigation(lat, lng, carParkID);
+    final startNavigationOnPressed = () async => {
+          MapsController.to.startNavigation(lat, lng, carParkID),
+        };
 
     final buttonTextStyle = TextStyle(
         color: Theme.of(context).accentColor, fontWeight: FontWeight.w500);

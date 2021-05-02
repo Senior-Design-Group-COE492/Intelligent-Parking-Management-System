@@ -64,7 +64,7 @@ class SearchWidget extends StatelessWidget {
                         MapsController.to.moveMapCamera(lat, lng, 16);
                         // updating state once instead of twice
                         // WidgetsController.to.setIsLoading(true);
-                        SearchHandler.searchParkings();
+                        // SearchHandler.searchParkings();
                         fieldController!.isSearching.value = false;
                         fieldController!.isExpanded.toggle();
                         MarkerHandler.addDestinationMarker(lat, lng, context);
