@@ -3,9 +3,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchHandler {
-  static const apiKey = 'AIzaSyDBMJZInXD8H17mj712EHBPalwzIZ-k4oY';
+  static final apiKey = env['GOOGLE_MAPS_API_KEY'];
 
   static Future<Response<dynamic>> _requestMaker(String place, String region) {
     final response = Dio().get(
