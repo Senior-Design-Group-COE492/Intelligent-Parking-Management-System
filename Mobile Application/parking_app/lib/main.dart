@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parking_app/handlers/NotificationHandler.dart';
 
 import 'App.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
+
   runApp(
     GetMaterialApp(
       home: App(),

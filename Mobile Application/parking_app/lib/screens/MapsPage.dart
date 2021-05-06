@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:parking_app/controller/LoginController.dart';
 import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/widgets/search_widgets/CustomField.dart';
 import 'package:parking_app/widgets/maps_widgets/MapsWidget.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoFromFutureWidget.dart';
@@ -61,8 +63,15 @@ class MapsPage extends StatelessWidget {
       topWidget,
     ];
 
-    return Stack(
-      children: stackChildren,
+    return Scaffold(
+      body: GetBuilder<LoginController>(
+          init: LoginController(),
+          builder: (state) {
+            //if (state.isSignedIn) MarkerHandler.startFavoritesStream(context);
+            return Stack(
+              children: stackChildren,
+            );
+          }),
     );
   }
 }

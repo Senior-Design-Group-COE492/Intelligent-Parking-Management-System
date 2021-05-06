@@ -8,6 +8,7 @@ import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
+import 'package:parking_app/handlers/NotificationHandler.dart';
 import 'package:parking_app/widgets//maps_widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
@@ -28,6 +29,21 @@ class ParkingInfo extends StatelessWidget {
   final double? lng;
   final RxBool isFavorited = false.obs;
   RxBool isParkingInfoExpanded = false.obs;
+
+  void startNotifications(String pID) async {
+    Stream<DocumentSnapshot> stream =
+        FirestoreHandler.updateCurrentInformationStream();
+    stream.listen((event) {
+      Map<String, dynamic>? predAval = event.data();
+      String currAvail = predAval!['current_availability'][pID]
+                      ['lots_available'];
+      NotificationService().showNotification('Parking Lot has $currAvail spaces.');
+
+      if (int.parse(currAvail) < 10) {
+        NotificationService().showNotification('Parking Lot availability is running low ($currAvail spaces left). Click to switch parking area.');
+      }
+    });
+  }
 
   ParkingInfo({
     Key? key,
@@ -188,7 +204,8 @@ class ParkingInfo extends StatelessWidget {
             return loadingIndicator;
 
           return Text(
-              snapshot.data?.data()?['parking'][carParkID]['lots_available'] +
+              snapshot.data?.data()?['current_availability'][carParkID]
+                      ['lots_available'] +
                   ' spaces',
               style: smallFontWithColor);
         });
@@ -220,25 +237,27 @@ class ParkingInfo extends StatelessWidget {
       height: buttonHeight,
       width: navigationButtonWidth,
       child: TextButton(
-        child: Text(
-          'START NAVIGATION',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+          child: Text(
+            'START NAVIGATION',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                Theme.of(context).primaryColor),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-            overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
-        // TODO: Implement notifications to show the real-time availability
-        // after clicking the button
-        onPressed: () =>
-            MapsController.to.startNavigation(lat!, lng!, parkingName!),
-      ),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8))),
+              overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
+          // TODO: Implement notifications to show the real-time availability
+          // after clicking the button
+          onPressed: () => {
+                MapsController.to.startNavigation(lat!, lng!, parkingName!),
+                startNotifications(carParkID!),
+              }),
     );
 
     final favoritesButton = Obx(() => Expanded(

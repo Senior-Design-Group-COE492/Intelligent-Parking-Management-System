@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_webservice/places.dart';
 import 'package:parking_app/controller/MapsController.dart';
 import 'package:parking_app/controller/TextFieldController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
 
@@ -60,8 +60,11 @@ class SearchWidget extends StatelessWidget {
                             snapshot.data[index]['geometry']['location']['lat'];
                         final lng =
                             snapshot.data[index]['geometry']['location']['lng'];
+                        MapsController.to.setDestinationLocation(lat, lng);
                         MapsController.to.moveMapCamera(lat, lng, 16);
                         // updating state once instead of twice
+                        // WidgetsController.to.setIsLoading(true);
+                        // SearchHandler.searchParkings();
                         fieldController!.isSearching.value = false;
                         fieldController!.isExpanded.toggle();
                         MarkerHandler.addDestinationMarker(lat, lng, context);

@@ -11,7 +11,8 @@ class MapsController extends GetxController {
   // use GetBuilder when actually using the controller
   // use MapsController.to.func() for functions
   Position? currentLocation;
-  Set markerSet = Set<Marker>();
+  LatLng? destinationLocation;
+  Set<Marker> markerSet = Set<Marker>();
   Completer<GoogleMapController> controller = Completer();
   Map? allCarParks;
   Map? displayedCarParks;
@@ -21,6 +22,11 @@ class MapsController extends GetxController {
 
   void setCurrentLocation(Position newCurrentLocation) {
     currentLocation = newCurrentLocation;
+    update();
+  }
+
+  void setDestinationLocation(double lat, double lng) {
+    destinationLocation = LatLng(lat, lng);
     update();
   }
 
