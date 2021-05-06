@@ -9,6 +9,7 @@ from neural_network import NN
 import firebase_admin
 from firebase_admin import credentials,firestore
 import time
+from tensorflow.keras.models import load_model
 class Parking:
     def __init__(self):
         info_df = pd.read_csv('hdb-carpark-information-with-lat-lng.csv')
@@ -17,6 +18,7 @@ class Parking:
         self.info_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['carpark_number'])
         self.parkings = self.info_df[['carpark_number','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
         self.db = firestore.client()
+        self.models_loaded = False
 
     def initializeLocations(self):
         
@@ -85,6 +87,46 @@ class Parking:
         res=filteredparkings[['carpark_number','lat','lng','lots_available']].set_index('carpark_number').T.to_json()
         return res
 
-    def generatePrediction():
-        list_of_predictions = self.nn.generateEverything()
-        #loop through the predictions
+    def generateSequencePrediction(self):
+        next_call = time.time()
+        while True:
+            df_list = self.nn.getSequenceFromCurrentTime()
+            self.df_list_for_nn = self.nn.modifyDataframeListForNN(df_list)
+            predictions = {}
+            #generate prediction
+            for df in self.df_list_for_nn:
+                model = self.models[df.carpark_number.iloc[0]]
+                prediction = self.nn.generatePrediction(model,df)
+                predictions[df.carpark_number.iloc[0]] = prediction[0].tolist()
+                print("[", df.carpark_number.iloc[0],"] = ",prediction)
+            
+            #push to firebase
+            data = {
+                u'predictions' : predictions
+            }
+            self.db.collection(u'parking_predictions').document('predictions').set(data)
+            next_call+= 60*15 # every 15 minutes
+            time.sleep(next_call -time.time())
+
+    def loadModels(self):
+        #read all the models from the folder
+        #use this:
+        self.models = {}
+        directory = r"./trained_models/"
+        for filename in os.listdir(directory):
+            #load model
+            model = load_model(directory+filename, custom_objects=None, compile=True, options=None)
+            #get carpark id from filename
+            filename_split = filename.split('_')
+            carpark_id_split = filename_split[-1].split('.')
+            carpark_id = carpark_id_split[0]
+
+            #add model to dict with car_park id as key
+            self.models[carpark_id] = model
+            print("["+carpark_id+"]=\t")
+            print(self.models[carpark_id])
+            #model_checkpoint_ID.h5 as key and model as value in dict
+        self.models_loaded = True
+
+    def returnModelsLoaded(self):
+        return self.models_loaded
