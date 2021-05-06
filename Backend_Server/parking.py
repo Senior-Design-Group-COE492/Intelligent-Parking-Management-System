@@ -18,7 +18,6 @@ class Parking:
         self.info_df = pd.merge(df, info_df, left_on=['carpark_number'], right_on=['carpark_number'])
         self.parkings = self.info_df[['carpark_number','lat','lng','night_parking','free_parking','car_park_type','type_of_parking_system']]
         self.db = firestore.client()
-        self.models_loaded = False
 
     def initializeLocations(self):
         
@@ -126,7 +125,3 @@ class Parking:
             print("["+carpark_id+"]=\t")
             print(self.models[carpark_id])
             #model_checkpoint_ID.h5 as key and model as value in dict
-        self.models_loaded = True
-
-    def returnModelsLoaded(self):
-        return self.models_loaded
