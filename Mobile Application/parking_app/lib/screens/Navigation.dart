@@ -9,8 +9,6 @@ import 'package:parking_app/screens/FavoritesPage.dart';
 import 'package:parking_app/screens/MapsPage.dart';
 
 class Navigation extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     final double navigationBarHeight = 70;
@@ -72,8 +70,10 @@ class Navigation extends StatelessWidget {
                 child: TabBar(
                   // need to re-assign stream because it gets stuck on waiting
                   // if the re-assigning does not happen
-                  onTap: (tabIndex) =>
-                      FirestoreHandler.updateCurrentInformationStream(),
+                  onTap: (tabIndex) {
+                    FirestoreHandler.updateCurrentInformationStream();
+                    FirestoreHandler.updatePredictedInformationStream();
+                  },
                   labelColor: Colors.black,
                   unselectedLabelColor: Colors.black54,
                   indicator: BoxDecoration(

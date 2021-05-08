@@ -6,14 +6,25 @@ class FirestoreHandler {
   static DocumentReference currentAvail =
       firestore.collection('parking_info').doc('parkings');
   static Stream<DocumentSnapshot> currentAvailStream = currentAvail.snapshots();
+
+  static DocumentReference predictedAvail =
+      firestore.collection('parking_predictions').doc('predictions');
+  static Stream<DocumentSnapshot> predictedAvailStream =
+      predictedAvail.snapshots();
+
   static bool isUsersInitialized = false;
 
   static Future<DocumentSnapshot> getCurrentInformation() => currentAvail.get();
 
   static Stream<DocumentSnapshot> updateCurrentInformationStream() =>
       currentAvailStream = currentAvail.snapshots();
-  // TODO: make functions for retrieving only predicted and
-  // both predicted and current
+
+  static Future<DocumentSnapshot> getPredictedInformation() =>
+      predictedAvail.get();
+
+  static Stream<DocumentSnapshot> updatePredictedInformationStream() =>
+      predictedAvailStream = predictedAvail.snapshots();
+
   static Future<DocumentSnapshot> getUserInformation(String uid) async {
     final snapshot = user?.get() ?? _setDocumentReference(uid);
     isUsersInitialized = true;

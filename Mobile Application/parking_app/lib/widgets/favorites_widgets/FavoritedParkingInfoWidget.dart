@@ -18,7 +18,7 @@ class FavoritedParkingInfo extends StatelessWidget {
   final String parkingName;
   final String parkingType;
   final Stream<DocumentSnapshot> currentAvailableStream;
-  final List<int> predictions;
+  final Stream<DocumentSnapshot> predictedAvailableStream;
   const FavoritedParkingInfo({
     Key? key,
     required this.carParkID,
@@ -27,7 +27,7 @@ class FavoritedParkingInfo extends StatelessWidget {
     required this.parkingName,
     required this.parkingType,
     required this.currentAvailableStream,
-    required this.predictions,
+    required this.predictedAvailableStream,
   }) : super(key: key);
 
   @override
@@ -43,6 +43,7 @@ class FavoritedParkingInfo extends StatelessWidget {
     final viewMapOnPressed = () async {
       DefaultTabController.of(context)!.animateTo(0);
       FirestoreHandler.updateCurrentInformationStream();
+      FirestoreHandler.updatePredictedInformationStream();
       WidgetsController.to.showInfoWindow(carParkID);
       final GoogleMapController controller =
           await MapsController.to.controller.future;
@@ -64,8 +65,6 @@ class FavoritedParkingInfo extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         fontSize: 12,
         fontWeight: FontWeight.bold);
-    final predictedAvailableWidget =
-        Text(predictions[0].toString() + ' spaces', style: smallFontWithColor);
 
     final topPadding16 = Padding(padding: EdgeInsets.only(top: 16));
 
@@ -143,6 +142,20 @@ class FavoritedParkingInfo extends StatelessWidget {
               snapshot.data?.data()?['current_availability'][carParkID]
                       ['lots_available'] +
                   ' spaces',
+              style: smallFontWithColor);
+        });
+
+    final predictedAvailableWidget = StreamBuilder(
+        stream: predictedAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+          print(snapshot.data?.data()?['predictions'][carParkID][1].toString());
+          String? thirtyMinutePrediction = snapshot.data
+              ?.data()?['predictions'][carParkID][1]
+              .toStringAsFixed(0);
+          return Text(thirtyMinutePrediction! + ' spaces',
               style: smallFontWithColor);
         });
 

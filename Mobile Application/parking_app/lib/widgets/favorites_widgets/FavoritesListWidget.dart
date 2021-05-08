@@ -52,7 +52,8 @@ class FavoritesList extends StatelessWidget {
                         lng: carParkInfo['lng'],
                         parkingName: carParkInfo['address'],
                         parkingType: carParkInfo['car_park_type'],
-                        predictions: [30],
+                        predictedAvailableStream:
+                            FirestoreHandler.predictedAvailStream,
                       );
                       return Column(
                         children: [

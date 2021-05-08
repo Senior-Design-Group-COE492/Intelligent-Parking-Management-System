@@ -38,7 +38,7 @@ class ParkingInfoFromFuture extends StatelessWidget {
                 (snapshot.data! as Map)['status'] != 'ZERO_RESULTS'
                     ? (snapshot.data! as Map)['duration']['text']
                     : 'Enable location to see this.',
-            predictions: [179],
+            predictedAvailableStream: FirestoreHandler.predictedAvailStream,
             parkingName: carPark['address'],
             parkingType: carPark['car_park_type'],
             gantryHeight: carPark['gantry_height'],

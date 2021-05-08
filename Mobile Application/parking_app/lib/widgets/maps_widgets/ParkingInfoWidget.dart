@@ -9,7 +9,7 @@ import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
 import 'package:parking_app/handlers/NotificationHandler.dart';
-import 'package:parking_app/widgets//maps_widgets/PredictionsBarChart.dart';
+import 'package:parking_app/widgets/maps_widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
   final String? carParkID;
@@ -23,7 +23,7 @@ class ParkingInfo extends StatelessWidget {
   final String? shortTermParking;
   final String? nightParking;
   final String? parkingSystem;
-  final List<int>? predictions;
+  final Stream<DocumentSnapshot>? predictedAvailableStream;
   final bool isLoading;
   final double? lat;
   final double? lng;
@@ -35,12 +35,14 @@ class ParkingInfo extends StatelessWidget {
         FirestoreHandler.updateCurrentInformationStream();
     stream.listen((event) {
       Map<String, dynamic>? predAval = event.data();
-      String currAvail = predAval!['current_availability'][pID]
-                      ['lots_available'];
-      NotificationService().showNotification('Parking Lot has $currAvail spaces.');
+      String currAvail =
+          predAval!['current_availability'][pID]['lots_available'];
+      NotificationService()
+          .showNotification('Parking Lot has $currAvail spaces.');
 
       if (int.parse(currAvail) < 10) {
-        NotificationService().showNotification('Parking Lot availability is running low ($currAvail spaces left). Click to switch parking area.');
+        NotificationService().showNotification(
+            'Parking Lot availability is running low ($currAvail spaces left). Click to switch parking area.');
       }
     });
   }
@@ -50,7 +52,7 @@ class ParkingInfo extends StatelessWidget {
     required this.distanceFromCurrent,
     required this.routeTimeFromCurrent,
     required this.currentAvailableStream,
-    required this.predictions,
+    required this.predictedAvailableStream,
     required this.parkingName,
     required this.parkingType,
     required this.lat,
@@ -72,7 +74,7 @@ class ParkingInfo extends StatelessWidget {
     this.distanceFromCurrent,
     this.routeTimeFromCurrent,
     this.currentAvailableStream,
-    this.predictions,
+    this.predictedAvailableStream,
     this.parkingName,
     this.parkingType,
     this.lat,
@@ -210,8 +212,31 @@ class ParkingInfo extends StatelessWidget {
               style: smallFontWithColor);
         });
 
-    final predictedAvailableWidget =
-        Text(predictions![0].toString() + ' spaces', style: smallFontWithColor);
+    final predictedAvailableWidget = StreamBuilder(
+        stream: predictedAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          String? thirtyMinutePrediction = snapshot.data
+              ?.data()?['predictions'][carParkID][1]
+              .toStringAsFixed(0);
+          return Text(thirtyMinutePrediction! + ' spaces',
+              style: smallFontWithColor);
+        });
+
+    final predictionsBarChart = StreamBuilder(
+        stream: FirestoreHandler.updatePredictedInformationStream(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          List<double> predictions =
+              snapshot.data?.data()?['predictions'][carParkID].cast<double>();
+          return PredictionsBarChart(predictions);
+        });
 
     final gantryHeightWidget = Text(gantryHeight!.toStringAsFixed(1) + ' m',
         style: smallFontWithColor);
@@ -310,7 +335,7 @@ class ParkingInfo extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
         ),
         topPadding12,
-        PredictionsBarChart(),
+        predictionsBarChart,
         Padding(padding: EdgeInsets.only(top: 8)),
         Text('Gantry height', style: smallFontLight),
         gantryHeightWidget,
