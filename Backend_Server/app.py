@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
 import datetime as dt
+import time, json, threading, os, requests, firebase_admin
 from flask import Flask, jsonify,request,make_response
 from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
 from firebase_admin import credentials,firestore
 from parking import Parking
 from neural_network import NN
-import time, json, threading, os, requests, firebase_admin
+
 #initializing the sdk
 default_app = firebase_admin.initialize_app()
 
@@ -26,8 +27,10 @@ def main():
     currentAvailabilityThread = threading.Thread(target = parking.updateCurrentAvailability)
     currentAvailabilityThread.daemon = True
     currentAvailabilityThread.start()
-    
+
+    #load models
     parking.loadModels()
+
     #run the get sequence at the begining
     generateSequencePredictionThread = threading.Thread(target= parking.generateSequencePrediction)
     generateSequencePredictionThread.daemon = True

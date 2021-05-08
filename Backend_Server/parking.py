@@ -1,14 +1,12 @@
 ### contains method parkings ###
 import pandas as pd
 import numpy as np
-import os
-import json
+import os, json, time
+import firebase_admin
+from firebase_admin import credentials,firestore
 from math import sin, cos, sqrt, atan2, radians
 from pytz import timezone
 from neural_network import NN
-import firebase_admin
-from firebase_admin import credentials,firestore
-import time
 from tensorflow.keras.models import load_model
 class Parking:
     def __init__(self):
@@ -28,7 +26,7 @@ class Parking:
         data = {
             u'parking' : parking
         }
-        self.db.collection(u'parkings').document('parkings').set(data)
+        self.db.collection(u'parkingsinfo').document('parkings').set(data)
 
         #return true after you're done
 
@@ -96,7 +94,10 @@ class Parking:
             for df in self.df_list_for_nn:
                 model = self.models[df.carpark_number.iloc[0]]
                 prediction = self.nn.generatePrediction(model,df)
-                predictions[df.carpark_number.iloc[0]] = prediction[0].tolist()
+                prediction = prediction[0].tolist
+                # for i in range len(prediction):
+                #     prediction[i] = prediction[i]*
+                predictions[df.carpark_number.iloc[0]] = prediction
                 print("[", df.carpark_number.iloc[0],"] = ",prediction)
             
             #push to firebase
