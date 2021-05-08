@@ -94,9 +94,7 @@ class Parking:
             for df in self.df_list_for_nn:
                 model = self.models[df.carpark_number.iloc[0]]
                 prediction = self.nn.generatePrediction(model,df)
-                prediction = prediction[0].tolist
-                # for i in range len(prediction):
-                #     prediction[i] = prediction[i]*
+                prediction = prediction[0].tolist()
                 predictions[df.carpark_number.iloc[0]] = prediction
                 print("[", df.carpark_number.iloc[0],"] = ",prediction)
             

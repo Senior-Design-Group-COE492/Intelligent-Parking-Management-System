@@ -178,7 +178,7 @@ class NN:
         x = self.normalize(parking_area_df[features_selected].to_numpy(),capacity)
         x = x.reshape(1, x.shape[0], len(features_selected))
         y = model.predict(x)
-        return y
+        return y*capacity
 
 
     # def generateEverything(self):
