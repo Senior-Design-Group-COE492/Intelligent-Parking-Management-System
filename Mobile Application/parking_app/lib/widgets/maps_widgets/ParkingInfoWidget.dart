@@ -32,17 +32,16 @@ class ParkingInfo extends StatelessWidget {
 
   void startNotifications(String pID) async {
     Stream<DocumentSnapshot> stream =
-        FirestoreHandler.updateCurrentInformationStream();
+        FirestoreHandler.updatePredictedInformationStream();
     stream.listen((event) {
       Map<String, dynamic>? predAval = event.data();
-      String currAvail =
-          predAval!['current_availability'][pID]['lots_available'];
-      NotificationService()
-          .showNotification('Parking Lot has $currAvail spaces.');
+      double predAvail = predAval!['predictions'][pID][0];
+      int avail = predAvail.toInt();
+      print('Predicted: $avail');
 
-      if (int.parse(currAvail) < 10) {
+      if (avail < 10) {
         NotificationService().showNotification(
-            'Parking Lot availability is running low ($currAvail spaces left). Click to switch parking area.');
+            'Parking Lot predicted availability is low ($avail spaces left). Click to switch parking area.');
       }
     });
   }
