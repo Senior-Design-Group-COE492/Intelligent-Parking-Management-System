@@ -21,10 +21,11 @@ df=pd.merge(df, parkings, left_on=['carpark_number'], right_on=['CarParkID'])
 #df=df[df['CarParkID']==id_df['carpark_number']]
 no=[]
 location=[]
-def DistCalc(latitude,longtitude):
+def DistCalc(latitude,longtitude,dis):
     lattemp=latitude
     lontemp=longtitude
     j=0
+    distance1=dis
     for i in range(len(parkings.lat)):
         lat1=radians(parkings.lat[i])
         lon1=radians(parkings.lng[i])
@@ -34,8 +35,8 @@ def DistCalc(latitude,longtitude):
         dlat = lat2 - lat1
         a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        distance = R * c
-        if(distance<1.0000):
+        distance0 = R * c
+        if(distance0<distance1):
             location.append(parkings.CarParkID[i])
             print(location[j])
             j+=1
@@ -45,9 +46,17 @@ def DistCalc(latitude,longtitude):
 def filter():
     if request.is_json:
         req=request.get_json()
-        id=DistCalc(req.get("lat"),req.get("lon"))
-        filtparkings=df[(df['night_parking']==req.get("night_parking")) & (df['free_parking']==req.get("free_parking")) & (df['car_park_type'].isin(req.get("car_park_type"))) & (df['type_of_parking_system']==req.get("type_of_parking_system"))]
+        id=DistCalc(req.get("lat"),req.get("lon"),req.get("distance"))
+        if req.get("night_parking")!=None:
+            filtparkings=df[(df['night_parking']==req.get("night_parking"))]
+        if req.get("free_parking")!=None:
+            filtparkings=df[(df['free_parking']==req.get("free_parking"))]
+        if req.get("car_park_type")!=None:
+            filtparkings=df[(df['car_park_type'].isin(req.get("car_park_type")))]
+        if req.get("type_of_parking_system")!=None:
+            filtparkings=df[(df['type_of_parking_system']==req.get("type_of_parking_system"))]
         filteredparkings=filtparkings[filtparkings['CarParkID'].isin(id)]
+        #filtparkings=df[(df['night_parking']==req.get("night_parking")) & (df['free_parking']==req.get("free_parking")) & (df['car_park_type'].isin(req.get("car_park_type"))) & (df['type_of_parking_system']==req.get("type_of_parking_system"))]
         print(filteredparkings)
         res=filteredparkings[['CarParkID','lat','lng','lots_available']].set_index('CarParkID').T.to_json()
         return res
