@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/LoginController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/widgets/search_widgets/CustomField.dart';
 import 'package:parking_app/widgets/maps_widgets/MapsWidget.dart';
 import 'package:parking_app/widgets/maps_widgets/ParkingInfoFromFutureWidget.dart';
@@ -15,15 +17,15 @@ class MapsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final map = GestureDetector(
       child: Maps(),
-      onDoubleTap: () => MapsController.to.toggleIsHidden(),
+      onDoubleTap: () => WidgetsController.to.toggleIsHidden(),
     );
     // TODO: Show ParkingInfo by Parking ID after constructor is made inside of
     // the ParkingInfo widget
     final topWidget = AnimatedContainer(
       duration: Globals.EXPAND_ANIMATION_DURATION + Duration(milliseconds: 100),
       height: isHidden ? 0 : Get.height,
-      child: GetBuilder<MapsController>(
-        init: MapsController(),
+      child: GetBuilder<WidgetsController>(
+        init: WidgetsController(),
         builder: (state) => state.isParkingInfo
             ? ParkingInfoFromFuture(parkingId: state.parkingId)
             : Container(
@@ -40,7 +42,7 @@ class MapsPage extends StatelessWidget {
         padding: EdgeInsets.only(top: 125, left: 17, right: 16),
         height: isHidden ? 0 : 170,
         width: 100,
-        child: GetBuilder<MapsController>(
+        child: GetBuilder<WidgetsController>(
           builder: (state) => state.isLoading
               ? Container(
                   decoration: BoxDecoration(
@@ -61,8 +63,15 @@ class MapsPage extends StatelessWidget {
       topWidget,
     ];
 
-    return Stack(
-      children: stackChildren,
+    return Scaffold(
+      body: GetBuilder<LoginController>(
+          init: LoginController(),
+          builder: (state) {
+            //if (state.isSignedIn) MarkerHandler.startFavoritesStream(context);
+            return Stack(
+              children: stackChildren,
+            );
+          }),
     );
   }
 }

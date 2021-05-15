@@ -1,18 +1,21 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
 import 'package:parking_app/handlers/FirestoreHandler.dart';
 import 'package:parking_app/handlers/LoginHandler.dart';
-import 'package:parking_app/widgets//maps_widgets/PredictionsBarChart.dart';
+import 'package:parking_app/handlers/NotificationHandler.dart';
+import 'package:parking_app/widgets/maps_widgets/PredictionsBarChart.dart';
 
 class ParkingInfo extends StatelessWidget {
   final String? carParkID;
   final String? distanceFromCurrent;
   final String? routeTimeFromCurrent;
-  final int? currentAvailable;
+  final Stream<DocumentSnapshot>? currentAvailableStream;
   final String? parkingName;
   final String? parkingType;
   final double? gantryHeight;
@@ -20,19 +23,35 @@ class ParkingInfo extends StatelessWidget {
   final String? shortTermParking;
   final String? nightParking;
   final String? parkingSystem;
-  final List<int>? predictions;
+  final Stream<DocumentSnapshot>? predictedAvailableStream;
   final bool isLoading;
   final double? lat;
   final double? lng;
-  final RxBool isExpanded = false.obs;
   final RxBool isFavorited = false.obs;
+  RxBool isParkingInfoExpanded = false.obs;
+
+  void startNotifications(String pID) async {
+    Stream<DocumentSnapshot> stream =
+        FirestoreHandler.updatePredictedInformationStream();
+    stream.listen((event) {
+      Map<String, dynamic>? predAval = event.data();
+      double predAvail = predAval!['predictions'][pID][0];
+      int avail = predAvail.toInt();
+      print('Predicted: $avail');
+
+      if (avail < 10) {
+        NotificationService().showNotification(
+            'Parking Lot predicted availability is low ($avail spaces left). Click to switch parking area.');
+      }
+    });
+  }
 
   ParkingInfo({
     Key? key,
     required this.distanceFromCurrent,
     required this.routeTimeFromCurrent,
-    required this.currentAvailable,
-    required this.predictions,
+    required this.currentAvailableStream,
+    required this.predictedAvailableStream,
     required this.parkingName,
     required this.parkingType,
     required this.lat,
@@ -53,8 +72,8 @@ class ParkingInfo extends StatelessWidget {
     Key? key,
     this.distanceFromCurrent,
     this.routeTimeFromCurrent,
-    this.currentAvailable,
-    this.predictions,
+    this.currentAvailableStream,
+    this.predictedAvailableStream,
     this.parkingName,
     this.parkingType,
     this.lat,
@@ -150,7 +169,7 @@ class ParkingInfo extends StatelessWidget {
                 Icons.close,
                 size: 35,
               ),
-              onPressed: () => MapsController.to.hideInfoWindow(),
+              onPressed: () => WidgetsController.to.hideInfoWindow(),
             ),
           ),
         ],
@@ -166,11 +185,57 @@ class ParkingInfo extends StatelessWidget {
     final currentRouteTimeWidget =
         Text(routeTimeFromCurrent!, style: smallFontWithColor);
 
-    final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
-        style: smallFontWithColor);
+    final loadingIndicator = Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
+        ),
+        height: 15,
+        width: 15,
+      ),
+    );
 
-    final predictedAvailableWidget =
-        Text(predictions![0].toString() + ' spaces', style: smallFontWithColor);
+    final currentAvailableWidget = StreamBuilder(
+        stream: currentAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          return Text(
+              snapshot.data?.data()?['current_availability'][carParkID]
+                      ['lots_available'] +
+                  ' spaces',
+              style: smallFontWithColor);
+        });
+
+    final predictedAvailableWidget = StreamBuilder(
+        stream: predictedAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          String? thirtyMinutePrediction = snapshot.data
+              ?.data()?['predictions'][carParkID][1]
+              .toStringAsFixed(0);
+          return Text(thirtyMinutePrediction! + ' spaces',
+              style: smallFontWithColor);
+        });
+
+    final predictionsBarChart = StreamBuilder(
+        stream: FirestoreHandler.updatePredictedInformationStream(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          List<double> predictions =
+              snapshot.data?.data()?['predictions'][carParkID].cast<double>();
+          return PredictionsBarChart(predictions);
+        });
 
     final gantryHeightWidget = Text(gantryHeight!.toStringAsFixed(1) + ' m',
         style: smallFontWithColor);
@@ -196,25 +261,27 @@ class ParkingInfo extends StatelessWidget {
       height: buttonHeight,
       width: navigationButtonWidth,
       child: TextButton(
-        child: Text(
-          'START NAVIGATION',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+          child: Text(
+            'START NAVIGATION',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-                Theme.of(context).primaryColor),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-            overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
-        // TODO: Implement notifications to show the real-time availability
-        // after clicking the button
-        onPressed: () =>
-            MapsController.to.startNavigation(lat!, lng!, parkingName!),
-      ),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8))),
+              overlayColor: MaterialStateProperty.all<Color>(Colors.black12)),
+          // TODO: Implement notifications to show the real-time availability
+          // after clicking the button
+          onPressed: () => {
+                MapsController.to.startNavigation(lat!, lng!, parkingName!),
+                startNotifications(carParkID!),
+              }),
     );
 
     final favoritesButton = Obx(() => Expanded(
@@ -232,7 +299,6 @@ class ParkingInfo extends StatelessWidget {
             ),
             onPressed: () {
               if (LoginHandler.isSignedIn()) {
-                // TODO: Add/remove favorite from firestore here
                 isFavorited.toggle();
                 if (isFavorited.value!)
                   FirestoreHandler.addFavorite(carParkID!);
@@ -268,7 +334,7 @@ class ParkingInfo extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)),
         ),
         topPadding12,
-        PredictionsBarChart(),
+        predictionsBarChart,
         Padding(padding: EdgeInsets.only(top: 8)),
         Text('Gantry height', style: smallFontLight),
         gantryHeightWidget,
@@ -291,7 +357,7 @@ class ParkingInfo extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () => isExpanded.toggle(),
+      onTap: () => isParkingInfoExpanded.toggle(),
       child: Align(
         alignment: Alignment.topCenter,
         child: Obx(
@@ -299,7 +365,9 @@ class ParkingInfo extends StatelessWidget {
             duration: Globals.EXPAND_ANIMATION_DURATION,
             padding: EdgeInsets.only(left: widthPadding, right: widthPadding),
             width: widgetWidth,
-            height: isExpanded.value! ? expandedHeight : unexpandedHeight,
+            height: isParkingInfoExpanded.value!
+                ? expandedHeight
+                : unexpandedHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               color: Color(0xE6FFFFFF),
@@ -334,9 +402,11 @@ class ParkingInfo extends StatelessWidget {
                       style: smallFontLight),
                   predictedAvailableWidget,
                   topPadding12,
-                  (isExpanded.value! ? Container() : buttonsRow),
+                  (isParkingInfoExpanded.value! ? Container() : buttonsRow),
                   Padding(padding: EdgeInsets.only(top: 4)),
-                  (isExpanded.value! ? expandedWidget : footerWidget),
+                  (isParkingInfoExpanded.value!
+                      ? expandedWidget
+                      : footerWidget),
                 ],
               ),
             ),

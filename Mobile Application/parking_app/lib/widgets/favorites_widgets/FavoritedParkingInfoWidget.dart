@@ -1,9 +1,15 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
+
+import '../../handlers/FirestoreHandler.dart';
+import '../../handlers/FirestoreHandler.dart';
 
 class FavoritedParkingInfo extends StatelessWidget {
   final String carParkID;
@@ -11,8 +17,8 @@ class FavoritedParkingInfo extends StatelessWidget {
   final double lng;
   final String parkingName;
   final String parkingType;
-  final String currentAvailable;
-  final List<int> predictions;
+  final Stream<DocumentSnapshot> currentAvailableStream;
+  final Stream<DocumentSnapshot> predictedAvailableStream;
   const FavoritedParkingInfo({
     Key? key,
     required this.carParkID,
@@ -20,15 +26,15 @@ class FavoritedParkingInfo extends StatelessWidget {
     required this.lng,
     required this.parkingName,
     required this.parkingType,
-    required this.currentAvailable,
-    required this.predictions,
+    required this.currentAvailableStream,
+    required this.predictedAvailableStream,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final double widgetWidth =
         Get.width * 0.915; // 343/375 = 0.915 (width from design)
-    final double widgetHeight = 202;
+    final double widgetHeight = 186;
     final double headerTextWidth =
         Get.width * 0.717; // 269/375 = 0.915 (from design)
 
@@ -36,7 +42,9 @@ class FavoritedParkingInfo extends StatelessWidget {
 
     final viewMapOnPressed = () async {
       DefaultTabController.of(context)!.animateTo(0);
-      MapsController.to.showInfoWindow('HE45');
+      FirestoreHandler.updateCurrentInformationStream();
+      FirestoreHandler.updatePredictedInformationStream();
+      WidgetsController.to.showInfoWindow(carParkID);
       final GoogleMapController controller =
           await MapsController.to.controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -45,8 +53,9 @@ class FavoritedParkingInfo extends StatelessWidget {
       )));
     };
 
-    final startNavigationOnPressed =
-        () async => MapsController.to.startNavigation(lat, lng, carParkID);
+    final startNavigationOnPressed = () async => {
+          MapsController.to.startNavigation(lat, lng, carParkID),
+        };
 
     final buttonTextStyle = TextStyle(
         color: Theme.of(context).accentColor, fontWeight: FontWeight.w500);
@@ -56,8 +65,6 @@ class FavoritedParkingInfo extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         fontSize: 12,
         fontWeight: FontWeight.bold);
-    final predictedAvailableWidget =
-        Text(predictions[0].toString() + ' spaces', style: smallFontWithColor);
 
     final topPadding16 = Padding(padding: EdgeInsets.only(top: 16));
 
@@ -111,11 +118,49 @@ class FavoritedParkingInfo extends StatelessWidget {
     );
 
     final parkingTypeWidget = Text(parkingType, style: TextStyle(fontSize: 12));
-    final currentAvailableWidget = Text(currentAvailable.toString() + ' spaces',
-        style: smallFontWithColor);
+
+    final loadingIndicator = Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
+        ),
+        height: 15,
+        width: 15,
+      ),
+    );
+
+    final currentAvailableWidget = StreamBuilder(
+        stream: currentAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+
+          return Text(
+              snapshot.data?.data()?['current_availability'][carParkID]
+                      ['lots_available'] +
+                  ' spaces',
+              style: smallFontWithColor);
+        });
+
+    final predictedAvailableWidget = StreamBuilder(
+        stream: predictedAvailableStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) return Text('Something went wrong');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return loadingIndicator;
+          print(snapshot.data?.data()?['predictions'][carParkID][1].toString());
+          String? thirtyMinutePrediction = snapshot.data
+              ?.data()?['predictions'][carParkID][1]
+              .toStringAsFixed(0);
+          return Text(thirtyMinutePrediction! + ' spaces',
+              style: smallFontWithColor);
+        });
+
     return Container(
       width: widgetWidth,
-      height: widgetHeight,
       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),

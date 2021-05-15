@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:parking_app/controller/MapsController.dart';
+import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/globals/Globals.dart';
+import 'package:parking_app/handlers/FirestoreHandler.dart';
+import 'package:parking_app/handlers/NotificationHandler.dart';
 import 'package:parking_app/screens/FavoritesPage.dart';
 import 'package:parking_app/screens/MapsPage.dart';
 
@@ -20,8 +23,8 @@ class Navigation extends StatelessWidget {
     );
 
     final tabsChildrenList = [
-      GetBuilder<MapsController>(
-        init: MapsController(),
+      GetBuilder<WidgetsController>(
+        init: WidgetsController(),
         builder: (state) => MapsPage(isHidden: state.isHidden),
       ),
       Favorites(),
@@ -41,8 +44,8 @@ class Navigation extends StatelessWidget {
               children: tabsChildrenList,
             ),
           ),
-          GetBuilder<MapsController>(
-            init: MapsController(),
+          GetBuilder<WidgetsController>(
+            init: WidgetsController(),
             builder: (state) => AnimatedContainer(
               // TabBar container
               curve: Curves.linearToEaseOut,
@@ -65,27 +68,34 @@ class Navigation extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: TabBar(
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.black54,
-                    indicator: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: context.theme.primaryColor,
-                          width: 3,
-                        ),
+                  // need to re-assign stream because it gets stuck on waiting
+                  // if the re-assigning does not happen
+                  onTap: (tabIndex) {
+                    FirestoreHandler.updateCurrentInformationStream();
+                    FirestoreHandler.updatePredictedInformationStream();
+                  },
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.black54,
+                  indicator: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: context.theme.primaryColor,
+                        width: 3,
                       ),
                     ),
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      Tab(
-                        icon: mapIcon,
-                        text: 'Map',
-                      ),
-                      Tab(
-                        icon: favoriteIcon,
-                        text: 'Favorites',
-                      ),
-                    ]),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(
+                      icon: mapIcon,
+                      text: 'Map',
+                    ),
+                    Tab(
+                      icon: favoriteIcon,
+                      text: 'Favorites',
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PredictionsBarChart extends StatelessWidget {
-  final List<double> predictions = [
-    for (var i = 0; i < 12; i++) Random().nextInt(100).toDouble() + 100
-  ];
+  final List<double> predictions;
+
   final List<DateTime> dateList = [
     DateTime(2020, 9, 7, 9, 0),
     DateTime(2020, 9, 7, 9, 15),
@@ -23,6 +22,8 @@ class PredictionsBarChart extends StatelessWidget {
     DateTime(2020, 9, 7, 11, 45),
     DateTime(2020, 9, 7, 12, 00),
   ];
+
+  PredictionsBarChart(this.predictions, {Key? key}) : super(key: key);
 
   BarChartGroupData _makeChartGroupData(
       double prediction, int index, BuildContext context) {

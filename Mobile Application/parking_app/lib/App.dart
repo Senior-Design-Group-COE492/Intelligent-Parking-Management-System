@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/screens/Navigation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 class App extends StatelessWidget {
   // Create the initialization Future outside of `build`:
@@ -10,7 +11,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // Initialize FlutterFire:
-      future: _initialization,
+      future: Future.wait([_initialization, DotEnv.load(fileName: ".env")]),
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
