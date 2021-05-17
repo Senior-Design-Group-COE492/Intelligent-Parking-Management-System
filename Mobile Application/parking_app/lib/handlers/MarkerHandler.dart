@@ -50,17 +50,15 @@ class MarkerHandler {
   }
 
   static Future<void> addDestinationMarker(
-      double lat, double lng, BuildContext context) async {
-    final marker = await makeDestinationMarker(lat, lng, context);
+      double lat, double lng, double devicePixelRatio) async {
+    final marker = await makeDestinationMarker(lat, lng, devicePixelRatio);
     MapsController.to.addMarkerToMap(marker);
   }
 
   static Future<Marker> makeDestinationMarker(
-      double lat, double lng, BuildContext context) async {
+      double lat, double lng, double devicePixelRatio) async {
     DrawableRoot svgDrawableRoot =
         await svg.fromSvgString(MapsGlobals.flagSvg, '1');
-    MediaQueryData queryData = MediaQuery.of(context);
-    double devicePixelRatio = queryData.devicePixelRatio;
     double width =
         24 * devicePixelRatio; // where 32 is your SVG's original width
     double height = 24 * devicePixelRatio; // same thing
@@ -158,11 +156,11 @@ class MarkerHandler {
     }
   }
 
-  static Future<void> setMarkersFromFilterAndDestination(BuildContext context,
-      Map<String, dynamic> filteredParkings, Marker destinationMarker) async {
+  static Future<void> setMarkersFromFilterAndDestination(
+      double devicePixelRatio,
+      Map<String, dynamic> filteredParkings,
+      Marker destinationMarker) async {
     if (parkingLots == null) await getJsonFromFile();
-    MediaQueryData queryData = MediaQuery.of(context);
-    double devicePixelRatio = queryData.devicePixelRatio;
     double width = 40 * devicePixelRatio;
     double height = 47 * devicePixelRatio;
     final Set<Marker> markerSet = Set<Marker>();

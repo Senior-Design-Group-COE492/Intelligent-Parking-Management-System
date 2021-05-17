@@ -5,14 +5,17 @@ import 'package:parking_app/controller/TextFieldController.dart';
 import 'package:parking_app/controller/WidgetsController.dart';
 import 'package:parking_app/handlers/MarkerHandler.dart';
 import 'package:parking_app/handlers/SearchHandler.dart';
+import 'package:parking_app/screens/Navigation.dart';
 
 class SearchWidget extends StatelessWidget {
   final Future<List<dynamic>>? placesFuture;
   final FieldController? fieldController = Get.put(FieldController());
 
   SearchWidget({Key? key, this.placesFuture}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     return FutureBuilder(
         future: placesFuture,
         builder: (context, dynamic snapshot) {
@@ -59,23 +62,26 @@ class SearchWidget extends StatelessWidget {
                             snapshot.data[index]['geometry']['location']['lat'];
                         final lng =
                             snapshot.data[index]['geometry']['location']['lng'];
+
+                        fieldController!.isExpanded.toggle();
                         MapsController.to.setDestinationLocation(lat, lng);
                         MapsController.to.moveMapCamera(lat, lng, 16);
 
                         final destinationMarker =
                             await MarkerHandler.makeDestinationMarker(
-                                lat, lng, context);
+                                lat, lng, devicePixelRatio);
                         WidgetsController.to.setIsLoading(true);
                         final filteredParkings =
                             await SearchHandler.searchParkings();
                         await MarkerHandler.setMarkersFromFilterAndDestination(
-                            context, filteredParkings, destinationMarker);
+                            devicePixelRatio,
+                            filteredParkings,
+                            destinationMarker);
 
                         fieldController!.isSearching.value = false;
-                        fieldController!.isExpanded.toggle();
 
                         await MarkerHandler.addDestinationMarker(
-                            lat, lng, context);
+                            lat, lng, devicePixelRatio);
                         WidgetsController.to.setIsLoading(false);
                       },
                     ),

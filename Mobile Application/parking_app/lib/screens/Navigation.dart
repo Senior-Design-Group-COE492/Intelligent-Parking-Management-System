@@ -12,7 +12,6 @@ class Navigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double navigationBarHeight = 70;
-
     final Widget mapIcon = Container(
       child: Icon(Icons.map_outlined, size: 30),
       width: Get.width * 0.30,

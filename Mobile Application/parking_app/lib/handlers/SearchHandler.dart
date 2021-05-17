@@ -75,7 +75,7 @@ class SearchHandler {
     print(body);
 
     final response = await Dio().post(
-      'http://' + Globals.IP_ADDRESS + ':' + Globals.PORT + '/filter',
+      'http://' + Globals.IP_ADDRESS + '/filter',
       data: body,
     );
     final Map<String, dynamic> filteredParkings = jsonDecode(response.data);

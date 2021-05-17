@@ -8,6 +8,7 @@ from pytz import timezone
 from firebase_admin import credentials,firestore
 from parking import Parking
 from neural_network import NN
+from werkzeug.serving import WSGIRequestHandler
 
 #initializing the sdk
 default_app = firebase_admin.initialize_app()
@@ -40,14 +41,16 @@ def main():
     return jsonify(success = result)
 
 #retrieve filtered parkings
-@app.route("/filterParkings",methods = ["POST"])
+@app.route("/filter",methods = ["POST"])
 def getParking():
     if request.is_json:
         req=request.get_json()
         parking = Parking()
         result = parking.getFilteredParkings(req.get('lat'),req.get('lon'),req.get('night_parking'),req.get('free_parking'),req.get('car_park_type'),req.get('type_of_parking_system'))
-        return jsonify(success = True, results = result)
+        return result
     return jsonify(success = False,error = "PAIN")
 ######################
+WSGIRequestHandler.protocol_version = "HTTP/1.1"
 
-app.run(port=3333)
+if __name__ == "__main__":
+    app.run(host = '0.0.0.0', port = 80)
