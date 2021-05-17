@@ -78,10 +78,26 @@ class Parking:
         df=pd.merge(df, self.parkings, left_on=['carpark_number'], right_on=['carpark_number'])
 
         id=self.DistCalc(lat,lon)
-        filtparkings=df[(df['night_parking']==night_parking) & (df['free_parking']==free_parking) &(df['car_park_type'].isin(car_park_type)) & (df['type_of_parking_system']==type_of_parking_system)]
+
+        # filtparkings=df[(df['night_parking']==night_parking) & (df['free_parking']==free_parking) &(df['car_park_type'].isin(car_park_type)) & (df['type_of_parking_system']==type_of_parking_system)]
+        # filteredparkings=filtparkings[filtparkings['carpark_number'].isin(id)]
+        # print(filteredparkings)
+        # res=filteredparkings[['carpark_number','lat','lng','lots_available']].set_index('carpark_number').T.to_json()
+        
+        filtparkings = df
+        if req.get("night_parking")!=None:
+            filtparkings=filtparkings[(filtparkings['night_parking']==night_parking)]
+        if req.get("free_parking")!=None:
+            filtparkings=filtparkings[(filtparkings['free_parking']==free_parking)]
+        if req.get("car_park_type")!=None:
+            filtparkings=filtparkings[(filtparkings['car_park_type'].isin(car_park_type))]
+        if req.get("type_of_parking_system")!=None:
+            filtparkings=filtparkings[(filtparkings['type_of_parking_system']==type_of_parking_system)]
         filteredparkings=filtparkings[filtparkings['carpark_number'].isin(id)]
+        #filtparkings=df[(df['night_parking']==req.get("night_parking")) & (df['free_parking']==req.get("free_parking")) & (df['car_park_type'].isin(req.get("car_park_type"))) & (df['type_of_parking_system']==req.get("type_of_parking_system"))]
         print(filteredparkings)
         res=filteredparkings[['carpark_number','lat','lng','lots_available']].set_index('carpark_number').T.to_json()
+
         return res
 
     def generateSequencePrediction(self):
