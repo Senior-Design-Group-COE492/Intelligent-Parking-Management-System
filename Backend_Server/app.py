@@ -49,3 +49,5 @@ def getParking():
         return jsonify(success = True, results = result)
     return jsonify(success = False,error = "PAIN")
 ######################
+
+app.run(port=3333)

@@ -16,7 +16,6 @@ class ParkingInfoFromFuture extends StatelessWidget {
     final carPark = MarkerHandler.parkingLots![parkingId];
 
     return FutureBuilder(
-      // TODO: modify future to read from Firestore as well
       future: MapsController.to.currentLocation != null
           ? SearchHandler.getRouteTime(MapsController.to.currentLocation!,
               carPark['lat'], carPark['lng'])

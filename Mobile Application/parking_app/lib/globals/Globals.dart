@@ -3,5 +3,5 @@ class Globals {
   static const Duration EXPAND_ANIMATION_DURATION = Duration(milliseconds: 150);
   static const String IP_ADDRESS =
       '10.0.2.2'; // localhost alias on the simulator
-  static const String PORT = '3000';
+  static const String PORT = '5030';
 }

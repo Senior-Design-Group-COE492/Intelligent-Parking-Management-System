@@ -39,7 +39,7 @@ class FieldController extends GetxController {
     print(nightRadioValue.value);
   }
 
-  int parkingTypeGroupValue = 1;
+  int parkingTypeGroupValue = 0;
   RxInt parkingTypeRadioValue = 0.obs;
   changeParkingTypeRadio(dynamic newValue) {
     parkingTypeRadioValue.value = newValue;

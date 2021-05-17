@@ -176,9 +176,9 @@ class FiltersWidget extends StatelessWidget {
             builder: (_) => Row(
               children: [
                 _radioListTile(125.0, fieldController!.nightGroupValue,
-                    fieldController!.changeNightRadio, 1, 'Yes'),
+                    fieldController!.changeNightRadio, 1, 'No preference'),
                 _radioListTile(120.0, fieldController!.nightGroupValue,
-                    fieldController!.changeNightRadio, 0, 'No'),
+                    fieldController!.changeNightRadio, 0, 'Yes'),
               ],
             ),
           ),
@@ -186,10 +186,12 @@ class FiltersWidget extends StatelessWidget {
           GetBuilder<FieldController>(
             builder: (_) => Row(
               children: [
-                _radioListTile(125.0, fieldController!.parkingTypeGroupValue,
+                _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
+                    fieldController!.changeParkingTypeRadio, 0, 'Both'),
+                _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
                     fieldController!.changeParkingTypeRadio, 1, 'Electronic'),
                 _radioListTile(120.0, fieldController!.parkingTypeGroupValue,
-                    fieldController!.changeParkingTypeRadio, 0, 'Coupon'),
+                    fieldController!.changeParkingTypeRadio, 2, 'Coupon')
               ],
             ),
           ),

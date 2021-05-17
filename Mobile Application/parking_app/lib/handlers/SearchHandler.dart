@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/controller/MapsController.dart';
@@ -48,24 +50,38 @@ class SearchHandler {
     return response.data['rows'][0]['elements'][0];
   }
 
-  // static Future<dynamic> searchParkings() async {
-  //   final destinationLocation = MapsController.to.destinationLocation!;
-  //   final filters = FieldController.to;
-  //   final parkingTypes = _parkingTypeMapper(filters);
-  //   final body = {
-  //     'lat': destinationLocation.latitude,
-  //     'lon': destinationLocation.longitude,
-  //     'night_parking': filters.nightRadioValue.value == 0 ? 'NO' : 'YES',
-  //     'type_of_parking_system': filters.parkingTypeRadioValue.value == 0
-  //         ? 'COUPON PARKING'
-  //         : 'ELECTRONIC PARKING',
-  //     'car_park_type': parkingTypes,
-  //   };
-  //   print(body);
-  //   final response = await Dio()
-  //       .post(Globals.IP_ADDRESS + '/parking', queryParameters: body);
-  //   return 0;
-  // }
+  static Future<Map<String, dynamic>> searchParkings() async {
+    final destinationLocation = MapsController.to.destinationLocation!;
+    final filters = FieldController.to;
+
+    final typeOfParkingSystem = filters.parkingTypeRadioValue.value == 0
+        ? null
+        : filters.parkingTypeRadioValue.value == 1
+            ? 'ELECTRONIC PARKING'
+            : 'COUPON PARKING';
+    final parkingTypes = _parkingTypeMapper(filters);
+    final nightParking = filters.nightRadioValue.value == 1 ? null : 'YES';
+
+    final Map<String, dynamic> body = {
+      'lat': destinationLocation.latitude,
+      'lon': destinationLocation.longitude,
+      'distance': filters.distanceSliderValue.value,
+    };
+
+    if (typeOfParkingSystem != null)
+      body['type_of_parking_system'] = typeOfParkingSystem;
+    if (nightParking != null) body['night_parking'] = nightParking;
+    if (parkingTypes.length > 0) body['car_park_type'] = parkingTypes;
+    print(body);
+
+    final response = await Dio().post(
+      'http://' + Globals.IP_ADDRESS + ':' + Globals.PORT + '/filter',
+      data: body,
+    );
+    final Map<String, dynamic> filteredParkings = jsonDecode(response.data);
+
+    return filteredParkings;
+  }
 
   static List<String> _parkingTypeMapper(FieldController filters) {
     final List<String> parkingTypes = [];

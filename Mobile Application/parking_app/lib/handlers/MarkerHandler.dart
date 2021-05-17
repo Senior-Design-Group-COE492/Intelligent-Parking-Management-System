@@ -51,6 +51,12 @@ class MarkerHandler {
 
   static Future<void> addDestinationMarker(
       double lat, double lng, BuildContext context) async {
+    final marker = await makeDestinationMarker(lat, lng, context);
+    MapsController.to.addMarkerToMap(marker);
+  }
+
+  static Future<Marker> makeDestinationMarker(
+      double lat, double lng, BuildContext context) async {
     DrawableRoot svgDrawableRoot =
         await svg.fromSvgString(MapsGlobals.flagSvg, '1');
     MediaQueryData queryData = MediaQuery.of(context);
@@ -68,7 +74,7 @@ class MarkerHandler {
         markerId: MarkerId('destination'),
         icon: markerBitmap,
         position: LatLng(lat, lng));
-    MapsController.to.addMarkerToMap(marker);
+    return marker;
   }
 
   static void addMarkersFromJson(BuildContext context) async {
@@ -150,5 +156,46 @@ class MarkerHandler {
         addMarkersFromFavorites(context, favoritesDoc.data()?['favorites']);
       });
     }
+  }
+
+  static Future<void> setMarkersFromFilterAndDestination(BuildContext context,
+      Map<String, dynamic> filteredParkings, Marker destinationMarker) async {
+    if (parkingLots == null) await getJsonFromFile();
+    MediaQueryData queryData = MediaQuery.of(context);
+    double devicePixelRatio = queryData.devicePixelRatio;
+    double width = 40 * devicePixelRatio;
+    double height = 47 * devicePixelRatio;
+    final Set<Marker> markerSet = Set<Marker>();
+    int counter = filteredParkings.length;
+    if (filteredParkings.length == 0) {
+      markerSet.add(destinationMarker);
+      MapsController.to.setMarkerSet(markerSet);
+      return;
+    }
+    filteredParkings.forEach((carParkID, carParkInformation) async {
+      final int nAvailableParkingSpaces =
+          int.parse(carParkInformation['lots_available']);
+      final double latitude = carParkInformation['lat'];
+      final double longitude = carParkInformation['lng'];
+      final LatLng latLng = LatLng(latitude, longitude);
+
+      final handleMarkerTap = () async {
+        WidgetsController.to.showInfoWindow(carParkID);
+        MapsController.to.moveMapCamera(latitude, longitude, 18);
+      };
+
+      final newMarker = await _makeParkingMarker(width, height,
+          nAvailableParkingSpaces, latLng, carParkID, handleMarkerTap);
+      markerSet.add(newMarker);
+
+      if (--counter == 0) {
+        markerSet.add(destinationMarker);
+        MapsController.to.setMarkerSet(markerSet);
+      }
+
+      // for performance, state is only updated after all the markers are added
+    });
+
+    MapsController.to.setDisplayedCarParks(filteredParkings);
   }
 }

@@ -54,20 +54,29 @@ class SearchWidget extends StatelessWidget {
                       child: Text(addresses[index],
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black)),
-                      onPressed: () {
-                        // TODO: send request to server with filter info
+                      onPressed: () async {
                         final lat =
                             snapshot.data[index]['geometry']['location']['lat'];
                         final lng =
                             snapshot.data[index]['geometry']['location']['lng'];
                         MapsController.to.setDestinationLocation(lat, lng);
                         MapsController.to.moveMapCamera(lat, lng, 16);
-                        // updating state once instead of twice
-                        // WidgetsController.to.setIsLoading(true);
-                        // SearchHandler.searchParkings();
+
+                        final destinationMarker =
+                            await MarkerHandler.makeDestinationMarker(
+                                lat, lng, context);
+                        WidgetsController.to.setIsLoading(true);
+                        final filteredParkings =
+                            await SearchHandler.searchParkings();
+                        await MarkerHandler.setMarkersFromFilterAndDestination(
+                            context, filteredParkings, destinationMarker);
+
                         fieldController!.isSearching.value = false;
                         fieldController!.isExpanded.toggle();
-                        MarkerHandler.addDestinationMarker(lat, lng, context);
+
+                        await MarkerHandler.addDestinationMarker(
+                            lat, lng, context);
+                        WidgetsController.to.setIsLoading(false);
                       },
                     ),
                   ],
